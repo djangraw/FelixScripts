@@ -1,0 +1,8 @@
+*
+!*/
+!*.sh
+!*.tcsh
+!*.m
+!*.py
+!*.md
+!.gitignore
