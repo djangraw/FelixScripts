@@ -1,0 +1,130 @@
+cd /data/jangrawdc/PRJ11_Music/Results/SBJ03_task/AfniProc_MultiEcho
+set subj = SBJ03_task
+set motionLimit = 0.8 # 0.2 # max motion in a TR before it's censored (default 0.2)
+set outCountLimit = 0.15 #0.1 # fraction of voxels that can be outliers before censoring a TR (default 0.1)
+set nRuns = 8
+# set list of runs
+set runs = (`count -digits 2 1 ${nRuns}`)
+# note TRs that were not censored
+set ktrs = `1d_tool.py -infile censor_${subj}_combined_2.1D                   \
+                       -show_trs_uncensored encoded`
+
+# create an all_runs dataset to match the fitts, errts, etc.
+3dTcat -overwrite -prefix all_runs.$subj pb06.$subj.r*.scale+tlrc.HEAD
+
+# --------------------------------------------------
+# create a temporal signal to noise ratio dataset
+#    signal: if 'scale' block, mean should be 100
+#    noise : compute standard deviation of errts
+3dTstat -mean -overwrite -prefix rm.signal.all all_runs.$subj+tlrc"[$ktrs]"
+3dTstat -stdev -overwrite -prefix rm.noise.all errts.${subj}_REML+tlrc"[$ktrs]"
+3dcalc -a rm.signal.all+tlrc                                                  \
+       -b rm.noise.all+tlrc                                                   \
+       -c full_mask.$subj+tlrc                                                \
+       -expr 'c*a/b' -overwrite -prefix TSNR.$subj
+
+# ---------------------------------------------------
+# compute and store GCOR (global correlation average)
+# (sum of squares of global mean of unit errts)
+3dTnorm -norm2 -overwrite -prefix rm.errts.unit errts.${subj}_REML+tlrc
+3dmaskave -quiet -mask full_mask.$subj+tlrc rm.errts.unit+tlrc >              \
+    gmean.errts.unit.1D
+3dTstat -sos -overwrite -prefix - gmean.errts.unit.1D\' > out.gcor.1D
+echo "-- GCOR = `cat out.gcor.1D`"
+
+# ---------------------------------------------------
+# compute correlation volume
+# (per voxel: average correlation across masked brain)
+# (now just dot product with average unit time series)
+3dcalc -a rm.errts.unit+tlrc -b gmean.errts.unit.1D -expr 'a*b' -overwrite -prefix rm.DP
+3dTstat -sum -overwrite -prefix corr_brain rm.DP+tlrc
+
+# create ideal files for fixed response stim types
+# TODO: FIX THESE INDICES!!!
+# 1dcat X.nocensor.xmat.1D'[25]' > ideal_attendedSpeech.1D
+# 1dcat X.nocensor.xmat.1D'[26]' > ideal_ignoredSpeech.1D
+# 1dcat X.nocensor.xmat.1D'[27]' > ideal_attendedNoise.1D
+# 1dcat X.nocensor.xmat.1D'[28]' > ideal_ignoredNoise.1D
+# 1dcat X.nocensor.xmat.1D'[29]' > ideal_fixation.1D
+
+# --------------------------------------------------------
+# compute sum of non-baseline regressors from the X-matrix
+# (use 1d_tool.py to get list of regressor colums)
+set reg_cols = `1d_tool.py -infile X.nocensor.xmat.1D -show_indices_interest`
+3dTstat -sum -overwrite -prefix sum_ideal.1D X.nocensor.xmat.1D"[$reg_cols]"
+
+# also, create a stimulus-only X-matrix, for easy review
+1dcat X.nocensor.xmat.1D"[$reg_cols]" > X.stim.xmat.1D
+
+# ============================ blur estimation =============================
+# compute blur estimates
+touch blur_est.$subj.1D   # start with empty file
+
+# -- estimate blur for each run in err_reml --
+touch blur.err_reml.1D
+
+# restrict to uncensored TRs, per run
+foreach run ( $runs )
+    set trs = `1d_tool.py -infile X.xmat.1D -show_trs_uncensored encoded      \
+                          -show_trs_run $run`
+    if ( $trs == "" ) continue
+    3dFWHMx -detrend -mask full_mask.$subj+tlrc                               \
+        errts.${subj}_REML+tlrc"[$trs]" >> blur.err_reml.1D
+end
+
+# compute average blur and append
+set blurs = ( `3dTstat -mean -prefix - blur.err_reml.1D\'` )
+echo average err_reml blurs: $blurs
+echo "$blurs   # err_reml blur estimates" >> blur_est.$subj.1D
+
+
+# add 3dClustSim results as attributes to any stats dset
+set fxyz = ( `tail -1 blur_est.$subj.1D` )
+3dClustSim -both -mask full_mask.$subj+tlrc -fwhmxyz $fxyz[1-3]               \
+           -overwrite -prefix ClustSim
+set cmd = ( `cat 3dClustSim.cmd` )
+$cmd stats.${subj}_REML+tlrc
+
+
+# ================== auto block: generate review scripts ===================
+
+# generate a review script for the unprocessed EPI data
+gen_epi_review.py -script @epi_review.$subj \
+    -dsets pb00.$subj.r*.tcat+orig.HEAD
+
+# generate scripts to review single subject results
+# (try with defaults, but do not allow bad exit status)
+gen_ss_review_scripts.py -mot_limit $motionLimit -out_limit $outCountLimit -exit0
+
+# ========================== auto block: finalize ==========================
+
+# remove temporary files
+#rm -fr rm.* # Segsy # TODO: un-comment this to clean up directory!
+
+# if the basic subject review script is here, run it
+# (want this to be the last text output)
+if ( -e @ss_review_basic ) ./@ss_review_basic |& tee out.ss_review.$subj.txt
+
+# return to parent directory
+cd ..
+
+echo "execution finished: `date`"
+
+
+
+
+# ==========================================================================
+# script generated by the command:
+#
+# afni_proc.py -subj_id SBJ05 -dsets SBJ05_Run01_e2+orig.HEAD                 \
+#     SBJ05_Run02_e2+orig.HEAD SBJ05_Run03_e2+orig.HEAD                       \
+#     SBJ05_Run04_e2+orig.HEAD -out_dir                                       \
+#     /data/jangrawdc/PRJ03_SustainedAttention/Results/SBJ05/AfniProc -blocks \
+#     despike tshift align tlrc volreg mask regress -copy_anat                \
+#     ../D01_Anatomical/SBJ05_Anat_bc_ns -anat_has_skull no                   \
+#     -tcat_remove_first_trs 3 -align_opts_aea -giant_move -volreg_base_dset  \
+#     'SBJ05_Run01_e2+orig[0]+orig[0]' -volreg_tlrc_warp -mask_segment_anat   \
+#     yes -regress_motion_per_run -regress_censor_motion 0.2                  \
+#     -regress_censor_outliers 0.1 -regress_bandpass 0.01 0.1                 \
+#     -regress_apply_mot_types demean deriv -regress_est_blur_errts -script   \
+#     proc_SBJ05_1116_1601 -bash

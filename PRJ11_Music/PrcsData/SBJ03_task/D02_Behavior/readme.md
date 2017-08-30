@@ -1,0 +1,12 @@
+/data/jangrawdc/PRJ11_Music/RawData/SBJ03/physio/DJ_test_sub_032017-04-15T17_07_18.acq  >>  /data/jangrawdc/PRJ11_Music/PrcsData/SBJ03_task/D02_Behavior/physio.SBJ03_task.r01
+/data/jangrawdc/PRJ11_Music/RawData/SBJ03/physio/DJ_test_sub_032017-04-15T17_14_10.acq  >>  /data/jangrawdc/PRJ11_Music/PrcsData/SBJ03_task/D02_Behavior/physio.SBJ03_task.r02
+/data/jangrawdc/PRJ11_Music/RawData/SBJ03/physio/DJ_test_sub_032017-04-15T17_20_20.acq  >>  /data/jangrawdc/PRJ11_Music/PrcsData/SBJ03_task/D02_Behavior/physio.SBJ03_task.r03
+/data/jangrawdc/PRJ11_Music/RawData/SBJ03/physio/DJ_test_sub_032017-04-15T17_26_21.acq  >>  /data/jangrawdc/PRJ11_Music/PrcsData/SBJ03_task/D02_Behavior/physio.SBJ03_task.r04
+/data/jangrawdc/PRJ11_Music/RawData/SBJ03/physio/DJ_test_sub_032017-04-15T17_32_42.acq  >>  /data/jangrawdc/PRJ11_Music/PrcsData/SBJ03_task/D02_Behavior/physio.SBJ03_task.r05
+/data/jangrawdc/PRJ11_Music/RawData/SBJ03/physio/DJ_test_sub_032017-04-15T17_38_42.acq  >>  /data/jangrawdc/PRJ11_Music/PrcsData/SBJ03_task/D02_Behavior/physio.SBJ03_task.r06
+/data/jangrawdc/PRJ11_Music/RawData/SBJ03/physio/DJ_test_sub_032017-04-15T17_45_51.acq  >>  /data/jangrawdc/PRJ11_Music/PrcsData/SBJ03_task/D02_Behavior/physio.SBJ03_task.r07
+/data/jangrawdc/PRJ11_Music/RawData/SBJ03/physio/DJ_test_sub_032017-04-15T17_53_19.acq  >>  /data/jangrawdc/PRJ11_Music/PrcsData/SBJ03_task/D02_Behavior/physio.SBJ03_task.r08
+/data/jangrawdc/PRJ11_Music/RawData/SBJ03/physio/DJ_test_sub_032017-04-15T16_58_43.acq  >>  /data/jangrawdc/PRJ11_Music/PrcsData/SBJ03_baseline/D02_Behavior/physio.SBJ03_baseline.r01
+/data/jangrawdc/PRJ11_Music/RawData/SBJ03/physio/DJ_test_sub_032017-04-15T17_59_36.acq  >>  /data/jangrawdc/PRJ11_Music/PrcsData/SBJ03_baseline/D02_Behavior/physio.SBJ03_baseline.r02
+/data/jangrawdc/PRJ11_Music/RawData/SBJ03/physio/DJ_test_sub_032017-04-15T18_04_16.acq  >>  /data/jangrawdc/PRJ11_Music/PrcsData/SBJ03_improv/D02_Behavior/physio.SBJ03_improv.r01
+/data/jangrawdc/PRJ11_Music/RawData/SBJ03/physio/DJ_test_sub_032017-04-15T18_09_27.acq  >>  /data/jangrawdc/PRJ11_Music/PrcsData/SBJ03_wholesong/D02_Behavior/physio.SBJ03_wholesong.r01
