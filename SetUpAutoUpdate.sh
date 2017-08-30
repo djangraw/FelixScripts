@@ -13,6 +13,10 @@
 # include instructions on how to do what we're doing here) and paste
 # it as the gitRepoAddress below.
 #
+# If you haven't uploaded to GitHub from Felix before, you will
+# probably need to follow the instructions on this page to generate # an SSH key for communication with GitHub:
+# https://help.github.com/articles/connecting-to-github-with-ssh/
+#
 # As this script finishes running, a text editor will open your
 # 'crontab' file. Follow the instructions that this script outputs
 # to set up your nightly Auto-Update cron job.
@@ -40,6 +44,7 @@ echo '!*.py' >> .gitignore
 echo '!*.md' >> .gitignore
 echo '!.gitignore' >> .gitignore
 echo 'abin*' >> .gitignore # ignore this directory
+echo '._*' >> .gitignore # ignore these mac metadata files
 
 # Create README
 rm -f README.md
