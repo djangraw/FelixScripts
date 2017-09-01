@@ -1182,26 +1182,153 @@ fprintf('=== final cohort (n=%d):\n',numel(vars.oksubjects));
 GetMedianAndRangeOfBehavior(vars.okSubjects);
 
 %% Use permutation test results to compare predictive abilities
-
+load('ReadingFcAndFracCorrect_19subj_Fisher_2017-05-17.mat');
 % set up permutation tests
 nPerms = 10000;
 nSubj = numel(fracCorrect);
-fprintrf('getting randomized behavior...\n');
+fprintf('getting randomized behavior...\n');
 permBeh = nan(nSubj,nPerms);
 for i=1:nPerms
     permBeh(:,i) = fracCorrect(randperm(nSubj)');
 end
-% run permutation tests
-zPerm = nan(1,nPerms);
-pPerm = nan(1,nPerms);
+save BehaviorPermutations_2017-08-30 permBeh
+
+%% Run permutations for reading
+load('BehaviorPermutations_2017-08-30.mat');
+[readperm_pos,readperm_neg,readperm_combo] = deal(nan(nSubj,nPerms));
+corr_method = 'corr';
+mask_method = 'one';
+thresh = 0.01;
+tic;
 for i=1:nPerms
+    if mod(i,100)==0
+        fprintf('i=%d/%d (%.1f seconds)...\n',i,nPerms,toc);
+    end
     % randomize behavior
     beh = permBeh(:,i);
-    % get predictions
-    
-    % get z test
-    [zPerm(i),pPerm(i)] = SteigersZTest(readPred,gradcptPred,beh);
+    % Get reading predictions
+    [readperm_pos(:,i), readperm_neg(:,i), readperm_combo(:,i)] = ...
+        RunLeave1outBehaviorRegression(FC_fisher,beh,thresh,corr_method,mask_method);
 end
-% Save predictions
+fprintf('Done! Took %.1f seconds.\n',toc);
+% save results
+fprintf('Saving results...\n')
+save('ReadingPermPredictions_2017-08-30.mat','readperm_pos','readperm_neg','readperm_combo');
+fprintf('Done!\n');
 
-% Save z results
+%% Get scores from each metric
+load('BehaviorPermutations_2017-08-30.mat');
+load('ReadingFcAndFracCorrect_19subj_Fisher_2017-05-17.mat');
+
+% Get static predictions from externally trained networks
+score_combo = table();
+% - GradCPT
+attnNets = load('/data/jangrawdc/PRJ03_SustainedAttention/Collaborations/MonicaRosenberg/attn_nets_268.mat');
+nets = attnNets.pos_overlap-attnNets.neg_overlap;
+[~,~,score_this] = GetFcMaskMatch(FC_fisher,nets>0,nets<0);
+score_combo.gradcpt = score_this(:);
+% - Vis/Aud Language
+load('VisAudNetwork_match15.mat');
+nets = VisAudNetwork;
+[~,~,score_this] = GetFcMaskMatch(FC_fisher,nets>0,nets<0);
+score_combo.visaud = score_this(:);
+% - DAN/DMN
+load('DanDmnNetwork_match15.mat');
+nets = DanDmnNetwork;
+[~,~,score_this] = GetFcMaskMatch(FC_fisher,nets>0,nets<0);
+score_combo.dandmn = score_this(:);
+% Others
+otherMetrics = load('ControlMetrics_2017-08-31.mat');
+metrics = {'-meanMotion','meanPageDur','saccadeRate','-blinkRate','pupilDilation','-globalFc'};
+for i=1:numel(metrics)
+    if metrics{i}(1)=='-' % negative correlation expected
+        thisMetric = metrics{i}(2:end);
+        score_combo.(['minus_' thisMetric]) = -otherMetrics.(thisMetric)(:);
+    else
+        score_combo.(metrics{i}) = otherMetrics.(metrics{i})(:);
+    end
+end
+
+% add to table
+readScores = load('ReadingNetworkScores_p01_Fisher.mat');
+score_combo.reading = readScores.read_combo;
+readPerms = load('ReadingPermPredictions_2017-08-30.mat');
+score_combo.read_perm = readPerms.readperm_combo;
+% save results
+save('AllMetricScores_2017-08-31.mat','score_combo');
+
+%% Compare resulting permuted predictions
+metrics = score_combo.Properties.VariableNames;
+nMetrics = numel(metrics);
+zPerm = nan(nMetrics,nMetrics,nPerms);
+pPerm = nan(nMetrics,nMetrics,nPerms);
+readPerms = load('ReadingPermPredictions_2017-08-30.mat');
+for i=1:nPerms
+    if mod(i,100)==0
+        fprintf('i=%d/%d...\n',i,nPerms);
+    end
+    % randomize behavior
+    beh = permBeh(:,i);
+    % get reading predictions from this run
+    score_combo.read_perm = readPerms.readperm_combo(:,i);
+    % compare predictions from each metric 
+    for j=1:nMetrics
+        for k=1:nMetrics
+            % get z test
+            [zPerm(j,k,i),pPerm(j,k,i)] = SteigersZTest(score_combo.(metrics{j}),score_combo.(metrics{k}),beh);
+        end
+    end
+end
+fprintf('Done!\n');
+% Save perm results
+save('SteigerZ_perm_2017-08-31.mat','zPerm','pPerm','metrics');
+
+%% Calculate z scores with True behavior
+load('AllMetricScores_2017-08-31.mat'); % score_combo
+[zTrue,pTrue, pTrue_perm] = deal(nan(nMetrics-1));
+for j=1:nMetrics-1
+    for k=1:nMetrics-1
+        % get z test
+        [zTrue(j,k),pTrue(j,k)] = SteigersZTest(score_combo.(metrics{j}),score_combo.(metrics{k}),fracCorrect);
+        if j==nMetrics-1 % reading: compare to read_perm permutation z's
+            pTrue_perm(j,k) = mean(zTrue(j,k)<squeeze(zPerm(nMetrics,k,:)));
+        elseif k==nMetrics-1 % reading: compare to read_perm permutation z's
+            pTrue_perm(j,k) = mean(zTrue(j,k)<squeeze(zPerm(j,nMetrics,:)));
+        else
+            pTrue_perm(j,k) = mean(zTrue(j,k)<squeeze(zPerm(j,k,:)));
+        end
+        fprintf('%s>%s: p_perm=%.3g\n',metrics{j},metrics{k},pTrue_perm(j,k));
+    end
+end
+
+% Plot comparisons to perm resutls
+% figure(624); clf;
+% for j=1:nMetrics
+%     for k=1:nMetrics
+%         iPlot = (j-1)*nMetrics+k;
+%         subplot(nMetrics,nMetrics,iPlot);
+%         hold on;
+%         hist(squeeze(zPerm(j,k,:)))
+%         PlotVerticalLines(zTrue(j,k),'r--');
+%         if j==1
+%             title(sprintf('%s\np=%.3g\np_{perm}=%.3g',metrics{k},pTrue(j,k),pTrue_perm(j,k)));
+%         else
+%             title(sprintf('p=%.3g\n p_{perm}=%.3g',pTrue(j,k),pTrue_perm(j,k)));
+%         end
+%         if k==1
+%             ylabel(metrics{j});
+%         end
+%     end
+% end
+
+% Plot p values as matrix
+figure(625); clf;
+imagesc(zTrue); hold on;
+[jStar,kStar] = find(pTrue_perm>0.95);
+plot(jStar,kStar,'c*');
+[jStar,kStar] = find(pTrue_perm<0.05);
+plot(jStar,kStar,'r*');
+set(gca,'xtick',1:nMetrics,'xticklabel',show_symbols(metrics),'ytick',1:nMetrics','yticklabel',show_symbols(metrics));
+colorbar;
+legend('row outperforms column','column outperforms row');
+title('Steiger Z scores comparing across metrics');

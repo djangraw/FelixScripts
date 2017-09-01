@@ -6,9 +6,14 @@ function [p,Rsq,mask_size,mask_overlap_size,isOkSubj,fracCorrect_perm,r,r_spearm
 % Updated 1/4/17 by DJ - added corr_method and mask_method inputs
 % Updated 2/22/17 by DJ - removed automatic FC Fisher normalization (atanh)
 % Updated 2/23/17 by DJ - added Spearman corr outputs
+% Updated 8/31/17 by DJ - allow already-permuted behavior as input
 
 if ~exist('nPerms','var') || isempty(nPerms)
-    nPerms = 1000;               % # of permutations
+    if size(fracCorrect,2)>1
+        nPerms = size(fracCorrect,2);
+    else
+        nPerms = 1000;               % # of permutations
+    end
 end
 if ~exist('corr_method','var') || isempty(corr_method)
     % corr_method = 'robustfit'; % precise
@@ -23,8 +28,6 @@ if ~exist('thresh','var') || isempty(thresh)
     thresh      = 0.01;               % p-value threshold for feature selection
 end
 
-% RANDOMIZE BEHAVIOR
-
 % FCmat = atanh(FC);
 % FCmat(isinf(FCmat)) = max(FCmat(~isinf(FCmat)));
 % isOkSubj = squeeze(sum(sum(isnan(FCmat),1),2)==0);
@@ -34,11 +37,24 @@ isOkSubj = squeeze(sum(sum(isnan(FC),1),2)==0);
 train_mats  = FC(:,:,isOkSubj);                   % training data (n_node x n_node x n_sub symmetrical connectivity matrices)
 % train_mats  = FCmat(:,:,isOkSubj);                   % training data (n_node x n_node x n_sub symmetrical connectivity matrices)
 % test_mats   = FCmat(:,:,isOkSubj);                   % testing data (This will be the same as train_mats when you're training and testing on the same data. If you are training on task matrices and testing on rest matrices, for example, train_mats and test_mats will be different.)
-fracCorrect_ok = fracCorrect(isOkSubj);                   % n_sub x 1 vector of behavior
+fracCorrect_ok = fracCorrect(isOkSubj,:);                   % n_sub x 1 vector of behavior
 
 n_sub       = size(train_mats,3); % number of subjects
 
 % Added by DJ
+% RANDOMIZE BEHAVIOR
+if numel(fracCorrect_ok)==n_sub
+    fprintf('Getting randomized behavior...\n');
+    permBeh = nan(n_sub,nPerms); % matrix of permuted behavior
+    for i=1:nPerms
+        permBeh(:,i) = fracCorrect_ok(randperm(n_sub)');
+    end
+elseif size(fracCorrect,2)==nPerms
+    fprintf('Using permuted behavior given as input...\n')
+    permBeh = fracCorrect;
+else
+    error('fracCorrect must be nSubjx1 or nSubjxnPerms!')
+end
 tic; % Time execution
 % [pos_mask_all, neg_mask_all] = deal(nan(n_node,n_node,n_sub,nPerms));
 % [pos_mask_all, neg_mask_all] = deal([]);
@@ -51,7 +67,8 @@ for iPerm = 1:nPerms
     fprintf('===Permutation %d/%d...\n',iPerm,nPerms);
     tic;
     % Randomize behavioral metric
-    behav = fracCorrect_ok(randperm(numel(fracCorrect_ok)));
+    behav = permBeh(:,iPerm);
+%     behav = fracCorrect_ok(randperm(numel(fracCorrect_ok)));
     
     % Get LOSO predictions
     [pred_pos, pred_neg, pred_glm,pos_mask,neg_mask] = ...

@@ -43,10 +43,7 @@ r_gradcpt = corr(fracCorrect*100,gradcpt_combo);
 
 %% Run permutations
 nPerms = 10000;
-% [r_edges,p_edges] = RunFcMaskMatchPermutations(FC_fisher,fracCorrect,attnNets.pos_overlap-attnNets.neg_overlap,nPerms,'edges');
-% [r_beh,p_beh] = RunFcMaskMatchPermutations(FC_fisher,fracCorrect,attnNets.pos_overlap-attnNets.neg_overlap,nPerms,'behavior');
-[r_edges,p_edges,~,~,~,r_edges_spearman,p_edges_spearman] = RunFcMaskMatchPermutations(FC_fisher,fracCorrect,attnNets.pos_overlap-attnNets.neg_overlap,nPerms,'edges');
-[r_beh,p_beh,~,~,~,r_beh_spearman,p_beh_spearman] = RunFcMaskMatchPermutations(FC_fisher,fracCorrect,attnNets.pos_overlap-attnNets.neg_overlap,nPerms,'behavior');
+[r_beh,p_beh,~,~,score_combo,r_beh_spearman,p_beh_spearman] = RunFcMaskMatchPermutations(FC_fisher,fracCorrect,attnNets.pos_overlap-attnNets.neg_overlap,nPerms,'behavior');
 
 % Save results
 % save GradCptPermutationTests_Fisher.mat r_edges r_beh p_edges p_beh

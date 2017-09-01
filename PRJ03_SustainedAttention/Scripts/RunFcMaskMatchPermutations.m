@@ -15,6 +15,7 @@ function [r,p,score_pos,score_neg,score_combo,r_spearman,p_spearman] = RunFcMask
 %
 % Created 2/2/17 by DJ.
 % Updated 2/23/17 by DJ - added Spearman coeffs
+% Updated 8/31/17 by DJ - allow already-permuted behavior as input
 
 nets_vec = VectorizeFc(nets);
 nEdges = length(nets_vec);
@@ -37,9 +38,22 @@ switch whichrand
     case 'behavior'
         % Calculate scores, then correlate with Randomizd behavior
         [score_pos,score_neg,score_combo] = GetFcMaskMatch(FC,nets>0,nets<0);
+        if numel(fracCorrect)==nSubj
+            fprintf('Getting randomized behavior...\n');
+            permBeh = nan(nSubj,nPerms);
+            for i=1:nPerms
+                permBeh(:,i) = fracCorrect(randperm(nSubj)');
+            end
+        elseif size(fracCorrect,2)==nPerms
+            fprintf('Using permuted behavior given as input...\n')
+            permBeh = fracCorrect;
+        else
+            error('fracCorrect must be nSubjx1 or nSubjxnPerms!')
+        end
         for i=1:nPerms
             fprintf('Perm %d/%d...\n',i,nPerms);
-            fracCorrect_this = fracCorrect(randperm(nSubj));            
+            fracCorrect_this = permBeh(:,i);
+%             fracCorrect_this = fracCorrect(randperm(nSubj));            
             [p(i),Rsq_adj(i)] = Run1tailedRegression(score_combo',fracCorrect_this(:),true);
             r(i) = corr(score_combo',fracCorrect_this(:));
             [r_spearman(i),p_spearman(i)] = corr(fracCorrect_this(:),score_combo','type','Spearman','tail','right');
