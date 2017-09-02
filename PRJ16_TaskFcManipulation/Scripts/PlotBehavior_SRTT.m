@@ -64,30 +64,35 @@ lm.plot();
 [r,p] = corr(behTable.WASI_PIQ,readScore,'rows','complete');
 title(sprintf('IQ vs. 1st PC of reading scores:\n r=%.3g, p=%.3g',r,p));
 
-%% Plot RT in first and last runs
+%% Plot RT in each run
 
 iR1uns = find(~cellfun('isempty',regexp(behTable.Properties.VariableNames,'RT_R1B[1-9]_Uns')));
 iR1str = find(~cellfun('isempty',regexp(behTable.Properties.VariableNames,'RT_R1B[1-9]_Str')));
+iR2uns = find(~cellfun('isempty',regexp(behTable.Properties.VariableNames,'RT_R2B[1-9]_Uns')));
+iR2str = find(~cellfun('isempty',regexp(behTable.Properties.VariableNames,'RT_R2B[1-9]_Str')));
 iR3uns = find(~cellfun('isempty',regexp(behTable.Properties.VariableNames,'RT_R3B[1-9]_Uns')));
 iR3str = find(~cellfun('isempty',regexp(behTable.Properties.VariableNames,'RT_R3B[1-9]_Str')));
 
 RT_R1_uns = mean(behTable{:,iR1uns},2);
 RT_R1_str = mean(behTable{:,iR1str},2);
+RT_R2_uns = mean(behTable{:,iR2uns},2);
+RT_R2_str = mean(behTable{:,iR2str},2);
 RT_R3_uns = mean(behTable{:,iR3uns},2);
 RT_R3_str = mean(behTable{:,iR3str},2);
-rtCatAll = [RT_R1_uns, RT_R1_str, RT_R3_uns, RT_R3_str];
+rtCatAll = [RT_R1_uns, RT_R1_str, RT_R2_uns, RT_R2_str, RT_R3_uns, RT_R3_str];
 
-rtCatMean = reshape(mean(rtCatAll(~any(isnan(rtCatAll),2),:))', [2 2]);
-rtCatStd = reshape(std(rtCatAll(~any(isnan(rtCatAll),2),:))',[2 2]);
+nSubj = sum(~any(isnan(rtCatAll),2));
+rtCatMean = reshape(mean(rtCatAll(~any(isnan(rtCatAll),2),:))', [2 3]);
+rtCatStd = reshape(std(rtCatAll(~any(isnan(rtCatAll),2),:))'/sqrt(nSubj),[2 3]);
 
 figure(64); clf; hold on;
 % hBar = bar(rtCatMean');
 % xBar = GetBarPositions(hBar);
 % errorbar(xBar',rtCatMean',rtCatStd,'k-');
-errorbar([1 2; 1 2]',rtCatMean',rtCatStd,'.-');
+errorbar([1 2 3; 1 2 3]',rtCatMean',rtCatStd','.-');
 legend('unstructured','structured')
-xlim([0.5 2.5]);
+xlim([0.5 3.5]);
 xlabel('run')
 ylabel('mean RT');
-set(gca,'xtick',[1 2],'xticklabel',{'First','Last'});
-
+set(gca,'xtick',[1 2 3]);
+title(sprintf('Mean +/- stderr RT across %d SRTT subjects',nSubj));

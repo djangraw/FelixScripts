@@ -11,7 +11,8 @@ cd([basedir '/Results']);
 load FC_StructUnstructBase_diff_q0000001_2017-08-16.mat
 %% Plot
 atlasFile='/Volumes/data/PRJ03_SustainedAttention/Results/Shen_2013_atlas/shen_1mm_268_parcellation+tlrc.HEAD';
-foo = (FC_struct_unstruct_thresh.*double(FC_struct_unstruct_thresh~=0));
+% foo = (FC_struct_unstruct_thresh.*double(FC_struct_unstruct_thresh~=0));
+foo = (FC_struct_base_thresh.*double(FC_struct_base_thresh>0));
 h = PlotAtlasFcIn3d_Conn(atlasFile,foo);
 
 %% Save

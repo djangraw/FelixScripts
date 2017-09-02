@@ -1285,6 +1285,9 @@ save('SteigerZ_perm_2017-08-31.mat','zPerm','pPerm','metrics');
 
 %% Calculate z scores with True behavior
 load('AllMetricScores_2017-08-31.mat'); % score_combo
+load('SteigerZ_perm_2017-08-31.mat'); % zPerm,pPerm,metrics
+load('ReadingFcAndFracCorrect_19subj_Fisher_2017-05-17.mat','fracCorrect');
+nMetrics = numel(metrics);
 [zTrue,pTrue, pTrue_perm] = deal(nan(nMetrics-1));
 for j=1:nMetrics-1
     for k=1:nMetrics-1
