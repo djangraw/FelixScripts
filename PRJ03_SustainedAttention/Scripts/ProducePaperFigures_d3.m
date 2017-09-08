@@ -725,25 +725,57 @@ end
 %% Supplementary Figure 2: comparing various metrics
 
 % metrics = {'-meanMotion','-blinkRate','saccadeRate','pupilDilation','-globalFc','activityScore','gradcpt_combo','dandmn_combo','read_combo','fracCorrect'};
-metrics = {'-meanMotion','-blinkRate','saccadeRate','visaud_combo','pupilDilation','-globalFc','dandmn_combo','gradcpt_combo','read_combo','fracCorrect'};
+metrics = {'-meanMotion','-blinkRate','saccadeRate','visaud_combo','pupilDilation','-globalFc','dandmn_combo','gradcpt_combo','activityScore','read_combo','fracCorrect'};
 nMets = numel(metrics);
-rVals = nan(nMets);
+[rVals, pVals,rLower,rUpper] = deal(nan(nMets));
 for i=1:nMets
     for j=1:nMets
-        rVals(i,j) = eval(sprintf('corr(%s(:),%s(:));',metrics{i},metrics{j}));
+        [rVals(i,j), pVals(i,j)] = eval(sprintf('corr(%s(:),%s(:),''tail'',''right'');',metrics{i},metrics{j}));
+        [~,~,rL,rU]= eval(sprintf('corrcoef(%s(:),%s(:));',metrics{i},metrics{j}));
+        rLower(i,j) = rL(1,2);
+        rUpper(i,j) = rU(1,2);
     end
 end
+pVals = pVals.*(diag(nan(1,nMets))+1); % set diagonal p's to nan
+qVals = mafdr(pVals(1:10,end),'bhfdr',true);
+iOs = find(pVals(1:10,end)<0.05 & qVals>=0.05);
+iStars = find(qVals<0.05);
+
+figure(733); clf; 
+set(gcf,'Position',[195   350   710   380]);
+hold on;
+bar(1:4,rVals(1:4,end),'g');
+bar(5:8,rVals(5:8,end),'m');
+bar(9:10,rVals(9:10,end),'facecolor',[1 1 1]*.5);
+errorbar(1:10,rVals(1:10,end),rLower(1:10,end)-rVals(1:10,end),rUpper(1:10,end)-rVals(1:10,end),'k.');
+plot(iOs,ones(size(iOs)),'ko');
+plot(iStars,ones(size(iStars)),'k*');
+set(gca,'xtick',1:nMets-1,'xticklabel',show_symbols(metrics(1:end-1)));
+xticklabel_rotate;
+ylabel('correlation with Reading Comp.');
+legend('Control Metrics','Sustained Attention Metrics','Reading Metric','95% CI','p<0.05','q<0.05','Location','SouthEast');
+
+%%
+qVals = reshape(mafdr(pVals(:),'bhfdr',true),size(pVals));
 figure(734); clf;
 set(gcf,'Position',[195  614 1567 620]);
-subplot(1,3,1);
+subplot(1,3,1); hold on;
 imagesc(rVals)
 colorbar
+xlim([0 nMets]+0.5);
+ylim([0 nMets]+0.5);
 set(gca,'clim',[0 1]);
 set(gca,'ytick',1:nMets,'yticklabel',show_symbols(metrics));
 set(gca,'xtick',1:nMets,'xticklabel',show_symbols(metrics));
 xticklabel_rotate
 title('correlation of metrics across subjects');
 axis square
+% Add stars
+[iOs,jOs] = find(pVals<0.05 & qVals>=0.05);
+plot(jOs,iOs,'ko');
+[iStars,jStars] = find(qVals<0.05);
+plot(jStars,iStars,'k*');
+set(gca,'ydir','reverse');
 
 % Project out one
 [rVals_proj, p_proj] = deal(nan(nMets-1));
@@ -754,13 +786,12 @@ for i=1:nMets-1
         b = eval(sprintf('normalise(%s(:)-mean(%s));',metrics{j},metrics{j}));
         proj = (a'*b)/(b'*b)*b;
         projout = a-proj;
-        [rVals_proj(i,j+1),p_proj(i,j+1)] = corr(projout(:),fracCorrect(:));
+        [rVals_proj(i,j+1),p_proj(i,j+1)] = corr(projout(:),fracCorrect(:),'tail','right');
     end
-    [rVals_proj(i,1),p_proj(i,1)] = eval(sprintf('corr(%s(:),fracCorrect(:));',metrics{i}));    
+    [rVals_proj(i,1),p_proj(i,1)] = eval(sprintf('corr(%s(:),fracCorrect(:),''tail'',''right'');',metrics{i}));    
 end
-p_proj = p_proj/2; % one-tailed
-% q_proj = reshape(mafdr(p_proj(:),'bhfdr',true),size(p_proj));
-subplot(1,3,2);
+q_proj = reshape(mafdr(p_proj(:),'bhfdr',true),size(p_proj));
+subplot(1,3,2); hold on;
 imagesc(rVals_proj)
 colorbar
 set(gca,'clim',[0 1]);
@@ -768,9 +799,17 @@ set(gca,'ytick',1:nMets-1,'yticklabel',show_symbols(metrics(1:end-1)));
 set(gca,'xtick',1:nMets,'xticklabel',show_symbols([{'none'}, metrics(1:end-1)]));
 xlabel('Metric X')
 ylabel('Metric Y');
+xlim([0 nMets]+0.5);
+ylim([0 nMets-1]+0.5);
 title(sprintf('correlation of metric Y with fracCorrect\n after regressing out metric X'));
 xticklabel_rotate
 axis square
+% Add stars
+[iOs,jOs] = find(p_proj<0.05 & q_proj>=0.05);
+plot(jOs,iOs,'ko');
+[iStars,jStars] = find(q_proj<0.05);
+plot(jStars,iStars,'k*');
+set(gca,'ydir','reverse');
 
 % convert to % remaining variance explained
 subplot(1,3,3);
@@ -792,7 +831,7 @@ ylabel('Metric Y');
 title(sprintf('%% variance of fracCorrect explained by\n metric Y after regressing out metric X'));
 xticklabel_rotate
 axis square
-
+colormap jet
 
 %% Text: Compare correlation values
 rVals = struct();
@@ -854,7 +893,7 @@ for i=1:nSubj
     end
 end
 fprintf('Done!\n');
-% Use to predict behavior
+%% Use to predict behavior
 thresh = 1;
 [activityScore,networks_activ,cp_activ,cr_activ] = RunLeaveOneOutRegressionWithActivity(meanInRoi_subj,fracCorrect,thresh);
 % Plot results
