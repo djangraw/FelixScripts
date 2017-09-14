@@ -1278,7 +1278,7 @@ nets = DanDmnNetwork;
 score_combo.dandmn = score_this(:);
 % Others
 otherMetrics = load('ControlMetrics_2017-08-31.mat');
-metrics = {'-meanMotion','meanPageDur','saccadeRate','-blinkRate','pupilDilation','-globalFc'};
+metrics = {'-meanMotion','-meanPageDur','saccadeRate','-blinkRate','pupilDilation','-globalFc'};
 for i=1:numel(metrics)
     if metrics{i}(1)=='-' % negative correlation expected
         thisMetric = metrics{i}(2:end);
