@@ -87,7 +87,7 @@ fprintf('Done!\n');
 qVals = reshape(mafdr(pVals_perm(:),'bhfdr',true),size(pVals_perm));
 figure(734); clf;
 set(gcf,'Position',[195  614 1567 620]);
-subplot(1,2,1); hold on;
+subplot(1,3,1); hold on;
 imagesc(rVals)
 colorbar
 xlabel('Metric')
@@ -101,11 +101,16 @@ set(gca,'ytick',1:nMets-1,'yticklabel',show_symbols(metrics_display(1:end-1)));
 xticklabel_rotate
 title(sprintf('correlation of metrics across subjects\n'));
 % Add stars
-[iOs,jOs] = find(pVals_perm<0.05 & qVals>=0.05);
+% [iOs,jOs] = find(pVals_perm<0.05 & qVals>=0.05);
+oThresh = 0.05;
+xThresh = 0.01;
+[iOs,jOs] = find(pVals_perm<oThresh & pVals_perm>=xThresh);
 plot(jOs,iOs,'ko');
-[iStars,jStars] = find(qVals<0.05);
+% [iStars,jStars] = find(qVals<0.05);
+[iStars,jStars] = find(pVals_perm<xThresh);
 plot(jStars,iStars,'k*');
 set(gca,'ydir','reverse');
+legend('p<0.05','p<0.01');
 
 %% Project out each one
 [rVals_proj, p_proj,rVals_projcum,p_projcum] = deal(nan(nMets-1));
@@ -187,7 +192,7 @@ fprintf('Done!\n');
 
 
 %% Plot results
-subplot(1,2,2); hold on;
+subplot(1,3,2); hold on;
 imagesc(rVals_proj)
 colorbar
 set(gca,'clim',[0 1]);
@@ -201,9 +206,11 @@ ylim([0 nMets-1]+0.5);
 title(sprintf('correlation of metric Y with fracCorrect\n after regressing out metric X'));
 xticklabel_rotate
 % Add stars
-[iOs,jOs] = find(p_proj<0.05 & q_proj>=0.05);
+% [iOs,jOs] = find(p_proj_perm<0.05 & q_proj>=0.05);
+[iOs,jOs] = find(p_proj_perm<oThresh & p_proj_perm>=xThresh);
 plot(jOs,iOs,'ko');
-[iStars,jStars] = find(q_proj<0.05);
+% [iStars,jStars] = find(q_proj<0.05);
+[iStars,jStars] = find(p_proj_perm<xThresh);
 plot(jStars,iStars,'k*');
 set(gca,'ydir','reverse');
 
@@ -228,9 +235,162 @@ set(gca,'ydir','reverse');
 % plot(jStars,iStars,'k*');
 % set(gca,'ydir','reverse');
 
+%% Do same with partial correlation
+
+[rVals_part, p_part] = deal(nan(nMets-1));
+for i=1:nMets-1
+    [rVals_part(i,1),p_part(i,1)] = corr(score_combo.(metrics{i})(:),fracCorrect(:),'tail','right');
+    for j=1:nMets-1
+        % project out
+        [rVals_part(i,j+1),p_part(i,j+1)] = partialcorr(score_combo.(metrics{i})(:),fracCorrect(:),score_combo.(metrics{j})(:),'tail','right');        
+    end
+end
+
+% Run Permutation Tests
+p_part_perm = p_part;
+fprintf('Getting distribution of r values over %d permutations...\n',nPerms);
+for i=1:nMets-1
+    for j=1:nMets-1
+        rVals_perm_fracCorrect = nan(1,nPerms);
+        for iPerm=1:nPerms
+            if i==iRead
+                a = readperm_combo(:,iPerm);
+            else
+                a = score_combo.(metrics{i})(:);
+            end
+            if j==iRead
+                b = readperm_combo(:,iPerm);
+            else
+                b = score_combo.(metrics{j})(:);
+            end
+            rVals_perm_fracCorrect(iPerm) = partialcorr(a,permBeh(:,iPerm),b);
+        end
+        % get new p value
+        p_part_perm(i,j+1) = mean(rVals_perm_fracCorrect>rVals_part(i,j+1));
+    end
+end
+
+% remove diagonals
+for i=1:nMets-1
+    p_part_perm(i,i+1) = nan;
+end
+
+% Correct for multiple comparisions
+q_part = reshape(mafdr(p_part_perm(:),'bhfdr',true),size(p_part_perm));
+fprintf('Done!\n');
+
+%% Plot
+subplot(1,3,3); hold on;
+imagesc(rVals_part)
+colorbar
+set(gca,'clim',[0 1]);
+set(gca,'ytick',1:nMets-1,'yticklabel',show_symbols(metrics_display(1:end-1)));
+set(gca,'xtick',1:nMets,'xticklabel',show_symbols([{'none'}, metrics_display(1:end-1)]));
+xlabel('Metric X')
+ylabel('Metric Y');
+axis equal
+xlim([0 nMets]+0.5);
+ylim([0 nMets-1]+0.5);
+title(sprintf('partial correlation of metric Y with fracCorrect\n after controlling for metric X'));
+xticklabel_rotate
+% Add stars
+% [iOs,jOs] = find(p_part_perm<0.05 & q_part>=0.05);
+[iOs,jOs] = find(p_part_perm<oThresh & p_part_perm>=xThresh);
+plot(jOs,iOs,'ko');
+% [iStars,jStars] = find(q_part<0.05);
+[iStars,jStars] = find(p_part_perm<xThresh);
+plot(jStars,iStars,'k*');
+set(gca,'ydir','reverse');
+
 %% Check whether CPM could use FC to predict motion
 thresh = 0.01;
 corr_method = 'robustfit';
 mask_method = 'one';
-[read_mot_pos, read_mot_neg, read_mot_combo] = RunLeave1outBehaviorRegression(FC_fisher,score_combo.minus_meanMotion,thresh,corr_method,mask_method);
+[read_mot_pos, read_mot_neg, read_mot_combo, read_mot_posMask_all,read_mot_negMask_all] = RunLeave1outBehaviorRegression(FC_fisher,-score_combo.minus_meanMotion,thresh,corr_method,mask_method);
 fprintf('Done!\n');
+[r_mot,p_mot] = corr(read_mot_combo,-score_combo.minus_meanMotion,'tail','right');
+fprintf('Predicting motion with CPM:\n');
+fprintf('r=%.3g, p=%.3g\n',r_mot,p_mot);
+
+%% Permutation tests
+nSubj = numel(subjects);
+permMot = nan(nSubj,nPerms);
+for i=1:nPerms
+    permMot(:,i) = -score_combo.minus_meanMotion(randperm(nSubj)');
+end
+% Use LOO to predict motion
+r_mot_perm = nan(1,nPerms);
+tic;
+fprintf('===Running %d permutations...\n',nPerms);
+parfor iPerm=1:nPerms
+    fprintf('perm %d/%d (t=%s)...\n',iPerm,nPerms,datestr(now,'hh:mm'));
+    [~,~,read_mot_combo_perm] = RunLeave1outBehaviorRegression(FC_fisher,permMot(:,iPerm),thresh,'corr',mask_method);
+    r_mot_perm(iPerm) = corr(read_mot_combo_perm,permMot(:,iPerm),'tail','right');
+end
+fprintf('===Done! Took %.1f seconds.\n',toc);
+p_mot_perm = mean(r_mot_perm>r_mot);
+fprintf('Predicting motion with CPM:\n');
+fprintf('r=%.3g, p_perm=%.3g\n',r_mot,p_mot_perm);
+save('MotionPermutations_2017-09-14.mat','permMot','r_mot_perm','r_mot','p_mot_perm');
+
+%% Get masks predictive of motion
+read_mot_posMask = all(read_mot_posMask_all,3);
+read_mot_negMask = all(read_mot_negMask_all,3);
+nPos = sum(VectorizeFc(read_mot_posMask));
+nNeg = sum(VectorizeFc(read_mot_negMask));
+fprintf('%d pos edges, %d neg edges\n',nPos,nNeg);
+% Display as matrix
+figure(111); clf;
+subplot(1,2,1);
+PlotFcMatrix(read_mot_posMask-read_mot_negMask,[-1 1]*7,shenAtlas,shenLabels_hem,true,shenColors_hem,'sum');
+subplot(1,2,2);
+PlotFcMatrix(read_mot_posMask-read_mot_negMask,[-1 1],shenAtlas,shenLabels_hem,true,shenColors_hem);
+% Save NegBothPos AFNI brik
+isInNeg = any(read_mot_posMask);
+isInPos = any(read_mot_negMask);
+GUI_3View(MapColorsOntoAtlas(shenAtlas,cat(2,isInPos,ones(size(isInPos)),isInNeg)));
+BrickToWrite = MapValuesOntoAtlas(shenAtlas,(isInNeg&~isInPos) + 2*(isInNeg&isInPos) + 3*(~isInNeg&isInPos));
+Opt = struct('Prefix',sprintf('MotionCPM_negbothpos+tlrc'));
+WriteBrik(BrickToWrite,shenInfo,Opt);
+
+%% Get any edges predictive of motion, regress them out
+[read_mot_all_pos, read_mot_all_neg, read_mot_all_combo, read_mot_all_pos_mask,read_mot_all_neg_mask] = ...
+    RunTrainingBehaviorRegression(FC_fisher,-score_combo.minus_meanMotion,thresh,corr_method,mask_method);
+
+%%
+nPos = sum(VectorizeFc(read_mot_all_pos_mask));
+nNeg = sum(VectorizeFc(read_mot_all_neg_mask));
+fprintf('%d pos edges, %d neg edges\n',nPos,nNeg);
+
+% exclude these edges 
+isMotionEdge = VectorizeFc(read_mot_all_pos_mask | read_mot_all_neg_mask)~=0;
+FC_temp = VectorizeFc(FC_fisher);
+FC_temp(isMotionEdge,:) = 0;
+FC_fisher_noMotionEdges = UnvectorizeFc(FC_temp,0,true);
+
+% look at gradCPT performance without these edges
+[gradcpt_nomot_pos,gradcpt_nomot_neg,gradcpt_nomot_combo] = GetFcMaskMatch(FC_fisher_noMotionEdges,attnNets.pos_overlap,attnNets.neg_overlap);
+[gradcpt_nomot_pos,gradcpt_nomot_neg,gradcpt_nomot_combo] = deal(gradcpt_nomot_pos',gradcpt_nomot_neg',gradcpt_nomot_combo');
+[r,p] = corr(gradcpt_nomot_combo,fracCorrect,'tail','right');
+fprintf('Predicting reading comp with GradCPT, no motion edges:\n');
+fprintf('r=%.3g, p=%.3g\n',r,p);
+
+% train new reading networks
+[read_nomot_pos, read_nomot_neg, read_nomot_combo, read_nomot_posMask_all,read_nomot_negMask_all] = RunLeave1outBehaviorRegression(FC_fisher_noMotionEdges,fracCorrect,thresh,corr_method,mask_method);
+fprintf('Done!\n');
+[r,p] = corr(read_nomot_combo,fracCorrect,'tail','right');
+fprintf('Predicting reading comp with CPM, no motion edges:\n');
+fprintf('r=%.3g, p=%.3g\n',r,p);
+
+%% Print results again
+fprintf('===Excluding %d edges correlated (p<0.05) with subject motion. (%d pos edges, %d neg edges)\n',nPos+nNeg,nPos,nNeg);
+
+[r,p] = corr(gradcpt_nomot_combo,fracCorrect,'tail','right');
+fprintf('Predicting reading comp with GradCPT, no motion edges:\n');
+fprintf('r=%.3g, p=%.3g\n',r,p);
+
+[r,p] = corr(read_nomot_combo,fracCorrect,'tail','right');
+fprintf('Predicting reading comp with CPM, no motion edges:\n');
+fprintf('r=%.3g, p=%.3g\n',r,p);
+
+
