@@ -393,4 +393,4 @@ fprintf('r=%.3g, p=%.3g\n',r,p);
 fprintf('Predicting reading comp with CPM, no motion edges:\n');
 fprintf('r=%.3g, p=%.3g\n',r,p);
 
-
+%% Permutation tests for this!

@@ -1217,7 +1217,7 @@ GetVisualsMedianAndRange(); % must be run on local machine!
 vars = GetDistractionVariables;
 fprintf('=== all subjects (n=%d):\n',numel(vars.subjects));
 GetMedianAndRangeOfBehavior(vars.subjects);
-fprintf('=== final cohort (n=%d):\n',numel(vars.oksubjects));
+fprintf('=== final cohort (n=%d):\n',numel(vars.okSubjects));
 GetMedianAndRangeOfBehavior(vars.okSubjects);
 
 %% Use permutation test results to compare predictive abilities
