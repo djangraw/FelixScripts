@@ -1220,6 +1220,9 @@ GetMedianAndRangeOfBehavior(vars.subjects);
 fprintf('=== final cohort (n=%d):\n',numel(vars.okSubjects));
 GetMedianAndRangeOfBehavior(vars.okSubjects);
 
+%% Get range & median of MEICA rejections
+GetMeicaRejectedComponentsAndVariance;
+
 %% Use permutation test results to compare predictive abilities
 load('ReadingFcAndFracCorrect_19subj_Fisher_2017-05-17.mat');
 % set up permutation tests
