@@ -1223,6 +1223,9 @@ GetMedianAndRangeOfBehavior(vars.okSubjects);
 %% Get range & median of MEICA rejections
 GetMeicaRejectedComponentsAndVariance;
 
+%% Check Memory Networks
+GetOverlapOfNetworkWithNeurosynthMemoryTopic;
+
 %% Use permutation test results to compare predictive abilities
 load('ReadingFcAndFracCorrect_19subj_Fisher_2017-05-17.mat');
 % set up permutation tests
