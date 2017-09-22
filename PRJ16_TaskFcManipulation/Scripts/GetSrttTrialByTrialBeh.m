@@ -1,4 +1,4 @@
-function [rawAcc, rawRt] = GetSrttTrialByTrialBeh(trialBehTable)
+function [rawAcc, rawRt, pattern] = GetSrttTrialByTrialBeh(trialBehTable)
 
 % [rawAcc,rawRt] = GetSrttTrialByTrialBeh(trialBehTable)
 %
@@ -7,7 +7,7 @@ function [rawAcc, rawRt] = GetSrttTrialByTrialBeh(trialBehTable)
 % Set up
 subjects = unique(trialBehTable.Subject);
 nSubj = numel(subjects);
-[rawAcc, rawRt] = deal(cell(1,nSubj));
+[rawAcc, rawRt, pattern] = deal(cell(1,nSubj));
 for i=1:nSubj
     isThisSubj = trialBehTable.Subject == subjects(i);
     % get behavior for this subject
@@ -18,6 +18,7 @@ for i=1:nSubj
     % Add to cells
     rawAcc{i} = (behThis.Target_ACC==1);
     rawRt{i} = rtThis;
+    pattern{i} = behThis.TargetNum;
 end
 
 

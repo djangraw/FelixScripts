@@ -2,9 +2,10 @@ behThis=trialBehTable(trialBehTable.Subject==27,:);
 iCondChange = find(diff(behThis.Cond)~=0)+0.5;
 iRun = (312:312:935)+0.5;
 
-[rawAcc, rawRt] = GetSrttTrialByTrialBeh(trialBehTable);
+[rawAcc, rawRt, rawPattern] = GetSrttTrialByTrialBeh(trialBehTable);
 rawPc = cat(2,rawAcc{isOkSubj})*100; % weird kluge
 rawRt = cat(2,rawRt{isOkSubj});
+rawPattern = cat(2,rawPattern{isOkSubj});
 figure(523); clf;
 
 subplot(2,1,1);
@@ -140,3 +141,6 @@ ylabel('# subjects');
 legend('Correct trials','Error trials');
 title('Reaction Time Difference');
 PlotVerticalLines(0,'k');
+
+%% Plot mean/std for each run & block
+
