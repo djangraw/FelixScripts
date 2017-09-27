@@ -1,6 +1,6 @@
-function [pd_all,pd_runs] = GetSubjectPupilDilation(subjects,delay)
+function [pd_all,pd_runs,ps_all,ps_all_base] = GetSubjectPupilDilation(subjects,delay)
 
-% [pd_all,pd_runs] = GetSubjectPupilDilation(subjects,delay)
+% [pd_all,pd_runs,ps_all,ps_all_base] = GetSubjectPupilDilation(subjects,delay)
 %
 % INPUTS:
 % -subjects is an n-element vector of subject numbers.
@@ -22,12 +22,12 @@ end
 
 nSubj = numel(subjects);
 [pd_runs] = deal(cell(1,nSubj));
-[pd_all] = deal(nan(1,nSubj));
+[pd_all, ps_all, ps_all_base] = deal(nan(1,nSubj));
 
 for i=1:nSubj
     fprintf('Loading subject %d/%d...\n',i,nSubj);
     beh = load(sprintf('/data/jangrawdc/PRJ03_SustainedAttention/Results/SBJ%02d/Distraction-SBJ%02d-Behavior.mat',subjects(i),subjects(i)));
-    [pd_runs{i}] = deal(nan(1,numel(beh.data)));
+    [pd_runs{i},ps_runs,ps_base_runs] = deal(nan(1,numel(beh.data)));
     for j=1:numel(beh.data)
         PD = sqrt(sum(beh.data(j).events.samples.PD.^2,2));
         t = beh.data(j).events.samples.time;
@@ -38,7 +38,11 @@ for i=1:nSubj
         end
         isInRun = t>(tPageStart(1)+delay) & t<(tPageEnd(end)+delay);
         pd_runs{i}(j) = nanmean(PD(isInPage & isInRun)) - nanmean(PD(~isInPage & isInRun));
+        ps_runs(j) = nanmean(PD(isInPage & isInRun));
+        ps_base_runs(j) = nanmean(PD(~isInPage & isInRun));
     end
     pd_all(i) = mean(pd_runs{i});
+    ps_all(i) = mean(ps_runs);
+    ps_all_base(i) = mean(ps_base_runs);
 end
 fprintf('Done!\n');

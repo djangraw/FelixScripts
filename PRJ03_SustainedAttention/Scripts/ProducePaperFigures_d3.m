@@ -558,9 +558,10 @@ title(sprintf('Page Duration\nr = %.3g, p = %.3g',r,p));
 % saccade/blink rate
 onlyOkSamples = true;
 [saccadeRate,blinkRate,sacRate_runs] = GetSaccadeRate(subjects, onlyOkSamples);
-% pupil metrics
-delay = 0;
+%% pupil metrics
+delay = 0;%1;
 [pupilDilation,pd_runs] = GetSubjectPupilDilation(subjects,delay);
+% [~,~,pupilDilation] = GetSubjectPupilDilation(subjects,delay);
 
 % Plot
 figure(362);
@@ -585,7 +586,7 @@ title(sprintf('blink rate vs. reading comprehension\nr=%.3g, p=%.3g',r,p));
 axis square
 
 [r,p] = corr(fracCorrect,pupilDilation');
-fprintf('fracCorrect vs. # blinks/sec: r=%.3g, p=%.3g\n',r,p);
+fprintf('fracCorrect vs. mean pupil dilation: r=%.3g, p=%.3g\n',r,p);
 subplot(2,3,5);
 lm = fitlm(fracCorrect*100,pupilDilation,'Linear');
 lm.plot;
