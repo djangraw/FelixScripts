@@ -1,18 +1,24 @@
-function y = pvoc(x, r, n)
+function y = pvoc(x, r, n, hop)
 % y = pvoc(x, r, n)  Time-scale a signal to r times faster with phase vocoder
 %      x is an input sound. n is the FFT size, defaults to 1024.  
-%      Calculate the 25%-overlapped STFT, squeeze it by a factor of r, 
-%      inverse spegram.
+%      Calculate the STFT (with step size hop, default = 25%-overlapped), 
+%      squeeze it by a factor of r, take inverse spegram.
+%
 % 2000-12-05, 2002-02-13 dpwe@ee.columbia.edu.  Uses pvsample, stft, istft
+% Downloaded 9/28/17 by DJ.
+% Updated 9/29/17 by DJ - added optional hop input.
+%
 % $Header: /home/empire6/dpwe/public_html/resources/matlab/pvoc/RCS/pvoc.m,v 1.3 2011/02/08 21:08:39 dpwe Exp $
 
 if nargin < 3
   n = 1024;
 end
+if nargin < 4
+    % With hann windowing on both input and output, 
+    % we need 25% window overlap for smooth reconstruction
+    hop = n/4;
+end
 
-% With hann windowing on both input and output, 
-% we need 25% window overlap for smooth reconstruction
-hop = n/4;
 % Effect of hanns at both ends is a cumulated cos^2 window (for
 % r = 1 anyway); need to scale magnitudes by 2/3 for
 % identity input/output

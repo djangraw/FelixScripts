@@ -17,6 +17,6 @@ rawBrick2d = reshape(rawBrick,[nVox,nT]);
 
 %% Plot along with event times
 Fs_play = nVox/TR; % for real-time playback
-dur = 30; % time to play
+dur = 10; % time to play
 figure(511); clf;
 PlaySoundWithBar(rawBrick2d,Fs_play,dur)
