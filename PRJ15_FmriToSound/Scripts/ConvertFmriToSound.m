@@ -14,7 +14,7 @@ soundFreqRange = [230 1800]; % speed up 10000x
 
 %% Set up
 % Declare options
-opt.window = 32;
+opt.window = 256;
 opt.nOverlap = opt.window-1;
 opt.fFft = linspace(fmriFreqRange(1),fmriFreqRange(2),20);
 opt.Fs = 1/TR;
@@ -52,25 +52,25 @@ PlaySoundWithBar(fmri2D,Fs_play,dur);
 
 %% Method 3: spectrogram
 % Get spectrogram and power density spectrum
-fprintf('Taking spectrogram of global signal...\n');
-tic;
-[S,F,T,P,Fc,Tc] = spectrogram(globalSig,opt.window,opt.nOverlap,opt.fFft,opt.Fs);
-fprintf('Done! Took %.1f seconds.\n',toc);
-
-% Convert to sound
-F_sound = interp1(fmriFreqRange,soundFreqRange,F);
-T_sound = T; % speed up?
-
-speedFactor = mean(soundFreqRange)/mean(fmriFreqRange); % how much faster is sound than fmri
-iopt.window = round(opt.window*speedFactor);
-iopt.nOverlap = round(opt.nOverlap*speedFactor);
-iopt.fFft = opt.fFft*10;
-iopt.Fs = opt.Fs*speedFactor;
-% Convert spectrogram to sound
-[x_istft, t_istft] = istft(S, iopt.window, iopt.window-iopt.nOverlap, numel(T_sound), iopt.Fs);
-
-% Play sound
-PlaySoundWithBar(x_istft,iopt.Fs,dur);
+% fprintf('Taking spectrogram of global signal...\n');
+% tic;
+% [S,F,T,P,Fc,Tc] = spectrogram(globalSig,opt.window,opt.nOverlap,opt.fFft,opt.Fs);
+% fprintf('Done! Took %.1f seconds.\n',toc);
+% 
+% % Convert to sound
+% F_sound = interp1(fmriFreqRange,soundFreqRange,F);
+% T_sound = T; % speed up?
+% 
+% speedFactor = mean(soundFreqRange)/mean(fmriFreqRange); % how much faster is sound than fmri
+% iopt.window = round(opt.window*speedFactor);
+% iopt.nOverlap = round(opt.nOverlap*speedFactor);
+% iopt.fFft = opt.fFft*10;
+% iopt.Fs = opt.Fs*speedFactor;
+% % Convert spectrogram to sound
+% [x_istft, t_istft] = istft(S, iopt.window, iopt.window-iopt.nOverlap, numel(T_sound), iopt.Fs);
+% 
+% % Play sound
+% PlaySoundWithBar(x_istft,iopt.Fs,dur);
 
 %% Method 4: Phase vocoder
 
@@ -78,14 +78,14 @@ PlaySoundWithBar(x_istft,iopt.Fs,dur);
 % 1024 samples is about 60 ms at 16kHz, a good window 
 speedFactor = 0.0001;
 dur = 5;
-winSize = 256;
+winSize = opt.window;
 hopSize = 1;
 globalSignal_shifted=pvoc(globalSig,speedFactor,winSize,hopSize); 
 Fs_shifted = opt.Fs/speedFactor;
 
 % Compare original and resynthesis 
 % sound(globalSig(1:(dur/TR)),opt.Fs); % Fs Too low... upsample first?
-sound(globalSignal_shifted(1:round(dur/TR/speedFactor)),Fs_shifted);
+% sound(globalSignal_shifted(1:round(dur/TR/speedFactor)),Fs_shifted);
 
 %% Plot results
 tSig = (1:length(globalSig))/opt.Fs;
@@ -97,8 +97,8 @@ wlTR=120;
 wsTR=0;
 [err, errMsg, winInfo] = func_CSD_GetWinInfo_Experiment01(wlTR, wsTR);
 cla;hold on;
-for i=1:numel(winInfo.onsetTRs);
-    plot([winInfo.onsetTRs(i), winInfo.offsetTRs(i)]*TR,[1 1]*30,'-','color',winInfo.color(i,:),'linewidth',2);
+for i=1:numel(winInfo.onsetTRs)
+    plot([winInfo.onsetTRs(i), winInfo.offsetTRs(i)]*TR,[1 1]*5,'-','color',winInfo.color(i,:),'linewidth',2);
 end
 % plot data and play it as sound
 PlaySoundWithBar(globalSignal_shifted,tSig_shifted);

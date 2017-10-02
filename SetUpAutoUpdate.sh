@@ -21,8 +21,14 @@
 # 'crontab' file. Follow the instructions that this script outputs
 # to set up your nightly Auto-Update cron job.
 #
+# If you run MATLAB after the git repo is created, MATLAB may try to index
+# all your files and take forever to do it. To stop this from happening,
+# you can disable Source Control in the Preferences menu
+# (MATLAB>General>SourceControl pane).
+#
 # Created 8/29/17 by DJ.
 # Updated 8/30/17 by DJ - completed cron part and added comments.
+# Updated 10/2/17 by DJ - added note about MATLAB hanging.
 
 # Declare constants
 dirToUpdate="/data/$USER"
