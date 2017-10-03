@@ -90,7 +90,7 @@ Fs_shifted = opt.Fs/speedFactor;
 %% Plot results
 tSig = (1:length(globalSig))/opt.Fs;
 tSig_shifted = (1:length(globalSignal_shifted))/Fs_shifted + winSize/2*TR;
-figure(512); clf;
+figure(513); clf;
 % plot events
 % For Javier's data
 wlTR=120;
@@ -98,7 +98,23 @@ wsTR=0;
 [err, errMsg, winInfo] = func_CSD_GetWinInfo_Experiment01(wlTR, wsTR);
 cla;hold on;
 for i=1:numel(winInfo.onsetTRs)
-    plot([winInfo.onsetTRs(i), winInfo.offsetTRs(i)]*TR,[1 1]*5,'-','color',winInfo.color(i,:),'linewidth',2);
+    plot([winInfo.onsetTRs(i), winInfo.offsetTRs(i)]*TR,[1 1]*max(globalSignal_shifted)*1.1,'-','color',winInfo.color(i,:),'linewidth',2);
 end
 % plot data and play it as sound
 PlaySoundWithBar(globalSignal_shifted,tSig_shifted);
+
+%% Same for win32
+% sound32 = load('SBJ06_CTask001_globalShifted_win32.mat');
+tSig_shifted = (1:length(sound32.globalSignal_shifted))/sound32.Fs_shifted + sound32.winSize/2*TR;
+figure(513); clf;
+% plot events
+% For Javier's data
+wlTR=120;
+wsTR=0;
+[err, errMsg, winInfo] = func_CSD_GetWinInfo_Experiment01(wlTR, wsTR);
+cla;hold on;
+for i=1:numel(winInfo.onsetTRs)
+    plot([winInfo.onsetTRs(i), winInfo.offsetTRs(i)]*TR,[1 1]*max(sound32.globalSignal_shifted)*1.1,'-','color',winInfo.color(i,:),'linewidth',2);
+end
+% plot data and play it as sound
+PlaySoundWithBar(sound32.globalSignal_shifted,tSig_shifted);

@@ -12,7 +12,7 @@ for i=1:numel(fullTs)
     subjects{i} = fullTs{i}(3:end);
 end
 % Get behavior
-filename = 'SRTT-Behavior_A182SRTTdata_25Jan2017.xlsx';
+filename = '/data/jangrawdc/PRJ16_TaskFcManipulation/Behavior/SRTT-Behavior_A182SRTTdata_25Jan2017.xlsx';
 behTable = ReadSrttBehXlsFile(filename);
 
 %% Select matching rows

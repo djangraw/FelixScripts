@@ -1,9 +1,20 @@
-function [r_train,p_train,r_test,p_test,pos_mask_all,neg_mask_all] = RunCpmWithTrainTestSplit(FC,behavior)
+function [r_train,p_train,r_test,p_test,pos_mask_all,neg_mask_all] = RunCpmWithTrainTestSplit(FC,behavior,corr_method,mask_method,thresh)
 
-% [r_train,p_train,r_test,p_test,pos_mask_all,neg_mask_all] = RunCpmWithTrainTestSplit(FC,behavior)
+% [r_train,p_train,r_test,p_test,pos_mask_all,neg_mask_all] = RunCpmWithTrainTestSplit(FC,behavior,corr_method,mask_method,thresh)
 %
 % Created 9/21/17 by DJ.
+% Updated 10/2/17 by DJ - added optional inputs corr_method, mask_method, thresh.
 
+% Declare defaults
+if ~exist('corr_method','var') || isempty(corr_method)
+    corr_method = 'robustfit'; %'corr'; %
+end
+if ~exist('mask_method','var') || isempty(mask_method)
+    mask_method = 'one'; 
+end
+if ~exist('thresh','var') || isempty(thresh)
+    thresh = 0.01; 
+end
 
 % split into training and testing sets
 nSubj = size(behavior,1);
@@ -14,9 +25,6 @@ fprintf('=== TRAINING...\n')
 % Run LOO on training set to get network
 FC_train = FC(:,:,isTrain);
 behavior_train = behavior(isTrain);
-thresh = 0.01;
-corr_method = 'robustfit'; %'corr'; %
-mask_method = 'one';
 [pred_pos, pred_neg, pred_combo,pos_mask_all,neg_mask_all] = RunLeave1outBehaviorRegression(FC_train,behavior_train,thresh,corr_method,mask_method);
 [r_train,p_train] = corr(pred_combo,behavior_train,'tail','right');
 fprintf('TRAINING LOO: r=%.3g, p=%.3g\n',r_train,p_train);
