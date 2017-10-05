@@ -105,7 +105,7 @@ PlaySoundWithBar(globalSignal_shifted,tSig_shifted);
 
 %% Same for win32
 % sound32 = load('SBJ06_CTask001_globalShifted_win32.mat');
-tSig_shifted = (1:length(sound32.globalSignal_shifted))/sound32.Fs_shifted + sound32.winSize/2*TR;
+sound32.tSig_shifted = (1:length(sound32.globalSignal_shifted))/sound32.Fs_shifted + sound32.winSize/2*TR;
 figure(513); clf;
 % plot events
 % For Javier's data
@@ -117,4 +117,19 @@ for i=1:numel(winInfo.onsetTRs)
     plot([winInfo.onsetTRs(i), winInfo.offsetTRs(i)]*TR,[1 1]*max(sound32.globalSignal_shifted)*1.1,'-','color',winInfo.color(i,:),'linewidth',2);
 end
 % plot data and play it as sound
-PlaySoundWithBar(sound32.globalSignal_shifted,tSig_shifted);
+PlaySoundWithBar(sound32.globalSignal_shifted,sound32.tSig_shifted);
+
+%% Save sounds as wav files
+dur = winInfo.durInTR*TR; % seconds
+tWin = (winInfo.onsetTRs-1)*TR;
+nWin = numel(tWin);
+tic;
+for i=1:nWin
+    fprintf('Saving window %d/%d...\n',i,nWin);
+    isInWin = tSig_shifted>tWin(i) & tSig_shifted<(tWin(i)+dur);
+    filename = sprintf('SBJ06_CTask001_globalShifted_win%d_t%04.1f.wav',winSize,tWin(i));
+    if any(isInWin)
+        audiowrite(filename,globalSignal_shifted(isInWin),round(Fs_shifted));
+    end
+end
+fprintf('Done! Took %.1f seconds.\n',toc);
