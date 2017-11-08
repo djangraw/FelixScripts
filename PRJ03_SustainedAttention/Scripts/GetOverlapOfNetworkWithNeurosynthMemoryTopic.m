@@ -43,7 +43,7 @@ pOverlapNeg = 1-hygecdf(olap_neg, nNodes, sum(isMemNode), sum(isReadingNegNode))
 fprintf('hygecdf: pPos = %.3g, pNeg = %.3g\n',pOverlapPos,pOverlapNeg);
 
 %% Write brik of memory network
-cd /gpfs/gsfs5/users/jangrawdc/PRJ03_SustainedAttention/Results
+cd /data/jangrawdc/PRJ03_SustainedAttention/Results
 BrickToWrite = MapValuesOntoAtlas(shenAtlas,isMemNode);
 Opt = struct('Prefix',sprintf('Memory_NeuroSynth_isPos+tlrc'));
 fprintf('Writing AFNI Brik %s...\n',Opt.Prefix);

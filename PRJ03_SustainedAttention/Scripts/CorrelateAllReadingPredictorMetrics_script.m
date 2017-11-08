@@ -8,9 +8,24 @@ load('ReadingFcAndFracCorrect_19subj_Fisher_2017-05-17.mat'); %fracCorrect
 load('AllMetricScores_2017-08-31.mat') %score_combo
 load('BehaviorPermutations_2017-08-30.mat') %permBeh
 load('ReadingPermPredictions_2017-08-30','readperm_combo');
+% Add DMN FC
+load('DanDmnNetwork_match15.mat');
+[dandmn_pos,dandmn_neg,dandmn_combo] = GetFcMaskMatch(FC_fisher,DanDmnNetwork>0,DanDmnNetwork<0);
+[dandmn_pos,dandmn_neg,dandmn_combo] = deal(dandmn_pos',dandmn_neg',dandmn_combo');
+score_combo.minus_dmn = -dandmn_neg; % only DMN part
+score_combo.dan = dandmn_pos; % only DAN part
+% Add Activation
+load('ReadingMeanActivityScores.mat','activityScore');
+score_combo.readingActiv = activityScore;
 % Tack fracCorrect onto the end of our table
 score_combo.fracCorrect = fracCorrect;
-metrics = {'minus_meanMotion','minus_meanPageDur','saccadeRate','minus_blinkRate','minus_globalFc','pupilDilation','gradcpt','reading','fracCorrect'};
+% metrics =
+% {'minus_meanMotion','minus_meanPageDur','saccadeRate','minus_blinkRate','minus_globalFc','pupilDilation','gradcpt','reading','fracCorrect'}; % For NeuroImage Paper Figure S5
+metrics = {'minus_meanMotion','minus_meanPageDur','minus_blinkRate','saccadeRate','pupilDilation','minus_globalFc','minus_dmn','gradcpt','visaud','readingActiv','reading','fracCorrect'}; % For SfN2017 Talk
+iBeh=1:5; iRdg=6:11;
+% metrics = {'minus_meanMotion','pupilDilation','minus_globalFc','minus_dmn','gradcpt','readingActiv','reading','fracCorrect'}; % Pared-down version for SfN2017 Talk
+% iBeh=1:2; iRdg=3:7;
+
 nMets = numel(metrics);
 metrics_display = metrics;
 for i=1:nMets
@@ -64,23 +79,23 @@ pVals_perm = pVals_perm.*(diag(nan(1,nMets))+1); % set diagonal p's to nan
 %% Plot correlations with fracCorrect as bar graph
 % Evaluate significance
 qVals = mafdr(pVals_perm(1:nMets-1,end),'bhfdr',true);
-iOs = find(pVals_perm(1:nMets-1,end)<0.05 & qVals>=0.05);
-iStars = find(qVals<0.05);
+iOs = find(pVals_perm(1:nMets-1,end)<0.05 & pVals_perm(1:nMets-1,end)>=0.01);
+iStars = find(pVals_perm(1:nMets-1,end)<0.01);
 % Plot
 fprintf('Plotting results...\n')
 figure(733); clf; 
 set(gcf,'Position',[195   350   710   380]);
 hold on;
-bar(1:4,rVals(1:4,end),'g');
-bar(5:6,rVals(5:6,end),'m');
-bar(7:8,rVals(7:8,end),'facecolor',[1 1 1]*.5);
+bar(iBeh,rVals(iBeh,end),'facecolor',[1 1 1]*.5);
+% bar(iEng,rVals(iEng,end),'m');
+bar(iRdg,rVals(iRdg,end),'m');
 errorbar(1:nMets-1,rVals(1:nMets-1,end),rLower(1:nMets-1,end)-rVals(1:nMets-1,end),rUpper(1:nMets-1,end)-rVals(1:nMets-1,end),'k.');
 plot(iOs,ones(size(iOs)),'ko');
 plot(iStars,ones(size(iStars)),'k*');
 set(gca,'xtick',1:nMets-1,'xticklabel',show_symbols(metrics_display(1:end-1)));
 xticklabel_rotate;
 ylabel('correlation with Reading Comp.');
-legend('Behavior Metrics','Arousal Metrics','FC Network Metrics','95% CI','p<0.05','q<0.05','Location','SouthEast');
+legend('Behavioral Metrics','fMRI Metrics','95% CI','p<0.05','p<0.01','Location','SouthEast');
 fprintf('Done!\n');
 
 %% Plot results as matrices
@@ -95,7 +110,7 @@ ylabel('Metric');
 axis equal
 xlim([0 nMets]+0.5);
 ylim([0 nMets-1]+0.5);
-set(gca,'clim',[0 1]);
+set(gca,'clim',[-1 1]);
 set(gca,'xtick',1:nMets,'xticklabel',show_symbols(metrics_display));
 set(gca,'ytick',1:nMets-1,'yticklabel',show_symbols(metrics_display(1:end-1)));
 xticklabel_rotate
@@ -111,147 +126,33 @@ plot(jOs,iOs,'ko');
 plot(jStars,iStars,'k*');
 set(gca,'ydir','reverse');
 legend('p<0.05','p<0.01');
+% Make boxes
+rectangle('Position',[iBeh(1)-.5, iBeh(1)-.5, numel(iBeh), numel(iBeh)], 'linewidth',2,'edgecolor','c');
+% rectangle('Position',[iEng(1)-.5, iEng(1)-.5, numel(iEng), numel(iEng)], 'linewidth',2,'edgecolor','m');
+rectangle('Position',[iRdg(1)-.5, iRdg(1)-.5, numel(iRdg), numel(iRdg)], 'linewidth',2,'edgecolor',[1 1 1]*.5);
 
-%% Project out each one
-[rVals_proj, p_proj,rVals_projcum,p_projcum] = deal(nan(nMets-1));
-fprintf('Projecting out each metric...\n');
-for i=1:nMets-1
-    a = normalise(score_combo.(metrics{i})(:)-mean(score_combo.(metrics{i})));
-%     projout_cum = a;
-    for j=1:nMets-1
-        % project out
-        b = normalise(score_combo.(metrics{j})(:)-mean(score_combo.(metrics{j})));
-        proj = (a'*b)/(b'*b)*b;
-%         proj = (b'*a)/(a'*a)*a;
-        projout = a-proj;
-        [rVals_proj(i,j+1),p_proj(i,j+1)] = corr(projout(:),fracCorrect(:),'tail','right');
-        
-%         proj_cum = (projout_cum'*b)/(b'*b)*b;
-% %         proj_cum = (b'*projout_cum)/(projout_cum'*projout_cum)*projout_cum;
-%         projout_cum = projout_cum-proj;
-%         [rVals_projcum(i,j+1),p_projcum(i,j+1)] = corr(projout_cum(:),fracCorrect(:),'tail','right');
-    end
-    [rVals_proj(i,1),p_proj(i,1)] = corr(score_combo.(metrics{i})(:),fracCorrect(:),'tail','right');
-end
+%% Use partial correlation to find independent relationships
 
-% Add permutation tests
-p_proj_perm = p_proj;
-fprintf('Getting distribution of r values over %d permutations...\n',nPerms);
-for i=1:nMets-1
-    rVals_perm_fracCorrect = ones(1,nPerms);
-    if i==iRead
-        for j=1:nMets-1
-            for iPerm=1:nPerms
-                a = normalise(readperm_combo(:,iPerm)-mean(readperm_combo(:,iPerm)));            
-                if j==iRead
-                    b = a;
-                else                
-                    b = normalise(score_combo.(metrics{j})(:)-mean(score_combo.(metrics{j})));
-                end
-                proj = (a'*b)/(b'*b)*b;
-        %         proj = (b'*a)/(a'*a)*a;
-                projout = a-proj;
-                rVals_perm_fracCorrect(iPerm) = corr(projout(:),permBeh(:,iPerm));
-
-            end
-            % get new p value
-            p_proj_perm(i,j+1) = mean(rVals_perm_fracCorrect>rVals_proj(i,j+1));
-        end        
-    else
-        a = normalise(score_combo.(metrics{i})(:)-mean(score_combo.(metrics{i})));
-        for j=1:nMets-1
-            rVals_perm_fracCorrect = nan(1,nPerms);
-            for iPerm=1:nPerms
-                if j==iRead
-                    b = normalise(readperm_combo(:,iPerm)-mean(readperm_combo(:,iPerm)));
-                else
-                    b = normalise(score_combo.(metrics{j})(:)-mean(score_combo.(metrics{j})));
-                end
-                proj = (a'*b)/(b'*b)*b;
-        %         proj = (b'*a)/(a'*a)*a;
-                projout = a-proj;                   
-                rVals_perm_fracCorrect(iPerm) = corr(projout(:),permBeh(:,iPerm));
-            end
-            % get new p value
-            p_proj_perm(i,j+1) = mean(rVals_perm_fracCorrect>rVals_proj(i,j+1));
-
-        end
-    end
-end
-
-% remove diagonals
-for i=1:nMets-1
-    p_proj_perm(i,i+1) = nan;
-end
-% Apply FDR correction
-% rVals_projcum(:,1) = rVals_proj(:,1);
-% p_projcum(:,1) = p_proj(:,1);
-q_proj = reshape(mafdr(p_proj_perm(:),'bhfdr',true),size(p_proj_perm));
-% q_projcum = reshape(mafdr(p_projcum(:),'bhfdr',true),size(p_projcum));
-fprintf('Done!\n');
-
-
-%% Plot results
-subplot(1,3,2); hold on;
-imagesc(rVals_proj)
-colorbar
-set(gca,'clim',[0 1]);
-set(gca,'ytick',1:nMets-1,'yticklabel',show_symbols(metrics_display(1:end-1)));
-set(gca,'xtick',1:nMets,'xticklabel',show_symbols([{'none'}, metrics_display(1:end-1)]));
-xlabel('Metric X')
-ylabel('Metric Y');
-axis equal
-xlim([0 nMets]+0.5);
-ylim([0 nMets-1]+0.5);
-title(sprintf('correlation of metric Y with fracCorrect\n after regressing out metric X'));
-xticklabel_rotate
-% Add stars
-% [iOs,jOs] = find(p_proj_perm<0.05 & q_proj>=0.05);
-[iOs,jOs] = find(p_proj_perm<oThresh & p_proj_perm>=xThresh);
-plot(jOs,iOs,'ko');
-% [iStars,jStars] = find(q_proj<0.05);
-[iStars,jStars] = find(p_proj_perm<xThresh);
-plot(jStars,iStars,'k*');
-set(gca,'ydir','reverse');
-
-
-% subplot(1,3,3); hold on;
-% imagesc(rVals_projcum)
-% colorbar
-% set(gca,'clim',[-1 1]);
-% set(gca,'ytick',1:nMets-1,'yticklabel',show_symbols(metrics_display(1:end-1)));
-% set(gca,'xtick',1:nMets,'xticklabel',show_symbols([{'none'}, metrics_display(1:end-1)]));
-% xlabel('Metric X')
-% ylabel('Metric Y');
-% xlim([0 nMets]+0.5);
-% ylim([0 nMets-1]+0.5);
-% title(sprintf('correlation of metric Y with fracCorrect\n after regressing out metrics 1 to X'));
-% xticklabel_rotate
-% axis square
-% % Add stars
-% [iOs,jOs] = find(p_projcum<0.05 & q_projcum>=0.05);
-% plot(jOs,iOs,'ko');
-% [iStars,jStars] = find(q_projcum<0.05);
-% plot(jStars,iStars,'k*');
-% set(gca,'ydir','reverse');
-
-%% Do same with partial correlation
-
-[rVals_part, p_part] = deal(nan(nMets-1));
+[rVals_part, p_part, rVals_partbeh, p_partbeh] = deal(nan(nMets-1));
 for i=1:nMets-1
     [rVals_part(i,1),p_part(i,1)] = corr(score_combo.(metrics{i})(:),fracCorrect(:),'tail','right');
+    [rVals_partbeh(i,1),p_partbeh(i,1)] = corr(score_combo.(metrics{i})(:),fracCorrect(:),'tail','right');
     for j=1:nMets-1
-        % project out
+        % partial out metric
         [rVals_part(i,j+1),p_part(i,j+1)] = partialcorr(score_combo.(metrics{i})(:),fracCorrect(:),score_combo.(metrics{j})(:),'tail','right');        
+        % partial out behavior
+        [rVals_partbeh(i,j+1),p_partbeh(i,j+1)] = partialcorr(score_combo.(metrics{i})(:),score_combo.(metrics{j})(:),fracCorrect(:),'tail','right');        
     end
 end
 
 % Run Permutation Tests
 p_part_perm = p_part;
+p_partbeh_perm = p_partbeh;
 fprintf('Getting distribution of r values over %d permutations...\n',nPerms);
 for i=1:nMets-1
     for j=1:nMets-1
         rVals_perm_fracCorrect = nan(1,nPerms);
+        rValsPartbeh_perm_fracCorrect = nan(1,nPerms);
         for iPerm=1:nPerms
             if i==iRead
                 a = readperm_combo(:,iPerm);
@@ -264,29 +165,33 @@ for i=1:nMets-1
                 b = score_combo.(metrics{j})(:);
             end
             rVals_perm_fracCorrect(iPerm) = partialcorr(a,permBeh(:,iPerm),b);
+            rValsPartbeh_perm_fracCorrect(iPerm) = partialcorr(a,b,permBeh(:,iPerm));
         end
         % get new p value
         p_part_perm(i,j+1) = mean(rVals_perm_fracCorrect>rVals_part(i,j+1));
+        p_partbeh_perm(i,j+1) = mean(rValsPartbeh_perm_fracCorrect>rVals_partbeh(i,j+1));
     end
 end
 
 % remove diagonals
 for i=1:nMets-1
     p_part_perm(i,i+1) = nan;
+    p_partbeh_perm(i,i+1) = nan;
 end
 
 % Correct for multiple comparisions
 q_part = reshape(mafdr(p_part_perm(:),'bhfdr',true),size(p_part_perm));
+q_partbeh = reshape(mafdr(p_partbeh_perm(:),'bhfdr',true),size(p_partbeh_perm));
 fprintf('Done!\n');
 
 %% Plot
-subplot(1,3,3); hold on;
+subplot(1,3,2); hold on;
 imagesc(rVals_part)
 colorbar
-set(gca,'clim',[0 1]);
+set(gca,'clim',[-1 1]);
 set(gca,'ytick',1:nMets-1,'yticklabel',show_symbols(metrics_display(1:end-1)));
 set(gca,'xtick',1:nMets,'xticklabel',show_symbols([{'none'}, metrics_display(1:end-1)]));
-xlabel('Metric X')
+xlabel('Metric X');
 ylabel('Metric Y');
 axis equal
 xlim([0 nMets]+0.5);
@@ -301,6 +206,43 @@ plot(jOs,iOs,'ko');
 [iStars,jStars] = find(p_part_perm<xThresh);
 plot(jStars,iStars,'k*');
 set(gca,'ydir','reverse');
+% Make boxes
+rectangle('Position',[iBeh(1)+.5, iBeh(1)-.5, numel(iBeh), numel(iBeh)], 'linewidth',2,'edgecolor','c');
+rectangle('Position',[iEng(1)+.5, iEng(1)-.5, numel(iEng), numel(iEng)], 'linewidth',2,'edgecolor','m');
+rectangle('Position',[iRdg(1)+.5, iRdg(1)-.5, numel(iRdg), numel(iRdg)], 'linewidth',2,'edgecolor',[1 1 1]*.5);
+
+subplot(1,3,3); hold on;
+imagesc(rVals_partbeh(:,2:end))
+colorbar
+set(gca,'clim',[-1 1]);
+set(gca,'ytick',1:nMets-1,'yticklabel',show_symbols(metrics_display(1:end-1)));
+set(gca,'xtick',1:nMets-1,'xticklabel',show_symbols(metrics_display(1:end-1)));
+xlabel('Metric X')
+ylabel('Metric Y');
+axis equal
+xlim([0 nMets-1]+0.5);
+ylim([0 nMets-1]+0.5);
+title(sprintf('partial correlation of metric X with metric Y \n after controlling for fracCorrect'));
+xticklabel_rotate
+% Add stars
+% [iOs,jOs] = find(p_part_perm<0.05 & q_part>=0.05);
+[iOs,jOs] = find((p_partbeh(:,2:end)<oThresh/2 & p_partbeh(:,2:end)>=xThresh/2) | ...
+                 (p_partbeh(:,2:end)>(1-oThresh/2) & p_partbeh(:,2:end)<=(1-xThresh/2)));
+plot(jOs,iOs,'ko');
+% [iStars,jStars] = find(q_part<0.05);
+[iStars,jStars] = find(p_partbeh(:,2:end)<xThresh/2 | ...
+                       p_partbeh(:,2:end)>(1-xThresh/2));
+plot(jStars,iStars,'k*');
+set(gca,'ydir','reverse');
+% Make boxes
+rectangle('Position',[iBeh(1)-.5, iBeh(1)-.5, numel(iBeh), numel(iBeh)], 'linewidth',2,'edgecolor','c');
+rectangle('Position',[iEng(1)-.5, iEng(1)-.5, numel(iEng), numel(iEng)], 'linewidth',2,'edgecolor','m');
+rectangle('Position',[iRdg(1)-.5, iRdg(1)-.5, numel(iRdg), numel(iRdg)], 'linewidth',2,'edgecolor',[1 1 1]*.5);
+
+
+
+
+
 
 %% Check whether CPM could use FC to predict motion
 thresh = 0.01;

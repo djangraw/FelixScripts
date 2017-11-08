@@ -24,7 +24,7 @@ if ~exist('sphereSize','var') || isempty(sphereSize)
 end
 
 % Load atlas
-atlasFile = '/Users/jangrawdc/Documents/PRJ03_SustainedAttention/Shen_2013_parcellations/shen_1mm_268_parcellation+tlrc';
+atlasFile = '/data/jangrawdc/PRJ03_SustainedAttention/Results/Shen_2013_atlas/shen_1mm_268_parcellation+tlrc';
 [shenAtlas,shenInfo] = BrikLoad(atlasFile);
 
 %% Declare parameters

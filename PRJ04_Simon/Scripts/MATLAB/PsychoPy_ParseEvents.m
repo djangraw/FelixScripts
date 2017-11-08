@@ -51,6 +51,8 @@ function datastruct = PsychoPy_ParseEvents(text_file,types,start_code,end_code)
 % Updated 2/19/14 by DJ - fixed end trial bug
 % Updated 9/10/14 by DJ - added START option.
 % Updated 3/12/15 by DJ - added sequence option, fixed 'other' option
+% Updated 1/19/16 by DJ - added displayset option.
+% Updated 1/12/17 by DJ - generic option saves entire message
 
 if nargin<2 || isempty(types)
     types = {'block','soundset','soundstart','key','display','sequence'};%,'message'};
@@ -77,13 +79,14 @@ fseek(fid,0,'bof'); % rewind to beginning
 % format: the format we use in sscanf to turn a line of text into values of interest
 % values: the values returned by sscanf (we specify the # of columns here)
 [words,iInfo,formats,values] = deal(cell(size(types)));
-delimiters = {' ','\f','\n','\r','\t','\v','='}; % whitespace and = sign
+delimiters = {' ','\f','\n','\r','\t','\v','='}; % whitespace, = sign, comma
+showWholeMsg = false(size(types));
 for i=1:numel(types)
     switch types{i}        
         case 'block'
             words{i} = 'Block';
             iInfo{i} = [1 5];
-            formats{i} = '%f %d'; % Message format: EBLINK <eye (R/L)> <blinkstart> <blinkend>
+            formats{i} = '%f %d'; % Message format: <time> EXP 
             values{i} = cell(0,2);
         case 'soundset'
             words{i} = 'sound=';
@@ -101,21 +104,37 @@ for i=1:numel(types)
             formats{i} = '%f %c'; % Message format: <time> 	DATA 	keypress: <name>
             values{i} = cell(0,2);  
         case 'display'
-            words{i} = 'Display';
+            words{i} = 'Display ';
             iInfo{i} = [1 4];
             formats{i} = '%f %s'; % Message format: <time> 	EXP 	Display <name>
             values{i} = cell(0,2);
+        case 'displayset'
+            words{i} = 'text = ';
+            iInfo{i} = [1 3]; % purposefully left one out so as to catch if statement
+            formats{i} = '%f %s %s'; % Message format: <time> 	EXP 	<name>: text = '<text>'
+            values{i} = cell(0,3);
+        case 'displaypos'
+            words{i} = 'pos = ';
+            iInfo{i} = [1 3 5 6]; % purposefully left one out so as to catch if statement
+            formats{i} = '%f %s %f %f'; % Message format: <time> 	EXP 	<name>: pos = (x, y)
+            values{i} = cell(0,4);
         case 'sequence'
             words{i} = 'Sequence';
             iInfo{i} = [1 3 5];
             formats{i} = '%f %s %d';
             values{i} = cell(0,3);
+        case 'response'
+            words{i} = 'Responded';
+            iInfo{i} = [1 4];
+            formats{i} = '%f %s';
+            values{i} = cell(0,2);
         otherwise 	
             warning('FindEvents:InputType','event_type input %s not recognized!',types{i});
             words{i} = types{i};
             iInfo{i} = [1 3];
             formats{i} = '%f %s';
             values{i} = zeros(0,2);
+            showWholeMsg(i) = true;
     end
 end
 
@@ -127,7 +146,7 @@ while ftell(fid) < eof % if we haven't reached the end of the text file
     str = fgetl(fid); % read in next line of text file
     % Check for start code
     if ~found_start_code 
-        if isempty(findstr(str,start_code)) % if we haven't found start code yet
+        if isempty(strfind(str,start_code)) % if we haven't found start code yet
             continue; % skip to next line
         else
             found_start_code = true;
@@ -135,22 +154,43 @@ while ftell(fid) < eof % if we haven't reached the end of the text file
     end        
     % Otherwise, Read in line
     for i=1:numel(types)
-        if findstr(str,words{i}) % check for the code-word indicating a message was written
-            C = strsplit(str,delimiters);
-            stuff = C(iInfo{i});
-%             stuff = sscanf(str,formats{i})';
-            if size(stuff,2)==size(values{i},2)
-                values{i} = [values{i}; stuff]; % add the info from this line as an additional row
-            elseif strcmp(types{i},'eyesample')
-                values{i} = [values{i}; NaN,NaN,NaN]; % add a blank sample so the time points still line up           
-            else
-                warning('FindEvents:IncompleteEvent','Unable to decipher the following event fully:\n %s',str); % sometimes saccades are not logged fully
+        if strfind(str,words{i}) % check for the code-word indicating a message was written
+            
+            if showWholeMsg(i)
+                % Don't parse values, just return whole message
+                C = strsplit(str,delimiters);
+                iMsg = strfind(str,C{3});
+                values{i} = [values{i}; C(1),{str(iMsg(1):end)}]; 
+            else            
+                % parse values
+                if strcmp(types{i},'displaypos')
+                    C = strsplit(str,[delimiters,{':','(',')',','}]);
+                else
+                    C = strsplit(str,delimiters);
+                end
+                % check for under-sized set values
+                if numel(C)<iInfo{i}(end)
+                    warning('FindEvents:IncompleteEvent','Unable to decipher the following event fully:\n %s',str); % sometimes sounds are not logged fully                
+                else
+                    stuff = C(iInfo{i});
+        %             stuff = sscanf(str,formats{i})';
+                    if size(stuff,2)==size(values{i},2)
+                        values{i} = [values{i}; stuff]; % add the info from this line as an additional row
+                    elseif strcmp(types{i},'eyesample')
+                        values{i} = [values{i}; NaN,NaN,NaN]; % add a blank sample so the time points still line up           
+                    elseif strcmp(types{i},'displayset')
+                        iEquals = find(str=='=',1); % text will come just after equals sign
+                        values{i} = [values{i}; stuff(1:2), {str(iEquals+3:end-1)}]; % exclude single quotes around text            
+                    else
+                        warning('FindEvents:IncompleteEvent','Unable to decipher the following event fully:\n %s',str); % sometimes saccades are not logged fully
+                    end
+                end
             end
             break;
         end        
     end
     % Check for end code
-    if ~isempty(findstr(str,end_code))
+    if ~isempty(strfind(str,end_code))
         break;
     end
 end
@@ -178,10 +218,21 @@ for i=1:numel(types)
         case 'display'
             datastruct.display.time = cellfun(@str2num,values{i}(:,1)); % first output is timestamp of start and end of fixation
             datastruct.display.name = values{i}(:,2); % first output is timestamp of start and end of fixation
+        case 'displayset'
+            datastruct.displayset.time = cellfun(@str2num,values{i}(:,1)); % timestamp when display was set
+            datastruct.displayset.name = values{i}(:,2); % name of TextStim object
+            datastruct.displayset.text = values{i}(:,3); % text displayed in this text object
+        case 'displaypos'
+            datastruct.displaypos.time = cellfun(@str2num,values{i}(:,1)); % timestamp when display was set
+            datastruct.displaypos.name = values{i}(:,2); % name of TextStim object
+            datastruct.displaypos.pos = cellfun(@str2num,values{i}(:,3:4)); % position object was set to
         case 'sequence'
             datastruct.sequence.time_start = cellfun(@str2num,values{i}(strcmp('Start',values{i}(:,2)),1));
             datastruct.sequence.number = cellfun(@str2num,values{i}(strcmp('Start',values{i}(:,2)),3));
             datastruct.sequence.time_end = cellfun(@str2num,values{i}(strcmp('End',values{i}(:,2)),1));
+        case 'response'
+            datastruct.response.time = cellfun(@str2num,values{i}(:,1)); % first output is timestamp of response time
+            datastruct.response.value = values{i}(:,2); % first output is value of response
         otherwise 
 %             error('event_type input %s not recognized!',event_type);
             datastruct.(types{i}).time = cellfun(@str2num,values{i}(:,1)); % first output is display time                

@@ -4,15 +4,20 @@ function PlotOverlapBetweenFcNetworks(FcNet1,FcNet2,atlas,atlasLabels,atlasLabel
 %
 % Created 12/1/16 by DJ
 
-if ~exist('networkNames','var') || isempty(networkNames);
+if ~exist('networkNames','var') || isempty(networkNames)
     networkNames = {'Network 1', 'Network 2'};
 end
-% Enforce upper triangular matrix constraint
-nRoi = size(FcNet1,1);
-uppertri = triu(ones(nRoi),1);
-nEdge = sum(uppertri(:)); % total number of edges 
-FcNet1(~uppertri) = 0;
-FcNet2(~uppertri) = 0;
+
+if size(FcNet1,1)>1 && size(FcNet1,2)>1 % if it's 2D, assume it's an FC matrix.
+    % Enforce upper triangular matrix constraint
+    nRoi = size(FcNet1,1);
+    uppertri = triu(ones(nRoi),1);
+    nEdge = sum(uppertri(:)); % total number of edges 
+    FcNet1(~uppertri) = 0;
+    FcNet2(~uppertri) = 0;
+else
+    nEdge = numel(FcNet1);
+end
 
 % Extract info
 isPos1 = FcNet1>0;
