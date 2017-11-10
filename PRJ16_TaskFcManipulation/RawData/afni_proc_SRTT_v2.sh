@@ -12,10 +12,10 @@ srtt()
 {
 	cd $1
 
-	afni_proc.py -subj_id ${1} -script afni_srtt_${1}.tcsh -out_dir ${1}.srtt \
-	-dsets func_srtt/*ep2dbold*  \
+	afni_proc.py -subj_id ${1} -script afni_srtt_v2_${1}.tcsh -out_dir ${1}.srtt_v2 \
+	-dsets func_srtt/ep2dbold*.nii.gz  \
 	-blocks despike tshift align tlrc volreg blur mask regress \
-	-copy_anat anat/*Sag3D*.nii.gz \
+	-copy_anat anat/Sag3D*.nii.gz \
 	-anat_has_skull yes \
 	-tcat_remove_first_trs 6 \
 	-volreg_align_e2a -tlrc_NL_warp \
