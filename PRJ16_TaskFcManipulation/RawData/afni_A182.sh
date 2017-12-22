@@ -35,7 +35,7 @@ srtt()
 	-gltsym 'SYM: +str3 -uns3' -glt_label 6 'structured-unstructured BL3' \
 	-jobs 10 \
 	-bash -execute
-	
+
 	cd ../
 }
 
@@ -44,10 +44,9 @@ srtt()
 for aSub in $@
 do
 	echo "Subject $aSub: "
-	
+
 	if [ -e $aSub/func_srtt ]; then
 		echo "Running SRTT"
 		srtt $aSub;
 	fi
 done
-

@@ -6,7 +6,8 @@
 #
 # Usage: bash afni_proc_SRTT_v2.sh $subj1 $subj2... $subjN
 #
-# Created 10/11/17 based on afni_A182,sh
+# Created 10/11/17 by DJ based on afni_A182.sh (from PM)
+# Updated 12/11/17 by DJ - added -volreg_tlrc_warp flag
 
 srtt()
 {
@@ -18,7 +19,7 @@ srtt()
 	-copy_anat anat/Sag3D*.nii.gz \
 	-anat_has_skull yes \
 	-tcat_remove_first_trs 6 \
-	-volreg_align_e2a -tlrc_NL_warp \
+	-volreg_align_e2a -tlrc_NL_warp -volreg_tlrc_warp \
 	-tlrc_base MNI_caez_N27+tlrc \
 	-align_opts_aea -giant_move \
 	-tshift_opts_ts -tpattern alt+z2 \
