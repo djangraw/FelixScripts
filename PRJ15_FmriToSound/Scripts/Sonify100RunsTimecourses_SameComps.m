@@ -3,7 +3,9 @@
 % Created 12/21/17 by DJ.
 
 % Load components
-cd /Volumes/data/PRJ15_FmriToSound/TestData/100RUNS_3Tmultiecho
+cd /Volumes/data/PRJ15_FmriToSound/TestData/100RUNS_3Tmultiecho % For local
+% cd /data/jangrawdc/PRJ15_FmriToSound/TestData/100RUNS_3Tmultiecho % For remote
+
 [icTcs_accepted,betas_accepted,iAccepted] = Get100RunsAcceptedCompTcs(1,1,1);
 varex = var(icTcs_accepted)';
 [varex_sorted,order] = sort(varex,'descend');
@@ -34,7 +36,7 @@ fprintf('Done!\n');
 
 %% Append and Sonify
 slowFactor = 0.1;
-percentileCutoff = 70;
+percentileCutoff = 60;
 TR = 2;
 % % Plot timecourse of task
 % figure(3);
@@ -50,6 +52,8 @@ icTcs_scaled(icTcs_scaled<0) = 0;
 
 fprintf('Sonifying...\n');
 [atlasSound,Fs] = SonifyAtlasTimecourses_midi(icTcs_scaled,slowFactor,'pentatonic','sine');
+%% Plot & Play
 fprintf('Plotting & Playing...\n');
-PlotAndPlaySonifiedData(icTcs_scaled,slowFactor,atlasSound,Fs);
+PlotAndPlaySonifiedData(icTcs_scaled,TR,atlasSound,Fs);
 fprintf('Done!\n');
+figure(562);
