@@ -15,8 +15,8 @@ let nSubjm1=nSubj-1
 # folders=()
 folderSuffix=_v2
 unset folders
-for i in `seq 0 $iLastOkSubj`; do
-    folders[$i]=${subjects[$i]}${folderSuffix}
+for i in `seq 0 $nSubjm1`; do
+    folders[$i]=${subjects[$i]}.srtt${folderSuffix}
 done
 
 iOkSubjects=(`seq 0 $nSubjm1`)

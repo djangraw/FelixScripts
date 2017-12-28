@@ -5,17 +5,18 @@
 # Regress out nuisance regressors like motion and polynomials.
 #
 # Created 8/16/17 by DJ.
+# Update 12/27/17 by DJ - updated for srtt_v2 analysis (MNI space)
 
 # parse inputs
 subj=$1
 
 # move into directory
-cd /data/jangrawdc/PRJ16_TaskFcManipulation/RawData/$subj/$subj.srtt
+cd /data/jangrawdc/PRJ16_TaskFcManipulation/RawData/$subj/$subj.srtt_v2
 
 # run 3dDeconvolve
 # TODO: include mot_deriv.1D? Separate motion by run?
 # TODO: don't blur, but scale data?
-3dDeconvolve -input pb03.$subj.r*.blur+orig.HEAD                         \
+3dDeconvolve -input pb04.$subj.r*.blur+tlrc.HEAD                         \
     -censor censor_${subj}_combined_2.1D                                 \
     -polort 3                                                            \
     -local_times                                                         \
@@ -32,7 +33,18 @@ cd /data/jangrawdc/PRJ16_TaskFcManipulation/RawData/$subj/$subj.srtt
     -overwrite
 
 # regress out the nuisance factors
-3dTproject -polort 0 -input pb03.$subj.r*.blur+orig.HEAD                    \
+3dTproject -polort 0 -input pb04.$subj.r*.blur+tlrc.HEAD                    \
            -censor censor_${subj}_combined_2.1D -cenmode ZERO                 \
            -ort X_nuisance.nocensor.xmat.1D \
-           -overwrite -prefix all_runs_nonuisance.$subj+orig.HEAD
+           -overwrite -prefix rm.all_runs_nonuisance.$subj+tlrc.HEAD
+
+# scale results
+3dTstat -mean -overwrite -prefix rm.mean_all_runs.${subj} all_runs.${subj}+tlrc.
+3dcalc -a rm.all_runs_nonuisance.${subj}+tlrc -b rm.mean_all_runs.${subj}+tlrc \
+       -c mask_anat.${subj}+tlrc                            \
+       -expr 'c * min(200, a/b*100)'       \
+       -overwrite \
+       -prefix all_runs_nonuisance.${subj}.scale
+
+# Clean up
+rm rm.all_runs_nonuisance.$subj+tlrc*
