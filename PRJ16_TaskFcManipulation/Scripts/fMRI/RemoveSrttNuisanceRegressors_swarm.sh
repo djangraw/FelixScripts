@@ -1,9 +1,4 @@
-bash RemoveSrttNuisanceRegressors.sh tb0027
-bash RemoveSrttNuisanceRegressors.sh tb0065
-bash RemoveSrttNuisanceRegressors.sh tb0093
-bash RemoveSrttNuisanceRegressors.sh tb0094
 bash RemoveSrttNuisanceRegressors.sh tb0137
-bash RemoveSrttNuisanceRegressors.sh tb0138
 bash RemoveSrttNuisanceRegressors.sh tb0169
 bash RemoveSrttNuisanceRegressors.sh tb0170
 bash RemoveSrttNuisanceRegressors.sh tb0202

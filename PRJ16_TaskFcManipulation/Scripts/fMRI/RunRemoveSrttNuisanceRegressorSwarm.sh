@@ -1,14 +1,14 @@
 #!/bin/bash
 
-# RunRemoveSrttNuisanceRegressorSwarm.sh
+# c.sh
 #
 # Created 12/27/17 by DJ.
 
 # Set up
 source 00_CommonVariables.sh
-
-# for each Subject
 rm -f RemoveSrttNuisanceRegressors_swarm.sh
+
+# For each subject, write a 1-line bash command to the swarm script
 for i in `seq 0 $iLastOkSubj`;
 do
   echo "bash RemoveSrttNuisanceRegressors.sh ${okSubjects[$i]}" >> RemoveSrttNuisanceRegressors_swarm.sh

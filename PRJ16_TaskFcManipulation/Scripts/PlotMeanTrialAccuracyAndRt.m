@@ -1,3 +1,25 @@
+% PlotMeanTrialAccuracyAndRt.m
+% (for Haskins SRTT data).
+% 
+% Created 9/21/17 by DJ.
+% Updated 12/28/17 by DJ - added loading blocks to make this script self-sufficient
+
+% Load data
+filename = '/data/jangrawdc/PRJ16_TaskFcManipulation/Behavioral/SRTT-Behavior_A182SRTTdata_25Jan2017.xlsx';
+fprintf('Loading reading behavior...\n');
+% behTable = ReadSrttBehXlsFile(filename);
+trialBehTable = ReadSrttTrialByTrialBeh(filename);
+fprintf('Done!\n');
+
+%% Get subj-by-subj reading scores
+filename = '/data/jangrawdc/PRJ16_TaskFcManipulation/Behavioral/SRTT-Behavior_A182SRTTdata_25Jan2017.xlsx';
+fprintf('Loading reading behavior...\n');
+behTable = ReadSrttBehXlsFile(filename);
+fprintf('Done!\n');
+
+[readScore,isOkSubj] = GetFirstReadingScorePc(behTable);
+
+%% Plot behavior
 behThis=trialBehTable(trialBehTable.Subject==27,:);
 iCondChange = find(diff(behThis.Cond)~=0)+0.5;
 iRun = (312:312:935)+0.5;

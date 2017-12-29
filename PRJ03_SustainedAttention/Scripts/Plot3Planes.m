@@ -6,7 +6,8 @@ function [hImg,hCross,hLine] = Plot3Planes(dataBrick,slicecoords,rectpos)
 % -dataBrick is an nX x nY x nZ x nC matrix of data. If nC = 3, it's RGB,
 % otherwise the mean across dimension 4 will be taken.
 % -slicecoords is a 3-element vector of the x,y,z coordinate where you'd
-% like to draw the slices and the crosshairs.
+% like to draw the slices and the crosshairs. This can also be a string:
+% 'max' for the maximum location (default) or 'cm' for the center of mass.
 % -rectpos is a 4-element vector indicating the [x,y,w,h] of the rectangle
 % in which you'd like to plot the data.
 %
@@ -18,6 +19,7 @@ function [hImg,hCross,hLine] = Plot3Planes(dataBrick,slicecoords,rectpos)
 %
 % Created 12/10/15 by DJ.
 % Updated 12/11/16 by DJ - allow 1-color plots in addition to RGB.
+% Updated 12/28/17 by DJ - added 'CM' option using GetCenterOfMass 
 
 % handle inputs
 if size(dataBrick,4)~=3
@@ -25,11 +27,14 @@ if size(dataBrick,4)~=3
 end
 [nX,nY,nZ,nC] = size(dataBrick);
 
-if ~exist('slicecoords','var') || isempty(slicecoords)
+if ~exist('slicecoords','var') || isempty(slicecoords) || isequal(slicecoords,'max')
     foo = mean(dataBrick,4);
     [~,iMax] = max(foo(:));
     slicecoords = nan(1,3);
     [slicecoords(1),slicecoords(2),slicecoords(3)] = ind2sub([nX,nY,nZ],iMax);
+elseif isequal(slicecoords,'CM') || isequal(slicecoords,'cm')
+    foo = mean(dataBrick,4);
+    slicecoords = round(GetCenterOfMass(foo,0));
 end
 if ~exist('rectpos','var') || isempty(rectpos)
     rectpos = [0 0 3 1];
