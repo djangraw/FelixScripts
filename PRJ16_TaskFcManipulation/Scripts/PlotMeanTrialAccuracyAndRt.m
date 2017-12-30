@@ -164,5 +164,31 @@ legend('Correct trials','Error trials');
 title('Reaction Time Difference');
 PlotVerticalLines(0,'k');
 
-%% Plot mean/std for each run & block
-
+%% Plot 2D histogram of RTs
+[nT,nSubj] = size(rawRt);
+[~,T] = meshgrid(1:nSubj,1:nT);
+% [xBins,yBins,cntBins] = hist3([rawRt(:), T(:)], [10 nT]);
+tChanges = sort([0; iCondChange; iRun'; nT],'ascend'); 
+cla; hold on;
+hHist = histogram2(T(:),rawRt(:), tChanges, 0:10:800, 'FaceColor','flat');
+% hHist = histogram2(T(:),rawRt(:), 1:nT, 0:10:800, 'FaceColor','flat');
+nBins = hHist.BinCounts;
+pctBins = nBins./repmat(sum(nBins,2),1,size(nBins,2));
+pctBins(pctBins==0) = 1e-10;
+% imagesc(cBins{1},cBins{2},nBins);
+% set(gca,'ydir','normal');
+set(hHist,'BinCounts',pctBins);
+% Annotate plot
+view(2);
+xlabel('trial');
+ylabel('RT (ms)');
+% Add condition markers
+for i=1:numel(tChanges)-1
+    if behThis.Cond(round(tChanges(i)+1))==1
+        plot(tChanges(i:i+1),[800 800],'r','linewidth',2);
+    else
+        plot(tChanges(i:i+1),[800 800],'c','linewidth',2);
+    end
+end
+% PlotVerticalLines(tChanges,'k-',true);
+legend('hist','unstructured','structured');
