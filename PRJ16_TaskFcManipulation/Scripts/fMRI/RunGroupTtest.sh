@@ -18,6 +18,7 @@
 # Created 12/19/17 by DJ based on PRJ03's 08_GroupAnalysis.sh.
 # Updated 12/21/17 by DJ - remove normalization (it's already done now)
 # Updated 12/27/17 by DJ - removed blur and coefOnly suffices, debugged.
+# Updated 1/2/18 by DJ - updated for _v3 (no blur/norm, mask during t test)
 
 # Get subjects and folders arrays
 source 00_CommonVariables.sh
@@ -44,34 +45,22 @@ do
     echo "===Subject ${subj}..."
     cd ${PRJDIR}/RawData/${subj}/${folder}
     # EXTRACT COEF SUBBRICKS FROM STATS DATASET
-    3dcalc -overwrite -prefix rm.coef.${subj} -a stats.${subj}_REML+tlrc'[1..$(3)]' -expr 'a' # only _Coef bricks
-    # NORMALIZE
-    3dTstat -mean -overwrite -prefix rm.mean_all_runs.${subj} all_runs.${subj}+tlrc.
-    3dcalc -a rm.coef.${subj}+tlrc -b rm.mean_all_runs.${subj}+tlrc \
-           -c mask_anat.${subj}+tlrc                            \
-           -expr 'c * min(200, a/b*100)'       \
-           -overwrite \
-           -prefix coef.${subj}.scale
-    # MASK BLURRED DATA
-    3dcalc -a rm.coef.${subj}+tlrc \
-       -b mask_anat.${subj}+tlrc \
-       -expr 'a * b' \
-       -overwrite \
-       -prefix coef.${subj}.scale
-    # CLEAN UP
-    # rm rm.coef.${subj}+tlrc* rm.mean_all_runs.${subj}+tlrc*
-    rm rm.coef.${subj}+tlrc*
+    3dcalc -overwrite -prefix coef.${subj} -a stats.${subj}_REML+tlrc'[1..$(3)]' -expr 'a' # only _Coef bricks
     # RECORD OUTPUT NAME
-    outName[$i]=coef.${subj}.scale+tlrc
+    outName[$i]=coef.${subj}+tlrc
     # MAKE SHORTCUT
     ln -sf ${PRJDIR}/RawData/${subj}/${folder}/${outName[$i]}* ${outPath}/
 
 done
 
+# Make EPI-res mask
+3dAutomask -prefix MNI_mask.nii MNI152_T1_2009c+tlrc
+3dfractionize -prefix MNI_mask_epiRes.nii -template ${outPath}}/${outName[0]} #TODO: FIX THIS!
+
 # BUILD 3DTTEST++ COMMAND
 cd ${outPath}
-echo "3dttest++ -toz -zskip -brickwise -overwrite -prefix ttest -setA ${outName[@]}"
-3dttest++ -toz -zskip -brickwise -overwrite -prefix ttest -setA ${outName[@]}
+echo "3dttest++ -zskip -brickwise -mask MNI_mask_epiRes.nii -overwrite -prefix ttest_allSubj -setA ${outName[@]}"
+3dttest++ -zskip -brickwise -mask MNI_mask_epiRes.nii -overwrite -prefix ttest_allSubj -setA ${outName[@]}
 
 # ADD ATLAS FILE
-# ln -sf ${AFNI_HOME}/MNI_caez_N27+tlrc.* ./
+# ln -sf ${AFNI_HOME}/MNI152_T1_2009c+tlrc.* ./

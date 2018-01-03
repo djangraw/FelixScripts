@@ -4,6 +4,7 @@
 # Created 7/24/17 by DJ.
 # Updated 12/19/17 by DJ - updated folderSuffix to _v2
 # Updated 12/21/17 by DJ - defined and dealt with 4 badSubjects.
+# Updated 1/2/18 by DJ - updated folderSuffix to _v3
 
 PRJDIR=/data/jangrawdc/PRJ16_TaskFcManipulation
 
@@ -14,7 +15,7 @@ let nSubjm1=nSubj-1
 
 # get folder names
 # folders=()
-folderSuffix=_v2
+folderSuffix=_v3
 unset folders
 for i in `seq 0 $nSubjm1`; do
     folders[$i]=${subjects[$i]}.srtt${folderSuffix}

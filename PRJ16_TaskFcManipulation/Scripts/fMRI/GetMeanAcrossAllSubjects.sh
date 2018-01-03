@@ -5,6 +5,7 @@
 # Usage: bash GetMeanAcrossAllSubjects.sh <outFolder> <iSubj1> <iSubj2> ...
 #
 # Created 12/27/17 by DJ.
+# Updated 1/2/18 by DJ - modified for _v3 analysis (removed scale suffix).
 
 # Get subjects and folders arrays
 source 00_CommonVariables.sh
@@ -33,7 +34,7 @@ do
   cd ${PRJDIR}/RawData/${subj}/${folder}
 
   # MAKE SHORTCUT
-  outName[$i]=all_runs_nonuisance.${subj}.scale+tlrc
+  outName[$i]=all_runs_nonuisance.${subj}+tlrc
   ln -sf ${PRJDIR}/RawData/${subj}/${folder}/${outName[$i]}* ${outPath}/
 done
 
