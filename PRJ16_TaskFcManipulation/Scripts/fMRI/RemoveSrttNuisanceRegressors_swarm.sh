@@ -1,3 +1,7 @@
+bash RemoveSrttNuisanceRegressors.sh tb0027
+bash RemoveSrttNuisanceRegressors.sh tb0065
+bash RemoveSrttNuisanceRegressors.sh tb0093
+bash RemoveSrttNuisanceRegressors.sh tb0094
 bash RemoveSrttNuisanceRegressors.sh tb0137
 bash RemoveSrttNuisanceRegressors.sh tb0169
 bash RemoveSrttNuisanceRegressors.sh tb0170
@@ -22,7 +26,6 @@ bash RemoveSrttNuisanceRegressors.sh tb1313
 bash RemoveSrttNuisanceRegressors.sh tb1314
 bash RemoveSrttNuisanceRegressors.sh tb1401
 bash RemoveSrttNuisanceRegressors.sh tb1524
-bash RemoveSrttNuisanceRegressors.sh tb5688
 bash RemoveSrttNuisanceRegressors.sh tb5689
 bash RemoveSrttNuisanceRegressors.sh tb5762
 bash RemoveSrttNuisanceRegressors.sh tb5833
@@ -85,7 +88,6 @@ bash RemoveSrttNuisanceRegressors.sh tb7764
 bash RemoveSrttNuisanceRegressors.sh tb8034
 bash RemoveSrttNuisanceRegressors.sh tb8035
 bash RemoveSrttNuisanceRegressors.sh tb8068
-bash RemoveSrttNuisanceRegressors.sh tb8101
 bash RemoveSrttNuisanceRegressors.sh tb8111
 bash RemoveSrttNuisanceRegressors.sh tb8135
 bash RemoveSrttNuisanceRegressors.sh tb8136
@@ -93,7 +95,6 @@ bash RemoveSrttNuisanceRegressors.sh tb8159
 bash RemoveSrttNuisanceRegressors.sh tb8199
 bash RemoveSrttNuisanceRegressors.sh tb8291
 bash RemoveSrttNuisanceRegressors.sh tb8329
-bash RemoveSrttNuisanceRegressors.sh tb8357
 bash RemoveSrttNuisanceRegressors.sh tb8393
 bash RemoveSrttNuisanceRegressors.sh tb8403
 bash RemoveSrttNuisanceRegressors.sh tb8437

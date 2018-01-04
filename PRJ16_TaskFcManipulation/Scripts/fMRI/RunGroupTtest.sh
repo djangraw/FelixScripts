@@ -54,8 +54,8 @@ do
 done
 
 # Make EPI-res mask
-3dAutomask -prefix MNI_mask.nii MNI152_T1_2009c+tlrc
-3dfractionize -prefix MNI_mask_epiRes.nii -template ${outPath}}/${outName[0]} #TODO: FIX THIS!
+3dAutomask -overwrite -prefix ${outPath}/MNI_mask.nii ${AFNI_HOME}/MNI152_T1_2009c+tlrc
+3dfractionize -overwrite -prefix ${outPath}/MNI_mask_epiRes.nii -template ${outPath}/${outName[0]} -input ${outPath}/MNI_mask.nii
 
 # BUILD 3DTTEST++ COMMAND
 cd ${outPath}
