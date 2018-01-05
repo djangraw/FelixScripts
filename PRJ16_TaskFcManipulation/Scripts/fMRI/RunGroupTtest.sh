@@ -22,7 +22,8 @@
 
 # Get subjects and folders arrays
 source 00_CommonVariables.sh
-AFNI_HOME='/data/jangrawdc/abin'
+AFNI_HOME=`which afni` # Get AFNI directory
+AFNI_HOME=${AFNI_HOME%/*} # remove afni (and last slash)
 
 # Parse inputs
 outFolder=$1
@@ -32,6 +33,7 @@ echo ${iSubjects[@]}
 
 # Get path to output folder
 outPath=${PRJDIR}/RawData/${outFolder}
+rm -rf $outPath
 mkdir -p $outPath
 
 let nOkSubj=${#iSubjects[@]}
@@ -62,5 +64,7 @@ cd ${outPath}
 echo "3dttest++ -zskip -brickwise -mask MNI_mask_epiRes.nii -overwrite -prefix ttest_allSubj -setA ${outName[@]}"
 3dttest++ -zskip -brickwise -mask MNI_mask_epiRes.nii -overwrite -prefix ttest_allSubj -setA ${outName[@]}
 
-# ADD ATLAS FILE
-# ln -sf ${AFNI_HOME}/MNI152_T1_2009c+tlrc.* ./
+# ADD ATLAS AND SUMA FILES
+ln -sf /data/jangrawdc/SUMA/suma_MNI_N27/MNI_N27_SurfVol.nii ./
+ln -sf /data/jangrawdc/SUMA/suma_MNI_N27 ./
+ln -sf ${AFNI_HOME}/MNI152_T1_2009c+tlrc.* ./

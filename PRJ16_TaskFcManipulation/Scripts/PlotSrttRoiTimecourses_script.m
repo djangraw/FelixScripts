@@ -1,24 +1,25 @@
 % PlotSrttRoiTimecourses_script.m
 %
 % Created 12/28/17 by DJ.
+% Updated 1/4/18 by DJ - using v3
 
 % Load ROIs
-cd /data/jangrawdc/PRJ16_TaskFcManipulation/RawData/GROUP_TEST
+cd /data/jangrawdc/PRJ16_TaskFcManipulation/RawData/GROUP_TTEST_v3
 rois = BrikLoad('ttest_uns-str_q01_ClustMask+tlrc.HEAD');
 rois_8 = rois;
 rois_8(rois>8) = 0;
 
 % Load mean timecourse
-cd /data/jangrawdc/PRJ16_TaskFcManipulation/RawData/GROUP_MEAN
+cd /data/jangrawdc/PRJ16_TaskFcManipulation/RawData/GROUP_MEAN_v3
 nSubj = numel(dir('all_runs*.HEAD'));
 brick = BrikLoad('MEAN_all_runs_nonuisance+tlrc');
 brick(isnan(brick))=0; % set nans to 0s
 
 % Get mask
-mask = any(brick>0,4);
+mask = BrikLoad('MNI_mask_epiRes.nii');
 
 % Get task timecourse
-Xmat = Read_1D('/gpfs/gsfs8/users/jangrawdc/PRJ16_TaskFcManipulation/RawData/tb0027/tb0027.srtt_v2/X.stim.xmat.1D');
+Xmat = Read_1D('/gpfs/gsfs8/users/jangrawdc/PRJ16_TaskFcManipulation/RawData/tb0027/tb0027.srtt_v3/X.stim.xmat.1D');
 taskTc = sum(Xmat(:,1:3),2) + 2*sum(Xmat(:,4:6),2);
 
 % Plot

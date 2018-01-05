@@ -5,6 +5,7 @@
 # Updated 12/19/17 by DJ - updated folderSuffix to _v2
 # Updated 12/21/17 by DJ - defined and dealt with 4 badSubjects.
 # Updated 1/2/18 by DJ - updated folderSuffix to _v3
+# Updated 1/4/18 by DJ - added high-motion subjs to badSubjects
 
 PRJDIR=/data/jangrawdc/PRJ16_TaskFcManipulation
 
@@ -22,7 +23,10 @@ for i in `seq 0 $nSubjm1`; do
 done
 
 # Remove bad subjects from iOkSubjects list
-badSubjects=(tb0138 tb5688 tb8101 tb8357)
+# wrong data duration: tb0138 tb5688 tb8101 tb8357
+# motion >0.2mm/TR: tb7521 tb8111 tb8848
+# censored >40% in any condition: tb7521 tb8111 tb8848 tb8930 tb9332 tb9368 tb9692
+badSubjects=(tb0138 tb5688 tb8101 tb8357 tb7521 tb8111 tb8848 tb8930 tb9332 tb9368 tb9692)
 iOkSubjects=()
 for i in `seq 0 $nSubjm1`; do
   isBadSubj=0
