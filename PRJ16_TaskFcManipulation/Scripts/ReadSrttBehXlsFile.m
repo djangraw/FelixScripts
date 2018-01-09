@@ -36,7 +36,7 @@ rtTable.Properties.DimensionNames{1} = 'MRI_ID';
 
 %% Add to table
 behTable = join(rtTable,scoreTable,'Keys','RowNames');
-% Reorder
+% Reorder columns
 behTable = behTable(:, [22:end, 1:21]);
 
 

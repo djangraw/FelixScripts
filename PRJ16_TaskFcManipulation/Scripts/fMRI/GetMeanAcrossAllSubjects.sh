@@ -43,4 +43,4 @@ cd $outPath
 3dMean -non_zero -overwrite -prefix MEAN_all_runs_nonuisance ${outName[@]}
 
 # StdDev across subjects
-3dMean -std -overwrite -prefix STD_all_runs_nonuisance ${outName[@]}
+3dMean -stdev -overwrite -prefix STD_all_runs_nonuisance ${outName[@]}

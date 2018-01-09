@@ -17,7 +17,7 @@ for i=1:numel(iVar)
 end
 reviewTable.Properties.VariableNames = varNames;
 
-% Find problematic subjects
+%% Find problematic subjects
 param = 'fractionTRsCensored';
 thresh = 0.2;
 isParam = strncmp(varNames,param,length(param));

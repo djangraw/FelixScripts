@@ -6,7 +6,7 @@
 
 % Load data
 filename = '/data/jangrawdc/PRJ16_TaskFcManipulation/Behavioral/SRTT-Behavior_A182SRTTdata_25Jan2017.xlsx';
-fprintf('Loading reading behavior...\n');
+fprintf('Loading trial-by-trial behavior...\n');
 % behTable = ReadSrttBehXlsFile(filename);
 trialBehTable = ReadSrttTrialByTrialBeh(filename);
 fprintf('Done!\n');

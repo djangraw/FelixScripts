@@ -33,7 +33,7 @@ echo ${iSubjects[@]}
 
 # Get path to output folder
 outPath=${PRJDIR}/RawData/${outFolder}
-rm -rf $outPath
+# rm -rf $outPath
 mkdir -p $outPath
 
 let nOkSubj=${#iSubjects[@]}
