@@ -35,8 +35,8 @@ let lastBrick=$nT-1
 # Run 3dttest++ for each subbrick
 for i in `seq 0 $lastBrick`;
 do
-    echo "3dttest++ -mask MNI_mask_epiRes.nii -overwrite -prefix ttest_allSubj -setA ${coefPrefix}*.HEAD[$i] -covariates $covarFile $clustOption"
-    3dttest++ -mask MNI_mask_epiRes.nii -overwrite -prefix ${outPrefix}_brick${i} -setA ${coefPrefix}*.HEAD[$i] -covariates $covarFile $clustOption
+    echo "3dttest++ -mask MNI_mask_epiRes.nii -overwrite -prefix ${outPrefix}_brick${i} -setA ${coefPrefix}*.HEAD[$i] -covariates $covarFile $clustOption"
+    # 3dttest++ -mask MNI_mask_epiRes.nii -overwrite -prefix ${outPrefix}_brick${i} -setA ${coefPrefix}*.HEAD[$i] -covariates $covarFile $clustOption
 done
 # combine the results
 # 3dTcat -prefix ${outPrefix}_allBricks -overwrite ${outPrefix}_brick*.HEAD
