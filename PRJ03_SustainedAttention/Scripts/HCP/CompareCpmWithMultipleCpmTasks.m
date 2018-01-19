@@ -119,15 +119,14 @@ cv = setCrossValidationStruct(sprintf('%dfold',nFolds),nSubj);
 testingSubj = cv.outTrials;
 
 % Append FC vecs
-fcMats_append = reshape(permute(fcMats,[1 3 2]),[size(fcMats,1)*nTasks,nSubj);
+fcMats_append = reshape(permute(fcMats,[1 3 2]),[size(fcMats,1)*nTasks,nSubj]);
 [cp_all_append, cr_all_append] = deal(cell(1,nBeh));
 for j=1:nBeh
     for i=1:nTasks
         cp_vec = VectorizeFc(cp_all{i,j});
-        cp_vec_max = max(cp_vec,[],2);
         cr_vec = VectorizeFc(cr_all{i,j});
-        cr_vec_min = min(abs(cr_vec),[],2)*sign(cr_vec(1));
-        cp_all_append{j} = cat(3,cp_all_append{j}, cp_all{i,:
+        cp_all_append{j} = cat(1,cp_all_append{j}, cp_vec);
+        cr_all_append{j} = cat(1,cr_all_append{j}, cr_vec);        
     end
 end
 
@@ -139,7 +138,7 @@ for j=1:nBeh
     % Get scores
     pred_glm{j} = nan(1,nSubj);
     for k=1:nFolds            
-        comboMask = GetNetworkAtThreshold(cr_all_append(:,:,k),cp_all_append{j}(:,:,k),thresh);
+        comboMask = GetNetworkAtThreshold(cr_all_append{j}(:,k),cp_all_append{j}(:,k),thresh);
         [~,~,pred_glm_append{j}(testingSubj{k})] = GetFcMaskMatch(UnvectorizeFc(fcMats(:,testingSubj{k},i),0,true),comboMask>0,comboMask<0);
     end
     % Correlate with behavior
