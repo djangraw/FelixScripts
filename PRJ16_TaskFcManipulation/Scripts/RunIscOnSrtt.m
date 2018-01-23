@@ -19,8 +19,8 @@ nSubj = numel(subjects);
 fprintf('=== %s - Loading Data... ===\n',datestr(now,0));
 for iSubj=1:nSubj
     fprintf('%s - subj %d/%d...\n',datestr(now,0),iSubj,nSubj);
-    subjstr = sprintf('%04d',subjects(iSubj));
-    filename = sprintf('%s/%s/%s.srtt_v2/all_runs_nonuisance.%s.scale+tlrc',inputdir,subjStr,subjStr,subjStr);
+    subjStr = sprintf('tb%04d',subjects(iSubj));
+    filename = sprintf('%s/%s/%s.srtt_v3/all_runs_nonuisance.%s+tlrc',inputdir,subjStr,subjStr,subjStr);
     [err, data{iSubj}, Info{iSubj}, ErrMessage] = BrikLoad(filename);
 end
 data = cat(5,data{:});

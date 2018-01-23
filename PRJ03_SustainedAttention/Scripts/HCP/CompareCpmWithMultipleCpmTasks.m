@@ -111,9 +111,6 @@ ylabel('fMRI task');
 
 %% Use all tasks instead of just one
 
-thresh = 0.01;
-corrtype = 'Spearman';
-
 % Get CV folds
 cv = setCrossValidationStruct(sprintf('%dfold',nFolds),nSubj);
 testingSubj = cv.outTrials;
@@ -126,11 +123,14 @@ for j=1:nBeh
         cp_vec = VectorizeFc(cp_all{i,j});
         cr_vec = VectorizeFc(cr_all{i,j});
         cp_all_append{j} = cat(1,cp_all_append{j}, cp_vec);
-        cr_all_append{j} = cat(1,cr_all_append{j}, cr_vec);        
+        cr_all_append{j} = cat(1,cr_all_append{j}, cr_vec); 
     end
 end
 
+%% Get correlations at given threshold
 % Set up
+thresh = 0.01;
+corrtype = 'Spearman';
 [r_true_append, p_true_append] = deal(nan(1,nBeh));
 pred_glm_append = deal(cell(1,nBeh));
 for j=1:nBeh
@@ -139,8 +139,27 @@ for j=1:nBeh
     pred_glm{j} = nan(1,nSubj);
     for k=1:nFolds            
         comboMask = GetNetworkAtThreshold(cr_all_append{j}(:,k),cp_all_append{j}(:,k),thresh);
-        [~,~,pred_glm_append{j}(testingSubj{k})] = GetFcMaskMatch(UnvectorizeFc(fcMats(:,testingSubj{k},i),0,true),comboMask>0,comboMask<0);
+        [~,~,pred_glm_append{j}(testingSubj{k})] = GetFcMaskMatch(fcMats_append(:,testingSubj{k}),comboMask>0,comboMask<0);
     end
     % Correlate with behavior
-    [r_true(j),p_true(j)] = corr(pred_glm{j}', beh(:,j),'tail','right','type',corrtype);        
+    [r_true_append(j),p_true_append(j)] = corr(pred_glm_append{j}', beh(:,j),'tail','right','type',corrtype);        
 end
+
+%% Plot results
+figure(654); clf;
+subplot(1,2,1);
+imagesc([r_true; r_true_append]);
+colorbar;
+title('R values');
+set(gca,'xtick',1:nBeh,'xticklabel',behNames,'ytick',1:nTasks+1,'yticklabel',[tasks, {'ALL'}])
+xlabel('behavior');
+ylabel('fMRI task');
+xticklabel_rotate([],45);
+subplot(1,2,2);
+imagesc(log10([p_true; p_true_append]));
+colorbar;
+title('log_{10}(P) values')
+set(gca,'xtick',1:nBeh,'xticklabel',behNames,'ytick',1:nTasks+1,'yticklabel',[tasks, {'ALL'}])
+xticklabel_rotate([],45);
+xlabel('behavior');
+ylabel('fMRI task');
