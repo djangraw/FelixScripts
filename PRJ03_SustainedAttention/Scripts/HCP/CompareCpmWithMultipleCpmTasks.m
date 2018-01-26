@@ -22,9 +22,12 @@ end
 % Load behavior
 fprintf('Loading behavior...\n');
 cd /data/jangrawdc/PRJ03_SustainedAttention/Results/FromEmily
-info = readtable('unrestricted_esfinn_7_14_2016_8_52_0.csv');
-beh = [info.PicSeq_Unadj, info.CardSort_Unadj, info.Flanker_Unadj, info.PicVocab_Unadj, info.ProcSpeed_Unadj, info.ListSort_Unadj, info.ReadEng_Unadj, info.PMAT24_A_CR];  
-behNames = {'Pic Seq (ep mem)','Card Sort (cog flex)','Flanker (inhib)','Pic Vocab (lang)','Pattern Compl (proc speed)','List Sort (WM)','Oral Reading Recog', 'PMAT (IQ)'};
+% info = readtable('unrestricted_esfinn_7_14_2016_8_52_0.csv');
+% beh = [info.PicSeq_Unadj, info.CardSort_Unadj, info.Flanker_Unadj, info.PicVocab_Unadj, info.ProcSpeed_Unadj, info.ListSort_Unadj, info.ReadEng_Unadj, info.PMAT24_A_CR];  
+% behNames = {'Pic Seq (ep mem)','Card Sort (cog flex)','Flanker (inhib)','Pic Vocab (lang)','Pattern Compl (proc speed)','List Sort (WM)','Oral Reading Recog', 'PMAT (IQ)'};
+[info, beh, behNames,taskBeh,taskBehNames,otherBeh,otherBehNames] = LoadHcpBehavior();
+beh = [beh,taskBeh];
+behNames = [behNames, taskBehNames];
 nBeh = size(beh,2);
 
 %% Crop both to ok subjects

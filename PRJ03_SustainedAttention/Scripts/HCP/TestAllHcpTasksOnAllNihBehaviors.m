@@ -14,9 +14,11 @@ readingNetwork_vec = VectorizeFc(readingNetwork);
 
 % Load behavior
 cd /data/jangrawdc/PRJ03_SustainedAttention/Results/FromEmily
-info = readtable('unrestricted_esfinn_7_14_2016_8_52_0.csv');
-beh = [info.PicSeq_Unadj, info.CardSort_Unadj, info.Flanker_Unadj, info.PicVocab_Unadj, info.ProcSpeed_Unadj, info.ListSort_Unadj, info.ReadEng_Unadj, info.PMAT24_A_CR];  
-behNames = {'Pic Seq (ep mem)','Card Sort (cog flex)','Flanker (inhib)','Pic Vocab (lang)','Pattern Compl (proc speed)','List Sort (WM)','Oral Reading Recog', 'PMAT (IQ)'};
+% info = readtable('unrestricted_esfinn_7_14_2016_8_52_0.csv');
+% beh = [info.PicSeq_Unadj, info.CardSort_Unadj, info.Flanker_Unadj, info.PicVocab_Unadj, info.ProcSpeed_Unadj, info.ListSort_Unadj, info.ReadEng_Unadj, info.PMAT24_A_CR];  
+% behNames = {'Pic Seq (ep mem)','Card Sort (cog flex)','Flanker (inhib)','Pic Vocab (lang)','Pattern Compl (proc speed)','List Sort (WM)','Oral Reading Recog', 'PMAT (IQ)'};
+[info, beh, behNames] = LoadHcpBehavior()
+
 % Load FC matrices
 foo = load(sprintf('HCP900_%s_mats',tasks{1}),'HCP900_sub_id');
 nSubj = numel(foo.HCP900_sub_id);
