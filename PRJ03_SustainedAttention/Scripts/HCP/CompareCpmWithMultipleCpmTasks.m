@@ -101,6 +101,7 @@ colorbar;
 title('R values');
 set(gca,'xtick',1:nBeh,'xticklabel',behNames,'ytick',1:nTasks,'yticklabel',tasks)
 xlabel('behavior');
+
 ylabel('fMRI task');
 xticklabel_rotate([],45);
 subplot(1,2,2);
@@ -166,3 +167,5 @@ set(gca,'xtick',1:nBeh,'xticklabel',behNames,'ytick',1:nTasks+1,'yticklabel',[ta
 xticklabel_rotate([],45);
 xlabel('behavior');
 ylabel('fMRI task');
+
+%% Which Areas are Involved? TBD.

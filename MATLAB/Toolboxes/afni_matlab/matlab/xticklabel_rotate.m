@@ -246,6 +246,7 @@ else
             origpos(3)-(min(leftdist,labyorigpos(1)))+labyorigpos(1)-largest ...
             origpos(4)-(longest)+get(gca,'FontSize')];  
 end
+newpos(newpos<0)=0; % Added 1/26/18 by DJ
 set(gca,'position',newpos)                      ;
 
 % readjust position of text labels after resize of plot
