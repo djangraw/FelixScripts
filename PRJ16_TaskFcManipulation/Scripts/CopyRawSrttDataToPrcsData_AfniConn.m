@@ -35,13 +35,19 @@ for i=1:numel(subjects)
     % Find files
     anatFile = sprintf('%s/%s/%s.srtt_v3/anat_final.%s+tlrc',rawDir,subjstr{i},subjstr{i},subjstr{i});
     funcFile = sprintf('%s/%s/%s.srtt_v3/all_runs_nonuisance_nowmcsf.%s+tlrc',rawDir,subjstr{i},subjstr{i},subjstr{i});
-    
+    gmFile = sprintf('%s/%s/%s.srtt_v3/Segsy/GM_Classes+tlrc',rawDir,subjstr{i},subjstr{i});
+    wmFile = sprintf('%s/%s/%s.srtt_v3/Segsy/WM_Classes+tlrc',rawDir,subjstr{i},subjstr{i});
+    csfFile = sprintf('%s/%s/%s.srtt_v3/Segsy/CSF_Classes+tlrc',rawDir,subjstr{i},subjstr{i});
     % make symbolic links
-     mkdir(sprintf('%s/%s/',targetDir,subjstr{i}));
+    mkdir(sprintf('%s/%s/',targetDir,subjstr{i}));
     cd(sprintf('%s/%s/',targetDir,subjstr{i}));
 %     system(sprintf('ln -s %s* .',anatFile));
 %     system(sprintf('ln -s %s.HEAD func_final.%s+tlrc.HEAD',funcFile,subjstr{i}));
 %     system(sprintf('ln -s %s.BRIK func_final.%s+tlrc.BRIK',funcFile,subjstr{i}));
     system(sprintf('3dcopy %s anat_final.%s.nii.gz',anatFile,subjstr{i}));
     system(sprintf('3dcopy %s func_final.%s.nii.gz',funcFile,subjstr{i}));
+%     system(sprintf('3dcopy %s GM_mask.%s.nii',gmFile,subjstr{i}));
+%     system(sprintf('3dcopy %s WM_mask.%s.nii',wmFile,subjstr{i}));
+%     system(sprintf('3dcopy %s CSF_mask.%s.nii',csfFile,subjstr{i}));
+
 end
