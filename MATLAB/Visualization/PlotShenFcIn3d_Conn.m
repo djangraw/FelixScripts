@@ -24,7 +24,9 @@ if ~exist('sphereSize','var') || isempty(sphereSize)
 end
 
 % Load atlas
-atlasFile = '/data/jangrawdc/PRJ03_SustainedAttention/Results/Shen_2013_atlas/shen_1mm_268_parcellation+tlrc';
+% atlasFile = '/data/jangrawdc/PRJ03_SustainedAttention/Results/Shen_2013_atlas/shen_1mm_268_parcellation+tlrc';
+vars = GetDistractionVariables();
+atlasFile = fullfile(vars.homedir, 'Results/Shen_2013_atlas/shen_1mm_268_parcellation+tlrc');
 [shenAtlas,shenInfo] = BrikLoad(atlasFile);
 
 %% Declare parameters
