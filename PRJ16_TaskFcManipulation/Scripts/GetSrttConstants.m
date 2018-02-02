@@ -3,8 +3,15 @@ function info = GetSrttConstants()
 % GetSrttConstants()
 %
 % Created 1/26/18 by DJ.
+% Updated 2/1/18 by DJ - detect local machine and adjust PRJDIR
 
-info.PRJDIR = '/data/jangrawdc/PRJ16_TaskFcManipulation';
+% Find out if this is local or cluster machine
+hostname = char( getHostName( java.net.InetAddress.getLocalHost ) );
+if strcmp(hostname,'MH01971391MACLT') % Dave's local machine
+    info.PRJDIR = '/Volumes/data/PRJ16_TaskFcManipulation';
+else % Helix/Felix/Biowulf
+    info.PRJDIR = '/data/jangrawdc/PRJ16_TaskFcManipulation';
+end
 
 % Get all subjects
 foo = dir(sprintf('%s/RawData/tb*',info.PRJDIR));

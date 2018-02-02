@@ -17,6 +17,7 @@ function h = PlotShenFcIn3d_Conn(FC,sphereSize)
 % Created 2/9/17 by DJ.
 % Updated 2/10/17 by DJ - added sphereSize input.
 % Updated 2/23/17 by DJ - added h output.
+% Updated 2/1/18 by DJ - added hack for no-line plot
 
 % Declare defaults
 if ~exist('sphereSize','var') || isempty(sphereSize)
@@ -65,7 +66,13 @@ else
 end
 %% Plot with default surface
 % Plot
-h = conn_mesh_display('', '', '', XYZ, FC, .2);
+if any(FC(:)~=0)
+    h = conn_mesh_display('', '', '', XYZ, FC, .2);
+else % Hack to avoid conn error for line-free plot
+    FC(1,2) = 1; % Make dummy line
+    h = conn_mesh_display('', '', '', XYZ, FC, .2);
+    feval(h,'con_transparency',0); % Make dummy line disappear
+end
 % Make brain surface very transparent
 feval(h,'brain_transparency',0.1);
 feval(h,'sub_transparency',0.1);
