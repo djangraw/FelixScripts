@@ -1,17 +1,30 @@
 function covarTable = WriteAfniCovarFileForSrttData(subjects,params,outFile)
 
-% WriteAfniCovarFileForSrttData(subjects,params,outFile)
+% covarTable = WriteAfniCovarFileForSrttData(subjects,params,outFile)
 %
+% INPUTS:
+% -subjects is a cell array of strings indicating the subject names to be
+% included. Default = 'all', where all subjects with no missing data will
+% be included. 
+% -params is a cell array of strings.
+% -outFile is a string indicating the file where the output will be saved.
+% If empty, this program returns the table but doesn't save. Default:
+% 'srttCovarFile.txt'.
+%
+% OUTPUTS:
+% -covarTable is a table containing the requested info for each subject.
+% 
 % Created 1/8/18 by DJ.
+% Updated 2/2/18 by DJ - added empty outFile option, comments.
 
 % Declare defaults
 if ~exist('subjects','var') || isempty(subjects)
     subjects = 'all';
 end
 if ~exist('params','var') || isempty(params)
-    params = {'subjectID','averageMotion_perTR_','readingPc1','MeanRt','RT_lastRun_UnsMinusStr'};
+    params = {'subjectID','averageMotion_perTR_','readingPc1','MeanRT','RT_lastRun_UnsMinusStr'};
 end
-if ~exist('outFile','var') || isempty(outFile)
+if ~exist('outFile','var')
     outFile = 'srttCovarFile.txt';
 end
 
@@ -107,6 +120,8 @@ prefix = 'coef.';
 covarTable.subjectID = cellfun(@(x) [prefix, x], covarTable.subjectID,'UniformOutput',false);
 
 %% Write to file
-fprintf('Writing results to file...\n');
-WriteAfniCovarFile(outFile,covarTable);
+if ~isempty(outFile)
+    fprintf('Writing results to file...\n');
+    WriteAfniCovarFile(outFile,covarTable);
+end
 fprintf('Done!\n');

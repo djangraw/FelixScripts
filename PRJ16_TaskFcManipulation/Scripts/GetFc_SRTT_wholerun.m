@@ -28,7 +28,11 @@ for i=1:nSubj
     tic;
     fprintf('Subj %d/%d...\n',i,nSubj);
     % Load timecourses in each ROI
-    filename = sprintf('%s/%s/%s.srtt%s/all_runs_nonuisance.%s.shen_ROI_TS.1D',PRJDIR,subjects{i},subjects{i},folderSuffix,subjects{i});
+    if isempty(folderSuffix)
+        filename = sprintf('%s/%s/%s.srtt%s/all_runs_nonuisance.%s.shen_ROI_TS.1D',PRJDIR,subjects{i},subjects{i},folderSuffix,subjects{i});
+    else
+        filename = sprintf('%s/%s/%s.srtt%s/all_runs_nonuisance_nowmcsf.%s.shen_ROI_TS.1D',PRJDIR,subjects{i},subjects{i},folderSuffix,subjects{i});
+    end
     [err, roiTc] = Read_1D(filename);
     % Load censor file
     filename = sprintf('%s/%s/%s.srtt%s/censor_%s_combined_2.1D',PRJDIR,subjects{i},subjects{i},folderSuffix,subjects{i});

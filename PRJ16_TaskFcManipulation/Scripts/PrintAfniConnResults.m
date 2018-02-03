@@ -1,11 +1,15 @@
-function h = PrintAfniConnResults(contrastType,iRoi,thresh,viewTypes,roiName)
+function h = PrintAfniConnResults(subjContrast,fcContrast,iRoi,thresh,viewTypes,roiName)
 % PrintAfniConnResults.m
 %
 % Created 2/1/18 by DJ.
+% Updated 2/2/18 by DJ - added subjContrast.
 
 % Parse inputs
-if ~exist('contrastType','var') || isempty(contrastType)
-    contrastType='str.uns';
+if ~exist('subjContrast','var') || isempty(subjContrast)
+    subjContrast = 'AllSubjects';
+end
+if ~exist('fcContrast','var') || isempty(fcContrast)
+    fcContrast='str.uns';
 end
 if ~exist('iRoi','var') || isempty(iRoi)
     iRoi=151;
@@ -23,8 +27,8 @@ end
 
 %% Load
 info=GetSrttConstants();
-load(sprintf('%s/AfniConn/conn_project_SRTT_d3/results/secondlevel/ANALYSIS_01/AllSubjects/%s/ROI.mat',info.PRJDIR,contrastType));
-
+% load(sprintf('%s/AfniConn/conn_project_SRTT_d3/results/secondlevel/ANALYSIS_01/AllSubjects/%s/ROI.mat',info.PRJDIR,contrastType));
+load(sprintf('%s/AfniConn/conn_project_SRTT_d3/results/secondlevel/ANALYSIS_01/%s/%s/ROI.mat',info.PRJDIR,subjContrast,fcContrast));
 %% Plot
 % iRoi = 151;
 % thresh = 0.05;
@@ -43,15 +47,19 @@ isSig = (p_fdr<thresh).*isPos - (p_fdr<thresh).*(~isPos);
 foo = zeros(268);
 foo(iRoi,:) = isSig;
 foo(:,iRoi) = isSig;
+if ~any(foo(:)~=0)
+    fprintf('roi %d; no edges survive!\n',iRoi);
+    return;
+end
 % Plot with conn
 h = PlotShenFcIn3d_Conn(foo);
 % Change background and figure size
 feval(h,'background',[1 1 1]); % white background
 set(gcf,'Units','points','Position',[0  360  330  280]);
 if ~isempty(roiName)
-    title(sprintf('%s contrast, ROI %d (%s), q<%g',contrastType,iRoi,roiName,thresh));
+    title(sprintf('%s contrast, ROI %d (%s), q<%g',fcContrast,iRoi,roiName,thresh));
 else
-    title(sprintf('%s contrast, ROI %d, q<%g',contrastType,iRoi,thresh));
+    title(sprintf('%s contrast, ROI %d, q<%g',fcContrast,iRoi,thresh));
 end
 for iView = 1:numel(viewTypes)
     switch viewTypes{iView}
@@ -64,8 +72,8 @@ for iView = 1:numel(viewTypes)
     end
     drawnow;
     % print
-    filename = sprintf('%s/Results/AfniConn_%s_roi%03d_p%g_%s.jpg',...
-        info.PRJDIR,contrastType,iRoi,thresh,viewTypes{iView});
+    filename = sprintf('%s/Results/AfniConn_%s_%s_roi%03d_p%g_%s.jpg',...
+        info.PRJDIR,subjContrast,fcContrast,iRoi,thresh,viewTypes{iView});
     conn_print(filename,'-djpeg90','-opengl','-nogui');
 end
 % close result
