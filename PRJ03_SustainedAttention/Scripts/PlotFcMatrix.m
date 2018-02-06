@@ -120,6 +120,9 @@ if showClusters
     if ~exist('clusterColors','var') || isempty(clusterColors)
         clusterColors = distinguishable_colors(nClusters);
     end
+    if size(idx_ordered,1)==1
+        idx_ordered = idx_ordered';
+    end
     iClusterEdge = [0; find(diff(idx_ordered)>0); numel(idx_ordered)];
 %     hGridVert = PlotVerticalLines(iClusterEdge+.5,'k');
 %     hGridHori = PlotHorizontalLines(iClusterEdge+5.,'k');
