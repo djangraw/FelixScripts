@@ -1,6 +1,24 @@
 function presses = GetTiming(duration,oldPresses)
 
-if nargin<2
+% function presses = GetTiming(duration,oldPresses)
+%
+% INPUTS:
+% -duration is a scalar indicating how long you would like the recording to
+% last (in seconds).
+% -oldPresses is a 2-column cell array containing the keypresses from a
+% previous GetTiming run (in case you want to add more to it).
+%
+% OUTPUTS:
+% -presses is a 2-column cell array where each row is a key pressed
+% sometime during the session. The first column is the key name, and the
+% second is a 2-column array where each row is the [onset, offset] times of
+% a keypress.
+%
+% Created ~4/29/15 by DJ.
+% Updated 2/6/18 by DJ - comments.
+
+% Declare defaults
+if ~exist('oldPresses','var') || isempty(oldPresses)
     oldPresses = cell(0,2);
 end
 % make figure and axes.
@@ -33,6 +51,7 @@ PlotTiming(presses);
 
 end
 
+% Declare subfunctions
 function handleKeypress(hObj,hEvent,hLine)
     thisKey = hEvent.Key;
     presses = get(gcf,'userdata');

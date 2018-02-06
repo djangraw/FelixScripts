@@ -27,7 +27,7 @@ function valOnAtlas = MapValuesOntoAtlas(atlas,values,indices,outFile,outInfo)
 % the given values. Any index not assigned a value will be set to 0.
 %
 % Created 12/22/15 by DJ.
-% Updated 2/8/18 by DJ - added loading & saving abilities, outFile/outInfo
+% Updated 2/6/18 by DJ - added loading & saving abilities, outFile/outInfo
 % inputs.
 
 % Declare defaults
