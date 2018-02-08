@@ -22,13 +22,14 @@ function [pred_pos, pred_neg, pred_glm,pos_mask_all,neg_mask_all] = RunKfoldBeha
 % -pos/neg_mask_all are mxmxn matrices containing the weight of each edge
 % in each of the n LOSO iterations.
 % -cp/cr are mxmxn matrices containing the p and r values for each edge in
-% each of the n LOSO iterations.
+% each of the n CV iterations.
 %
 % Created 12/29/16 by DJ.
 % Updated 1/3/17 by DJ - comments
 % Updated 2/21/17 by DJ - use parfor if robustfit option, otherwise "for"
 % Updated 5/11/17 by DJ - removed *2 scaling factor for combo scores
 % Updated 11/6/17 by DJ - moved from LOO to k-fold CV
+% Updated 2/8/18 by DJ - made default nFolds = nSubj (LOO CV).
 
 if ~exist('thresh','var') || isempty(thresh)
     thresh = 0.01;               % p-value threshold for feature selection
@@ -42,9 +43,12 @@ if ~exist('mask_method','var') || isempty(mask_method)
     mask_method = 'one'; % binary mask
     % mask_method = 'log'; % weight = negative log of p value 
 end
+if ~exist('nFolds','var') || isempty(nFolds)
+    nFolds = size(FC,3); % default to the # of subjects (LOO CV)
+end
 
 % Declare constants
-n_node      = size(FC,1);                % number of nodes
+n_node      = size(FC,1); % number of nodes
 n_sub       = size(FC,3); % number of subjects
 
 % Get upper triangular elements
