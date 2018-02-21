@@ -184,6 +184,6 @@ sleep 1 #2
 echo "Saving montaged image as ${image_fin} and removing temporary files...\n"
 montage -background '#000000' -geometry +0+0 `ls $image_dir/${image_pre}*`  $image_fin
 # remove temporary images
-# rm $image_dir/${image_pre}*
+rm $image_dir/${image_pre}*
 
 echo "\n===DONE!===\n"
