@@ -21,21 +21,22 @@ set suma_sv   = "$afni_ulay"    # created somehow
 
 # user chooses which betas are selected for olay, and thr volumes are
 # presently assumed to be at +1 relative to each of these indices
-set beta_ind = 16 # index of betas in afni_olay (assume threshold is next one up)
+set beta_ind = 22 # index of betas in afni_olay
+set thresh_ind = 23 # index of threshold in afni olay
 
 # image props
 set image_dir = "./SUMA_IMAGES"        # store jpgs here
 set image_pre = "suma_images"        # ... with this prefix
-set image_fin = "${image_dir}/suma_final_new.jpg"             # final movie name (with suffix)
+set image_fin = "${image_dir}/TEMP.jpg"             # final movie name (with suffix)
 
 # size of the image window, given as:
 # leftcorner_X  leftcorner_Y  windowwidth_X  windowwith_Y
 setenv SUMA_Position_Original "50 50 500 425"
 
 # set values for things in driven AFNI
-set func_range = 0.5
-# set thr_thresh = 2.554 # t corresponding to q=0.05
-set thr_thresh = 1.962 # t value corresponding to p=0.05
+set func_range = 0.3 #1
+set thr_thresh = 2.576 # z corresponding to p=0.01
+# set thr_thresh = 1.96 # z value corresponding to p=0.05
 # set my_cbar    = "Spectrum:red_to_blue" # "Viridis"
 set my_cbar = "Reds_and_Blues_w_Green"
 
@@ -64,7 +65,7 @@ sleep 10 #15
 
 # just for starters
 set bb = $beta_ind
-@   tt = $bb + 1
+set tt = $thresh_ind
 
 # NB: Plugout drive options located at:
 # http://afni.nimh.nih.gov/pub/dist/doc/program_help/README.driver.html
