@@ -15,30 +15,31 @@
 
 # dsets
 set afni_ulay = "MNI_N27_SurfVol.nii"    # can be struc or whatev
-set afni_olay = "ttest_allSubj+tlrc"    # has betas and ts
+set afni_olay = "Str-Uns_AllSubj_Conj-Mag-FcWShen167+tlrc"    # has betas and ts
 set suma_spec = "suma_MNI_N27/MNI_N27_both.spec"    # created somehow
 set suma_sv   = "$afni_ulay"    # created somehow
 
 # user chooses which betas are selected for olay, and thr volumes are
 # presently assumed to be at +1 relative to each of these indices
-set beta_ind = 22 # index of betas in afni_olay
-set thresh_ind = 23 # index of threshold in afni olay
+set beta_ind = 0 # index of betas in afni_olay
+set thresh_ind = 0 # index of threshold in afni olay
 
 # image props
 set image_dir = "./SUMA_IMAGES"        # store jpgs here
 set image_pre = "suma_images"        # ... with this prefix
-set image_fin = "${image_dir}/TEMP.jpg"             # final movie name (with suffix)
+set image_fin = "${image_dir}/Str-Uns_AllSubj_Conj-Mag-FcWShen167.jpg"             # final movie name (with suffix)
 
 # size of the image window, given as:
 # leftcorner_X  leftcorner_Y  windowwidth_X  windowwith_Y
 setenv SUMA_Position_Original "50 50 500 425"
 
 # set values for things in driven AFNI
-set func_range = 0.3 #1
-set thr_thresh = 2.576 # z corresponding to p=0.01
+set func_range = 10 #1
+set thr_thresh = 0 # 2.576 # z corresponding to p=0.01
 # set thr_thresh = 1.96 # z value corresponding to p=0.05
 # set my_cbar    = "Spectrum:red_to_blue" # "Viridis"
-set my_cbar = "Reds_and_Blues_w_Green"
+# set my_cbar = "Reds_and_Blues_w_Green" # add FLIP to flip sign of normal colorbar
+set my_cbar = "ROI_i32" # add FLIP to flip sign of normal colorbar
 
 # ==================================================================
 

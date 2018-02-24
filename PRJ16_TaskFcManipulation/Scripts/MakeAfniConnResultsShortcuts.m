@@ -3,8 +3,8 @@
 % Created 2/22/18 by DJ.
 
 analysis = 'SeedToVoxel';
-rois = {'ShenAtlas.ROI167'};
-roiNames = {'Shen167'};
+rois = {'ShenAtlas.ROI167','ShenAtlas.ROI184','ShenAtlas.ROI151'};
+roiNames = {'Shen167','Shen184','Shen151'};
 groups = {'AllSubjects','AllSubjects(0).ReadingPC1(1)'};
 groupNames = {'AllSubj','ReadingPc1'};
 contrasts = {'str.uns','str(1).uns(-1)'};
@@ -23,12 +23,18 @@ for i=1:numel(groups)
                 info.PRJDIR,analysis,groups{i},contrasts{j},rois{k});
             oldImg = sprintf('%s_%s_FcW%s.img',contrastNames{j},groupNames{i},roiNames{k});
             oldHdr = sprintf('%s_%s_FcW%s.hdr',contrastNames{j},groupNames{i},roiNames{k});
-            cmd = sprintf('ln -s "%s/%s" %s',oldDir,oldImg,targetDir);
-            disp(cmd);
-            system(cmd);
-            cmd = sprintf('ln -s "%s/%s" %s',oldDir,oldHdr,targetDir);
-            disp(cmd);
-            system(cmd);
+            if ~exist(oldDir,'file')
+                fprintf('Folder %s does not exist!\n',oldDir);
+            elseif ~exist(sprintf('%s/%s',oldDir,oldImg),'file')
+                fprintf('File %s does not exist!\n',oldImg);
+            else
+                cmd = sprintf('ln -s "%s/%s" %s',oldDir,oldImg,targetDir);
+                disp(cmd);
+                system(cmd);
+                cmd = sprintf('ln -s "%s/%s" %s',oldDir,oldHdr,targetDir);
+                disp(cmd);
+                system(cmd);
+            end
         end
     end
 end
