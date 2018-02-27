@@ -54,7 +54,7 @@ if [ $remWmCsf == "true" ]; then
                    -censor censor_${subj}_combined_2.1D -cenmode ZERO                 \
                    -ort X_nuisance_wmcsf.nocensor.xmat.1D \
                    -overwrite -prefix all_runs_nonuisance_nowmcsf.$subj+tlrc.HEAD
-                   
+
 else
   # run 3dDeconvolve
   3dDeconvolve -input pb05.$subj.r*.scale+tlrc.HEAD                            \

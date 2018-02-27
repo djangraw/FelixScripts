@@ -51,9 +51,11 @@ do
     echo "===Subject ${subj}..."
     cd ${PRJDIR}/RawData/${subj}/${folder}
     # EXTRACT COEF SUBBRICKS FROM STATS DATASET
-    3dcalc -overwrite -prefix coef.${subj} -a stats.${subj}_REML+tlrc'[1..$(3)]' -expr 'a' # only _Coef bricks
+    # 3dcalc -overwrite -prefix coef.${subj} -a stats.${subj}_REML+tlrc'[1..$(3)]' -expr 'a' # only _Coef bricks
+    3dcalc -overwrite -prefix coef.noNuisanceRegs.${subj} -a stats.noNuisanceRegs.${subj}_REML+tlrc'[1..$(3)]' -expr 'a' # only _Coef bricks
     # RECORD OUTPUT NAME
-    outName[$i]=coef.${subj}+tlrc
+    # outName[$i]=coef.${subj}+tlrc
+    outName[$i]=coef.noNuisanceRegs.${subj}+tlrc
     # MAKE SHORTCUT
     ln -sf ${PRJDIR}/RawData/${subj}/${folder}/${outName[$i]}* ${outPath}/
 

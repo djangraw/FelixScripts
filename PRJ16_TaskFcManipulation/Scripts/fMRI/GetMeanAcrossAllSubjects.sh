@@ -6,6 +6,7 @@
 #
 # Created 12/27/17 by DJ.
 # Updated 1/2/18 by DJ - modified for _v3 analysis (removed scale suffix).
+# Updated 2/26/18 by DJ - switched from all_runs_nonuisance to errts.nowmcsf
 
 # Get subjects and folders arrays
 source 00_CommonVariables.sh
@@ -34,13 +35,14 @@ do
   cd ${PRJDIR}/RawData/${subj}/${folder}
 
   # MAKE SHORTCUT
-  outName[$i]=all_runs_nonuisance.${subj}+tlrc
+  # outName[$i]=all_runs_nonuisance.${subj}+tlrc
+  outName[$i]=errts.noNuisanceRegs.${subj}_REML+tlrc
   ln -sf ${PRJDIR}/RawData/${subj}/${folder}/${outName[$i]}* ${outPath}/
 done
 
 # Average across subjects
 cd $outPath
-3dMean -non_zero -overwrite -prefix MEAN_all_runs_nonuisance ${outName[@]}
+3dMean -non_zero -overwrite -prefix MEAN_all_runs_noNuisanceRegs ${outName[@]}
 
 # StdDev across subjects
-3dMean -stdev -overwrite -prefix STD_all_runs_nonuisance ${outName[@]}
+3dMean -stdev -overwrite -prefix STD_all_runs_noNuisanceRegs ${outName[@]}

@@ -1,15 +1,15 @@
 #!/bin/bash
 
-# RunSrtt3dDeconvolve_WmCsf.sh
+# RunSrtt3dDeconvolve_noNuisanceRegs.sh
 #
-# Regress out nuisance regressors like motion, polynomials, and WM/CSF timecourses.
+# Regress out task without nuisance regressors like motion, polynomials, and WM/CSF timecourses.
 #
 # USAGE:
-#   RunSrtt3dDeconvolve_WmCsf.sh $subj
+#   RunSrtt3dDeconvolve_noNuisanceRegs.sh $subj
 # INPUTS:
 # -subj is a string indicating the subject name, e.g., tb0065.
 #
-# Created 2/21/18 by DJ based on an afni_proc_srtt_v3 script and RemoveSrttNuisanceRegressors.sh.
+# Created 2/26/18 by DJ based on RunSrtt3dDeconvolve_WmCsf
 
 # parse inputs
 subj=$1
@@ -18,15 +18,15 @@ subj=$1
 cd /data/jangrawdc/PRJ16_TaskFcManipulation/RawData/$subj/$subj.srtt_v3
 
 # avoid overwriting old REML script and output
-mv stats.REML_cmd stats.afni_srtt_v3.REML_cmd
-mv 3dREMLfit.err 3dREMLfit.afni_srtt_v3.err
+# mv stats.REML_cmd stats.afni_srtt_v3.REML_cmd
+# mv 3dREMLfit.err 3dREMLfit.afni_srtt_v3.err
 
 # run 3dDeconvolve with WM/CSF regressors to get stats
 3dDeconvolve -input pb05.$subj.r*.scale+tlrc.HEAD                            \
     -censor censor_${subj}_combined_2.1D                                     \
     -polort 3                                                                \
     -local_times                                                             \
-    -num_stimts 20                                                           \
+    -num_stimts 6                                                           \
     -stim_times_AM1 1 stimuli/bl1_c1_unstr.txt 'dmBLOCK(1)'                  \
     -stim_label 1 uns1                                                       \
     -stim_times_AM1 2 stimuli/bl2_c1_unstr.txt 'dmBLOCK(1)'                  \
@@ -39,20 +39,6 @@ mv 3dREMLfit.err 3dREMLfit.afni_srtt_v3.err
     -stim_label 5 str2                                                       \
     -stim_times_AM1 6 stimuli/bl3_c2_str.txt 'dmBLOCK(1)'                    \
     -stim_label 6 str3                                                       \
-    -stim_file 7 motion_demean.1D'[0]' -stim_base 7 -stim_label 7 roll_01    \
-    -stim_file 8 motion_demean.1D'[1]' -stim_base 8 -stim_label 8 pitch_01   \
-    -stim_file 9 motion_demean.1D'[2]' -stim_base 9 -stim_label 9 yaw_01     \
-    -stim_file 10 motion_demean.1D'[3]' -stim_base 10 -stim_label 10 dS_01   \
-    -stim_file 11 motion_demean.1D'[4]' -stim_base 11 -stim_label 11 dL_01   \
-    -stim_file 12 motion_demean.1D'[5]' -stim_base 12 -stim_label 12 dP_01   \
-    -stim_file 13 motion_deriv.1D'[0]' -stim_base 13 -stim_label 13 roll_02  \
-    -stim_file 14 motion_deriv.1D'[1]' -stim_base 14 -stim_label 14 pitch_02 \
-    -stim_file 15 motion_deriv.1D'[2]' -stim_base 15 -stim_label 15 yaw_02   \
-    -stim_file 16 motion_deriv.1D'[3]' -stim_base 16 -stim_label 16 dS_02    \
-    -stim_file 17 motion_deriv.1D'[4]' -stim_base 17 -stim_label 17 dL_02    \
-    -stim_file 18 motion_deriv.1D'[5]' -stim_base 18 -stim_label 18 dP_02    \
-    -stim_file 19 WM_Timecourse.1D -stim_base 19 -stim_label 19 WM    \
-    -stim_file 20 CSF_Timecourse.1D -stim_base 20 -stim_label 20 CSF    \
     -num_glt 10                                                              \
     -gltsym 'SYM: +uns1 +uns2 +uns3'                                         \
     -glt_label 1 unstructured                                                \
@@ -76,9 +62,9 @@ mv 3dREMLfit.err 3dREMLfit.afni_srtt_v3.err
     -glt_label 10 'task BL3'                                                 \
     -jobs 10                                                                 \
     -fout -tout                                                              \
-    -fitts fitts.nowmcsf.${subj}                                             \
-    -errts errts.nowmcsf.${subj}                                             \
-    -bucket stats.nowmcsf.${subj}
+    -fitts fitts.noNuisanceRegs.${subj}                                             \
+    -errts errts.noNuisanceRegs.${subj}                                             \
+    -bucket stats.noNuisanceRegs.${subj}
 
 
 # if 3dDeconvolve fails, terminate the script
@@ -91,6 +77,6 @@ fi
 
 
 # -- execute the 3dREMLfit script, written by 3dDeconvolve --
-mv stats.REML_cmd stats.nowmcsf.REML_cmd
-tcsh -x stats.nowmcsf.REML_cmd
-mv 3dREMLfit.err 3dREMLfit.nowmcsf.err # to avoid confusing with old version
+mv stats.REML_cmd stats.noNuisanceRegs.REML_cmd
+tcsh -x stats.noNuisanceRegs.REML_cmd
+mv 3dREMLfit.err 3dREMLfit.noNuisanceRegs.err # to avoid confusing with old version

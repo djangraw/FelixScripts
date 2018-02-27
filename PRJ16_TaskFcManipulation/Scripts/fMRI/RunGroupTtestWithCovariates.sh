@@ -36,7 +36,7 @@ let lastBrick=$nT-1
 for i in `seq 0 $lastBrick`;
 do
     echo "3dttest++ -mask MNI_mask_epiRes.nii -overwrite -prefix ${outPrefix}_brick${i} -setA ${coefPrefix}*.HEAD[$i] -covariates $covarFile $clustOption"
-    # 3dttest++ -mask MNI_mask_epiRes.nii -overwrite -prefix ${outPrefix}_brick${i} -setA ${coefPrefix}*.HEAD[$i] -covariates $covarFile $clustOption
+    3dttest++ -mask MNI_mask_epiRes.nii -overwrite -prefix ${outPrefix}_brick${i} -setA ${coefPrefix}*.HEAD[$i] -covariates $covarFile $clustOption
 done
 # combine the results
-# 3dTcat -prefix ${outPrefix}_allBricks -overwrite ${outPrefix}_brick*.HEAD
+3dTcat -prefix ${outPrefix}_allBricks -overwrite ${outPrefix}_brick*.HEAD
