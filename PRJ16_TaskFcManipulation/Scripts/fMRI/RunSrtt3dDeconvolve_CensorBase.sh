@@ -20,7 +20,7 @@ cd /data/jangrawdc/PRJ16_TaskFcManipulation/RawData/$subj/$subj.srtt_v3
 
 
 # Add baseline blocks to censor files
-# -prefix censor_${subj}_combined_2_nobase.1D
+# Use MATLAB script WriteBaselineCensorFiles.m to create censor_${subj}_combined_2_nobase.1D 
 
 # detect number of runs by counting pb05 datasets
 nRuns=`ls pb05.$subj.r*.scale+tlrc.HEAD | wc -l`
