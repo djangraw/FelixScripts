@@ -36,13 +36,13 @@ do
 
   # MAKE SHORTCUT
   # outName[$i]=all_runs_nonuisance.${subj}+tlrc
-  outName[$i]=errts.censorbase.${subj}_REML+tlrc
+  outName[$i]=errts.censorbase15-nofilt.${subj}_REML+tlrc
   ln -sf ${PRJDIR}/RawData/${subj}/${folder}/${outName[$i]}* ${outPath}/
 done
 
 # Average across subjects
 cd $outPath
-3dMean -non_zero -overwrite -prefix MEAN_all_runs_CensorBase ${outName[@]}
+3dMean -non_zero -overwrite -prefix MEAN_all_runs_censorbase15-nofilt ${outName[@]}
 
 # StdDev across subjects
-3dMean -stdev -overwrite -prefix STD_all_runs_CensorBase ${outName[@]}
+3dMean -stdev -overwrite -prefix STD_all_runs_censorbase15-nofilt ${outName[@]}

@@ -52,10 +52,10 @@ do
     cd ${PRJDIR}/RawData/${subj}/${folder}
     # EXTRACT COEF SUBBRICKS FROM STATS DATASET
     # 3dcalc -overwrite -prefix coef.${subj} -a stats.${subj}_REML+tlrc'[1..$(3)]' -expr 'a' # only _Coef bricks
-    3dcalc -overwrite -prefix coef.censorbase.${subj} -a stats.censorbase.${subj}_REML+tlrc'[1..$(3)]' -expr 'a' # only _Coef bricks
+    3dcalc -overwrite -prefix coef.censorbase15-nofilt.${subj} -a stats.censorbase15-nofilt.${subj}_REML+tlrc'[1..$(3)]' -expr 'a' # only _Coef bricks
     # RECORD OUTPUT NAME
     # outName[$i]=coef.${subj}+tlrc
-    outName[$i]=coef.censorbase.${subj}+tlrc
+    outName[$i]=coef.censorbase15-nofilt.${subj}+tlrc
     # MAKE SHORTCUT
     ln -sf ${PRJDIR}/RawData/${subj}/${folder}/${outName[$i]}* ${outPath}/
 
