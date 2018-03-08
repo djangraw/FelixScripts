@@ -10,6 +10,7 @@
 # -subj is a string indicating the subject name, e.g., tb0065.
 #
 # Created 3/1/18 by DJ based on an afni_proc_srtt_v3 script and RemoveSrttNuisanceRegressors.sh.
+# Updated 3/7/18 by DJ - fixed by using correct censoring file.
 
 # parse inputs
 subj=$1
@@ -23,7 +24,7 @@ cd /data/jangrawdc/PRJ16_TaskFcManipulation/RawData/$subj/$subj.srtt_v3
 
 # run 3dDeconvolve with WM/CSF regressors to get stats
 3dDeconvolve -input pb05.$subj.r*.scale+tlrc.HEAD                            \
-    -censor censor_${subj}_combined_2_nobase.1D                              \
+    -censor censor_${subj}_combined_2_nobase15.1D                              \
     -polort 3                                                                \
     -local_times                                                             \
     -num_stimts 20                                                           \
@@ -76,7 +77,7 @@ cd /data/jangrawdc/PRJ16_TaskFcManipulation/RawData/$subj/$subj.srtt_v3
     -glt_label 10 'task BL3'                                                 \
     -jobs 10                                                                 \
     -fout -tout                                                              \
-    -x1D_stop                                                                \
+    -x1D_stop -overwrite                                                               \
     -fitts fitts.censorbase15-nofilt.${subj}                                              \
     -errts errts.censorbase15-nofilt.${subj}                                              \
     -bucket stats.censorbase15-nofilt.${subj}

@@ -15,4 +15,4 @@ for SBJ in ${okSubjects[@]}; do
 done
 
 # Run resulting swarm command
-swarm -g 4 -f TEMP_Srtt3dD_CensorBase15-nofilt_swarm --partition=nimh,norm --module=afni --time=4:00:00 --job-name=3dDCen --logdir logs
+swarm -g 4 -f TEMP_Srtt3dD_CensorBase15-nofilt_swarm --partition=nimh,norm --module=afni --time=4:00:00 --job-name=3dDC15 --logdir logs
