@@ -12,8 +12,9 @@ function FCvec = VectorizeFc(FC)
 % -FCvec is a matrix of size N*(N-1)/2 x T. Each row is a unique ROI pair.
 %
 % Created 6/1/16 by DJ.
+% Updated 3/12/18 by DJ - removed printed message for speed.
 
-fprintf('Assembling FC vector...\n')
+% fprintf('Assembling FC vector...\n')
 % get upper triangular matrix to convert mat <-> vec
 uppertri = triu(ones(size(FC,1)),1); % above the diagonal
 

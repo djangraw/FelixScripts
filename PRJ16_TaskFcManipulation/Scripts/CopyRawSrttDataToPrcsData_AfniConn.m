@@ -46,7 +46,7 @@ for i=1:numel(subjects)
 %     system(sprintf('ln -s %s.HEAD func_final.%s+tlrc.HEAD',funcFile,subjstr{i}));
 %     system(sprintf('ln -s %s.BRIK func_final.%s+tlrc.BRIK',funcFile,subjstr{i}));
 %     system(sprintf('3dcopy %s anat_final.%s.nii.gz',anatFile,subjstr{i}));
-    system(sprintf('3dcopy %s func_censored.%s.nii',funcFile2,subjstr{i}));
+    system(sprintf('3dcopy -overwrite %s func_censored.%s.nii',funcFile2,subjstr{i}));
 %     system(sprintf('3dcopy %s GM_mask.%s.nii',gmFile,subjstr{i}));
 %     system(sprintf('3dcopy %s WM_mask.%s.nii',wmFile,subjstr{i}));
 %     system(sprintf('3dcopy %s CSF_mask.%s.nii',csfFile,subjstr{i}));
