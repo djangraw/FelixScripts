@@ -1,8 +1,12 @@
-function h = PrintAfniConnResults(subjContrast,fcContrast,iRoi,thresh,viewTypes,roiName)
-% PrintAfniConnResults.m
+function h = PrintAfniConnResults(subjContrast,fcContrast,iRoi,thresh,viewTypes,roiName,contrastName,connProject,analysisName)
+
+% Makes and saves a jpg of a Conn "3D ball" FC plot. 
+%
+% h = PrintAfniConnResults(subjContrast,fcContrast,iRoi,thresh,viewTypes,roiName,contrastName,connProject,analysisName)
 %
 % Created 2/1/18 by DJ.
 % Updated 2/2/18 by DJ - added subjContrast.
+% Updated 3/14/18 by DJ - added more inputs.
 
 % Parse inputs
 if ~exist('subjContrast','var') || isempty(subjContrast)
@@ -23,12 +27,20 @@ end
 if ~exist('roiName','var') || isempty(roiName)
     roiName = '';
 end
-
+if ~exist('contrastName','var') || isempty(contrastName)
+    contrastName = fcContrast;
+end
+if ~exist('connProject','var') || isempty(connProject)
+    connProject = 'conn_project_SRTT_d3';
+end
+if ~exist('analysisName','var') || isempty(analysisName)
+    analysisName = 'ANALYSIS_01';
+end
 
 %% Load
 info=GetSrttConstants();
 % load(sprintf('%s/AfniConn/conn_project_SRTT_d3/results/secondlevel/ANALYSIS_01/AllSubjects/%s/ROI.mat',info.PRJDIR,contrastType));
-load(sprintf('%s/AfniConn/conn_project_SRTT_d3/results/secondlevel/ANALYSIS_01/%s/%s/ROI.mat',info.PRJDIR,subjContrast,fcContrast));
+load(sprintf('%s/AfniConn/%s/results/secondlevel/%s/%s/%s/ROI.mat',info.PRJDIR,connProject,analysisName,subjContrast,fcContrast));
 %% Plot
 % iRoi = 151;
 % thresh = 0.05;
@@ -57,9 +69,9 @@ h = PlotShenFcIn3d_Conn(foo);
 feval(h,'background',[1 1 1]); % white background
 set(gcf,'Units','points','Position',[0  360  330  280]);
 if ~isempty(roiName)
-    title(sprintf('%s contrast, ROI %d (%s), q<%g',fcContrast,iRoi,roiName,thresh));
+    title(sprintf('%s contrast, ROI %d (%s), q<%g',contrastName,iRoi,roiName,thresh));
 else
-    title(sprintf('%s contrast, ROI %d, q<%g',fcContrast,iRoi,thresh));
+    title(sprintf('%s contrast, ROI %d, q<%g',contrastName,iRoi,thresh));
 end
 for iView = 1:numel(viewTypes)
     switch viewTypes{iView}
@@ -72,8 +84,13 @@ for iView = 1:numel(viewTypes)
     end
     drawnow;
     % print
-    filename = sprintf('%s/Results/AfniConn_%s_%s_roi%03d_p%g_%s.jpg',...
-        info.PRJDIR,subjContrast,fcContrast,iRoi,thresh,viewTypes{iView});
+    if ~isempty(roiName)
+        filename = sprintf('%s/Results/AfniConn_%s_%s_%s_p%g_%s.jpg',...
+            info.PRJDIR,subjContrast,contrastName,roiName,thresh,viewTypes{iView});
+    else
+        filename = sprintf('%s/Results/AfniConn_%s_%s_roi%03d_p%g_%s.jpg',...
+            info.PRJDIR,subjContrast,contrastName,iRoi,thresh,viewTypes{iView});
+    end
     conn_print(filename,'-djpeg90','-opengl','-nogui');
 end
 % close result
