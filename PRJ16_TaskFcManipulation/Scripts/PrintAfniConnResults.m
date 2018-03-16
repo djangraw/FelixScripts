@@ -45,7 +45,8 @@ load(sprintf('%s/AfniConn/%s/results/secondlevel/%s/%s/%s/ROI.mat',info.PRJDIR,c
 % iRoi = 151;
 % thresh = 0.05;
 
-p = cat(1,ROI(iRoi).p(1:268));
+p = cat(1,ROI(iRoi).p);
+p = p(:,1:268);
 isPos = p<0.5;
 p(~isPos) = 1-p(~isPos);
 p_fdr=reshape(conn_fdr(p(:)),size(p)); % analysis-level correction
