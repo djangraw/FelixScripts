@@ -10,7 +10,7 @@ nT = 450;
 [motAmp, rotAmp, censor] = deal(nan(nT,numel(subjects)));
 
 % Load and compile
-fprintf('Plotting...\n');
+fprintf('Reading...\n');
 for i=1:numel(subjects)
     cd(sprintf('/data/jangrawdc/PRJ16_TaskFcManipulation/RawData/%s/%s.srtt_v3',subjects{i},subjects{i}));
     mot = Read_1D('motion_deriv.1D');
