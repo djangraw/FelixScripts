@@ -186,17 +186,23 @@ for i in "${!rois[@]}"; do
   # PPI GLTs
   cat <<EOF >>  TEMP_Ppi3dDeconvolve.sh
     -gltsym 'SYM: +0.5*PPI_${sd}_uns +0.5*PPI_${sd}_str -PPI_${sd}_rest'           \\
-    -glt_label $i1 PPI_${sd}_task-rest                                              \\
-    -gltsym 'SYM: +PPI_${sd}_uns -PPI_${sd}_str'                                   \\
-    -glt_label $i2 PPI_${sd}_uns-str                                                \\
+    -glt_label $i1 PPI_${sd}_task-rest                                             \\
+    -gltsym 'SYM: +PPI_${sd}_str -PPI_${sd}_uns'                                   \\
+    -glt_label $i2 PPI_${sd}_str-uns                                               \\
 EOF
 done
 
 # desired outputs
 cat <<EOF >>  TEMP_Ppi3dDeconvolve.sh
-    -rout -tout -overwrite \\
-    -bucket PPIstats
+    -rout -tout -overwrite -x1D_stop\\
+    -errts errts.PPI.$subj              \\
+    -bucket stats.PPI.$subj
 EOF
 
 # Run 3dDeconvolve command
 bash TEMP_Ppi3dDeconvolve.sh
+
+# -- execute the 3dREMLfit script, written by 3dDeconvolve --
+mv stats.REML_cmd stats.PPI.REML_cmd
+tcsh -x stats.PPI.REML_cmd
+mv 3dREMLfit.err 3dREMLfit.PPI.err # to avoid confusing with old version

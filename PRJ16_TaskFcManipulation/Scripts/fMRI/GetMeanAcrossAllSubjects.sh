@@ -36,7 +36,8 @@ do
 
   # MAKE SHORTCUT
   # outName[$i]=all_runs_nonuisance.${subj}+tlrc
-  outName[$i]=errts.censorbase15-nofilt.${subj}_REML+tlrc
+  # outName[$i]=errts.censorbase15-nofilt.${subj}_REML+tlrc
+  outName[$i]=errts.PPI.${subj}_REML+tlrc
   ln -sf ${PRJDIR}/RawData/${subj}/${folder}/${outName[$i]}* ${outPath}/
 done
 
