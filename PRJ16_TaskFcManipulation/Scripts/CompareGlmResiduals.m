@@ -2,7 +2,8 @@ versions = {'v3','v3_noWmCsf','v3_filter','v3_noNRs','v3_CensorBase','v3_CensorB
 iStrUns = [16 16 16 16 16 16 98];
 
 info = GetSrttConstants();
-lMotCoords = [19 36 47];
+% lMotCoords = [19 36 47]; %lMot
+% lMotCoords = [31 27 37]; %PCC
 zSlice = 16;
 nT = 450;
 
