@@ -3,8 +3,8 @@
 % Created 5/17/18 by DJ.
 
 info = GetStoryConstants();
-% roiCoords = [19 36 47]; %lMot
-roiCoords = [27 41 28]; %PCC
+roiCoords = [41 34 42]; %lMot
+% roiCoords = [27 41 28]; %PCC
 zSlice = 16;
 nT = 360;
 nSubj = numel(info.okSubj);
