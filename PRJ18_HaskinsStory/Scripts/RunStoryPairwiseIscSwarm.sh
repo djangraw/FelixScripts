@@ -40,7 +40,7 @@ echo mask = $mask
 
 # Loop 1: mean across files
 rm -f $swarmFile $iscTable $rScript
-echo "Subj Subj2 InputFile">>$iscTable
+echo -e "Subj\tSubj2\tInputFile">>$iscTable
 echo === Getting ISCs across files...
 for (( iFile=0; iFile<$nFiles; iFile++ ))
 do
@@ -56,7 +56,7 @@ do
       # run 3dTcorrelate with automask to cut out small-value voxels
       echo "3dTcorrelate -automask -prefix $iscfile $file1 $file2" >> $swarmFile
       # make table for follow-up R script
-      echo "${okSubj[$iFile]} ${okSubj[jFile]} ${iscfile}" >> $iscTable
+      echo -e "${okSubj[$iFile]}\t${okSubj[jFile]}\t${iscfile}" >> $iscTable
     done
 done
 
