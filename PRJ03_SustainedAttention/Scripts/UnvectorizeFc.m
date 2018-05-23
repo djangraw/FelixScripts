@@ -24,7 +24,7 @@ if ~exist('fillLowerTri','var') || isempty(fillLowerTri)
     fillLowerTri = true;
 end
 
-fprintf('Assembling FC matrix...\n')
+% fprintf('Assembling FC matrix...\n')
 nFC = size(FCvec,1);
 nT = size(FCvec,2);
 nROIs = (1+sqrt(1+8*nFC)) / 2;

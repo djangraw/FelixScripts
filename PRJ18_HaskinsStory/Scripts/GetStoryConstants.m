@@ -14,6 +14,9 @@ end
 info.dataDir = '/data/NIMH_Haskins/a182'; % data directory
 info.scriptDir = '/data/jangrawdc/PRJ18_HaskinsStory/Scripts'; % DJ script directory
 
+% Constants
+info.nT = 360; % across all runs
+
 % all subjects with any data in the directory (n=134)
 info.subjects = {'tb0027' 'tb0028' 'tb0065' 'tb0093' 'tb0094' ...
     'tb0111' 'tb0137' 'tb0138' 'tb0169' 'tb0170' 'tb0201' 'tb0202' ...

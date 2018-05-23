@@ -11,7 +11,8 @@ set -e
 # OUTPUTS:
 # saves ISC_file<x>of<y>+orig and ISC_ttest<y>files+orig to outDir (defined in script)
 #
-# Created 5/17/18 based on RunIsc.sh (100-runs version).
+# Created 5/17/18 by DJ based on RunIsc.sh (100-runs version).
+# Updated 5/22/18 by DJ - storyISC_d2 directory
 
 # ---declare directory constants
 source /data/jangrawdc/PRJ18_HaskinsStory/Scripts/00_CommonVariables.sh
@@ -21,12 +22,12 @@ outDir=${dataDir}/IscResults/
 cd $dataDir
 
 # get mask
-mask=${dataDir}/${okSubj[0]}/${okSubj[0]}.storyISC/mask_epi_anat.${okSubj[0]}+tlrc # mask filename for subj 1 (should be similar for all subjects)
+mask=${dataDir}/${okSubj[0]}/${okSubj[0]}.storyISC_d2/mask_epi_anat.${okSubj[0]}+tlrc # mask filename for subj 1 (should be similar for all subjects)
 # get file list
 nFiles=${#okSubj[@]}
 for (( i=0; i<$nFiles; i++ ))
 do
-  fileList[$i]="${okSubj[$i]}/${okSubj[$i]}.storyISC/errts.${okSubj[$i]}.tproject+tlrc"
+  fileList[$i]="${okSubj[$i]}/${okSubj[$i]}.storyISC_d2/errts.${okSubj[$i]}.tproject+tlrc"
 done
 
 echo "$nFiles files given as input."

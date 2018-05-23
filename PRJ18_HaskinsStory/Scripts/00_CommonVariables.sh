@@ -24,6 +24,7 @@ subjects="tb0027 tb0028 tb0065 tb0093 tb0094 tb0111 tb0137 "\
 "tb7090 tb7091 tb7125 tb7126 tb7152 tb7153 tb7187"
 subjects=($subjects) # convert to array
 
+# All subjects with complete fMRI Data
 okSubj="tb0027 tb0028 tb0065 tb0093 tb0094 tb0169 "\
 "tb0170 tb0202 tb0275 tb0276 tb0312 tb0313 tb0348 "\
 "tb0349 tb0420 tb0456 tb0498 tb0543 tb0593 tb0716 "\
@@ -36,3 +37,19 @@ okSubj="tb0027 tb0028 tb0065 tb0093 tb0094 tb0169 "\
 "tb6964 tb7001 tb7035 tb7065 tb7090 tb7091 tb7125 "\
 "tb7153"
 okSubj=($okSubj) #convert to array
+
+# All subjects with complete fMRI and reading phenotyping data
+okReadSubj="tb0027 tb0065 tb0093 tb0094 tb0169 tb0170 tb0275 tb0276 tb0312 "\
+"tb0313 tb0349 tb0456 tb0498 tb0543 tb0593 tb0716 tb0782 tb1063 tb1208 tb1314 "\
+"tb5833 tb5868 tb5976 tb5985 tb6048 tb6082 tb6150 tb6199 tb6301 tb6366 tb6367 "\
+"tb6487 tb6562 tb6631 tb6812 tb6842 tb6874 tb6899 tb6930 tb7065 tb7125 tb7153"
+okReadSubj=($okReadSubj) #convert to array
+
+# top half readers
+okReadSubj_top="tb6048 tb6367 tb0498 tb0169 tb7153 tb0065 tb6874 tb6899 tb6150 "\
+"tb0716 tb5985 tb6199 tb0349 tb6082 tb0275 tb6842 tb6487 tb0093 tb6301 tb6562 tb7065"
+okReadSubj_top=($okReadSubj_top)
+# bottom half readers
+okReadSubj_bot="tb7125 tb5833 tb0593 tb0027 tb0312 tb0094 tb1063 tb0313 tb1314 "\
+"tb5868 tb1208 tb0170 tb0782 tb0276 tb0543 tb6366 tb6812 tb5976 tb6631 tb6930 tb0456"
+okReadSubj_bot=($okReadSubj_bot)

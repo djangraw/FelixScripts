@@ -4,33 +4,28 @@ set -e
 # Run inter-subject connectivity analysis on Haskins Story data.
 # RunStoryPairwiseIscSwarm.sh
 #
-# INPUTS:
-# 1. mask of voxels to include (.BRIK)
-# 2. list of filenames (array of .BRIK files) e.g., files=( $(ls *_R*.BRIK) ); ${files[@]:0:y}
-#
-# OUTPUTS:
-# saves ISC_<x>_<y>_story+tlrc and ISC_ttest<y>files+tlcr to outDir (defined in script)
-#
 # Created 5/17/18 by DJ based on RunIsc.sh (100-runs version).
 # Updated 5/18/18 by DJ to do pairwise swarm.
+# Updated 5/22/18 by DJ - storyISC_d2 directory/output
 
 # ---declare directory constants
 source /data/jangrawdc/PRJ18_HaskinsStory/Scripts/00_CommonVariables.sh
 outstarter="storyISC_"
-outDir=${dataDir}/IscResults/Pairwise
+outDir=${dataDir}/IscResults_d2/Pairwise
 swarmFile=${scriptDir}/IscSwarmCommand
 rScript=${scriptDir}/IscRCommand
 iscTable=${outDir}/StoryPairwiseIscTable.txt
 
 cd $dataDir
+mkdir -p $outDir
 
 # get mask
-mask=${dataDir}/${okSubj[0]}/${okSubj[0]}.storyISC/mask_epi_anat.${okSubj[0]}+tlrc # mask filename for subj 1 (should be similar for all subjects)
+mask=${dataDir}/${okSubj[0]}/${okSubj[0]}.storyISC_d2/mask_epi_anat.${okSubj[0]}+tlrc # mask filename for subj 1 (should be similar for all subjects)
 # get file list
 nFiles=${#okSubj[@]}
 for (( i=0; i<$nFiles; i++ ))
 do
-  fileList[$i]="${okSubj[$i]}/${okSubj[$i]}.storyISC/errts.${okSubj[$i]}.fanaticor+tlrc" # or should it be .tproject+tlrc?
+  fileList[$i]="${okSubj[$i]}/${okSubj[$i]}.storyISC_d2/errts.${okSubj[$i]}.fanaticor+tlrc" # or should it be .tproject+tlrc?
 done
 
 # Display info about files

@@ -3,52 +3,19 @@
 % Created 5/21/18 by DJ.
 
 %% Set up
-fprintf('Setting up...\n');
-info = GetStoryConstants();
-[subj_topHalf,subj_botHalf,readScore_top, readScore_bot] = GetStorySubjReadingGroups();
-fprintf('Done!\n');
-
-%% Reorder according to reading score
-subj_all = [subj_topHalf,subj_botHalf];
-readScore_all = [readScore_top,readScore_bot];
-nSubj = numel(subj_all);
-[readScore_sorted, order] = sort(readScore_all);
-subj_sorted = subj_all(order); % in ASCENDING ORDER
-
-%% Get files
-cd(sprintf('%s/IscResults/Pairwise',info.dataDir));
-iscTable = readtable('StoryPairwiseIscTable.txt','Delimiter','\t','ReadVariableNames',true);
-
-%% Load Mask data
-maskFile = '3dLME_3Grps_readScoreMedSplit_n42_Automask_clusters+tlrc';
+roiFile = '3dLME_3Grps_readScoreMedSplit_n42_Automask_clusters+tlrc';
 iRoi = 6;
 roiName = 'lpSTG';
 
-cd(sprintf('%s/IscResults/Pairwise',info.dataDir));
-rois = BrikLoad(maskFile);
-isInRoi = rois==iRoi;
-fprintf('Loaded mask... %d voxels in ROI %d.\n',sum(isInRoi(:)),iRoi);
-
-%% Load ROI data
-iscFiles = cell(nSubj);
-iscInRoi = nan(nSubj);
-for i=1:nSubj
-    for j=(i+1):nSubj
-        fprintf('subj %d vs. %d...\n',i,j);
-        % find file
-        isFile = strcmp(iscTable.Subj,subj_sorted{i}) & strcmp(iscTable.Subj2,subj_sorted{j}) | ...
-            strcmp(iscTable.Subj,subj_sorted{j}) & strcmp(iscTable.Subj2,subj_sorted{i});
-        iscFiles{i,j} = iscTable.InputFile{isFile};
-        % load file
-        V = BrikLoad(iscFiles{i,j});
-        % Get mean ISC in mask
-        iscInRoi(i,j) = mean(V(isInRoi));
-    end
-end
+fprintf('Getting Reading Scores...\n');
+[subj_sorted,readScore_sorted] = GetStoryReadingScores();
+fprintf('Getting ISC in ROI %d (%s)...\n',iRoi,roiName);
+iscInRoi = GetIscInRoi(subj_sorted,roiFile,iRoi);
 fprintf('Done!\n');
 
 %% Group files
-isTopHalf = [false(size(subj_botHalf)), true(size(subj_topHalf))]>0;
+nSubj = numel(subj_sorted);
+isTopHalf = readScore_sorted>=median(readScore_sorted);
 [isTopTop,isBotBot,isBotTop] = deal(false(nSubj));
 isTopTop(isTopHalf,isTopHalf) = true;
 isBotBot(~isTopHalf,~isTopHalf) = true;
