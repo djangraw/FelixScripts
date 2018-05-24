@@ -34,7 +34,7 @@ fprintf('Plotting...\n');
 % Plot results
 figure(622); clf
 subplot(2,1,1); hold on;
-title(sprintf('Mean +/- ste motion across %d Story subjects %s',numel(subjects),censorSuffix));
+title(sprintf('Mean +/- ste motion across %d Story` subjects %s',numel(subjects),censorSuffix));
 plot(mean(motAmp,2),'b','linewidth',2);
 steMot = std(motAmp,[],2)/sqrt(numel(subjects));
 % ErrorPatch((1:nT)',mean(motAmp,2),steMot);

@@ -6,7 +6,8 @@ set -e
 #
 # Created 5/17/18 by DJ based on RunIsc.sh (100-runs version).
 # Updated 5/18/18 by DJ to do pairwise swarm.
-# Updated 5/22/18 by DJ - storyISC_d2 directory/output
+# Updated 5/22/18 by DJ - storyISC_d2 directory/output, fanaticor
+# Updated 5/23/18 by DJ - used MNI mask instead of automask option
 
 # ---declare directory constants
 source /data/jangrawdc/PRJ18_HaskinsStory/Scripts/00_CommonVariables.sh
@@ -15,18 +16,22 @@ outDir=${dataDir}/IscResults_d2/Pairwise
 swarmFile=${scriptDir}/IscSwarmCommand
 rScript=${scriptDir}/IscRCommand
 iscTable=${outDir}/StoryPairwiseIscTable.txt
-
+AFNI_HOME=`which afni` # Get AFNI directory
+AFNI_HOME=${AFNI_HOME%/*} # remove afni (and last slash)
+# handle directories
 cd $dataDir
 mkdir -p $outDir
 
-# get mask
-mask=${dataDir}/${okSubj[0]}/${okSubj[0]}.storyISC_d2/mask_epi_anat.${okSubj[0]}+tlrc # mask filename for subj 1 (should be similar for all subjects)
 # get file list
 nFiles=${#okSubj[@]}
 for (( i=0; i<$nFiles; i++ ))
 do
   fileList[$i]="${okSubj[$i]}/${okSubj[$i]}.storyISC_d2/errts.${okSubj[$i]}.fanaticor+tlrc" # or should it be .tproject+tlrc?
 done
+# Make EPI-res mask
+3dAutomask -overwrite -prefix ${outDir}/MNI_mask.nii ${AFNI_HOME}/MNI_caez_N27+tlrc
+3dfractionize -overwrite -prefix ${outDir}/MNI_mask_epiRes.nii -template ${fileList[0]} -input ${outDir}/MNI_mask.nii
+mask=${outDir}/MNI_mask_epiRes.nii
 
 # Display info about files
 echo "$nFiles files given as input."
@@ -47,9 +52,10 @@ do
       echo Running ISC...
       file1=${dataDir}/${fileList[$iFile]} # correlate with
       file2=${dataDir}/${fileList[$jFile]} # correlate with
-      iscfile="${outDir}/ISC_${okSubj[$iFile]}_${okSubj[$jFile]}_story"+tlrc # output of 3dTcorrelate
-      # run 3dTcorrelate with automask to cut out small-value voxels
-      echo "3dTcorrelate -automask -prefix $iscfile $file1 $file2" >> $swarmFile
+      tempfile=${outDir}/TEMP_${okSubj[$iFile]}_${okSubj[$jFile]}_story+tlrc # unmasked output of 3dTcorrelate
+      iscfile=${outDir}/ISC_${okSubj[$iFile]}_${okSubj[$jFile]}_story+tlrc # masked output of 3dTcorrelate+3dcalc
+      # run 3dTcorrelate WITHOUT automask to cut out small-value voxels... this did strange things last time.
+      echo "3dTcorrelate -prefix $tempfile $file1 $file2; 3dcalc -a $tempfile -b $mask -overwrite -prefix $iscfile -expr 'a*step(b)'" >> $swarmFile
       # make table for follow-up R script
       echo -e "${okSubj[$iFile]}\t${okSubj[jFile]}\t${iscfile}" >> $iscTable
     done
