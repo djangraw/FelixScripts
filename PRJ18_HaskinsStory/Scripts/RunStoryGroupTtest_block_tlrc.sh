@@ -20,12 +20,12 @@ for subj in ${okReadSubj[@]}; do
 done
 
 # Make EPI-res mask
-3dAutomask -overwrite -prefix ${grpFolder}/MNI_mask.nii ${AFNI_HOME}/MNI_caez_N27+tlrc
+3dAutomask -overwrite -prefix ${grpFolder}/MNI_mask.nii ${AFNI_HOME}/MNI152_T1_2009c+tlrc
 3dfractionize -overwrite -prefix ${grpFolder}/MNI_mask_epiRes.nii -template ${grpFolder}/stats.block.${okSubj[0]}_REML+tlrc -input ${grpFolder}/MNI_mask.nii
 
 # Run Group T-Test on data
 cd $grpFolder
-unset topFile
+unset topFile botFile
 for i in ${!okReadSubj_top[@]}; do
   topFile[$i]="stats.block.${okReadSubj_top[$i]}_REML+tlrc"
 done
@@ -35,5 +35,8 @@ for i in ${!okReadSubj_bot[@]}; do
 done
 
 # Run T Test
-echo "3dttest++ -zskip -brickwise -mask MNI_mask_epiRes.nii -overwrite -prefix ttest_allSubj -setA ${topFile[@]} -setB ${botFile[@]}"
-3dttest++ -zskip -brickwise -mask MNI_mask_epiRes.nii -overwrite -prefix ttest_allSubj -setA ${topFile[@]} -setB ${botFile[@]}
+echo "3dttest++ -zskip -brickwise -mask MNI_mask_epiRes.nii -overwrite -prefix ttest_allSubj_2grp -setA ${topFile[@]} -setB ${botFile[@]}"
+3dttest++ -zskip -brickwise -mask MNI_mask_epiRes.nii -overwrite -prefix ttest_allSubj_2grp -setA ${topFile[@]} -setB ${botFile[@]}
+
+echo "3dttest++ -zskip -brickwise -mask MNI_mask_epiRes.nii -overwrite -prefix ttest_allSubj_1grp -setA ${topFile[@]} ${botFile[@]}"
+3dttest++ -zskip -brickwise -mask MNI_mask_epiRes.nii -overwrite -prefix ttest_allSubj_1grp -setA ${topFile[@]} ${botFile[@]}
