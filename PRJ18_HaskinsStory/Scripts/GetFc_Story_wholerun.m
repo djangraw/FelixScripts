@@ -37,8 +37,10 @@ for i=1:nSubj
         roiTc = roiTc-repmat(mean(roiTc,2),1,size(roiTc,2));
     end
     % get FC matrix using non-censored timepoints (TODO: each block separately, then average?)
-    FC_wholerun(:,:,i) = corr(roiTc(isOk,:));
-    FC_taskonly(:,:,i) = corr(roiTc([iAud(isOk(iAud)), iVis(isOk(iVis))],:));
+    if ~isempty(roiTc)
+        FC_wholerun(:,:,i) = corr(roiTc(isOk,:));
+        FC_taskonly(:,:,i) = corr(roiTc([iAud(isOk(iAud)), iVis(isOk(iVis))],:));
+    end
     fprintf('Done! Took %.1f seconds.\n',toc);
 end
 fprintf('Done!\n');
