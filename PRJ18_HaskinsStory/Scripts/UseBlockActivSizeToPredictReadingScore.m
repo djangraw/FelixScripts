@@ -44,6 +44,6 @@ for k=1:numel(iBricks)
     subplot(2,2,k)
     plot(thresh,[r;p]','.-');
     xlabel(sprintf('z threshold (%s)',brickNames{k}))
-    ylabel(sprintf('correlation btw activation size\n and reading score'))
+    ylabel(sprintf('correlation btw activation size\n and reading score') )
     legend('r','p')
 end

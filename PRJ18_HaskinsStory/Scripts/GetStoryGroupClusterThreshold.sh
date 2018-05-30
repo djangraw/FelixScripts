@@ -31,7 +31,7 @@ echo $meanBlur > $meanBlurFile
 
 # call 3dClustSim
 cd $dataDir/ClustSimFiles
-3dClustSim -both -mask $grpMask -acf $meanBlur            \
+3dClustSim -both -mask $grpMask -acf $meanBlur -LOTS  \
            -cmd 3dClustSim.grpACF.cmd -prefix ClustSim.grpACF
 
 # run 3drefit to attach 3dClustSim results to stats
