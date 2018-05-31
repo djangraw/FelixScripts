@@ -1,4 +1,4 @@
-function SetUpSumaMontage_4view(data_dir,cmd_file,afni_ulay,afni_olay,suma_spec,suma_sv,beta_ind,thr_ind,image_dir,image_pre,image_fin,suma_pos,func_range,thr_thresh,my_cbar)
+function SetUpSumaMontage_4view(data_dir,cmd_file,afni_ulay,afni_olay,suma_spec,suma_sv,beta_ind,thresh_ind,image_dir,image_pre,image_fin,suma_pos,func_range,thr_thresh,my_cbar)
 
 % SetUpSumaMontage_4view(data_dir,afni_ulay,afni_olay,suma_spec,suma_sv,beta_ind,thr_ind,image_dir,image_pre,image_fin,suma_pos,func_range,thr_thresh,my_cbar)
 %
@@ -60,10 +60,11 @@ for i=1:numel(vars)
 end
 
 fprintf(fid,'\n# run script\n');
+fprintf(fid,'cd $data_dir\n');
 fprintf(fid,'source /data/jangrawdc/PRJ18_HaskinsStory/Scripts/MakeSumaMontage_4view.tcsh\n');
 fclose(fid);
 
 %% Run result
 cmd = sprintf('tcsh %s',cmd_file);
 fprintf('Running command >> %s...\n',cmd);
-% system(cmd);
+system(cmd);

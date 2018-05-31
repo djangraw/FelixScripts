@@ -59,10 +59,14 @@
 # ================ Set up paths and many params ======================
 
 # specify group stats files
-set statsfolder = "/data/NIMH_Haskins/a182/GROUP_block_tlrc_d2/"
-set statsfile   = "ttest_allSubj_1grp+tlrc.HEAD"      # output effect+stats filename
-set iMean       = "SetA_mean#10"                 # volume label (or index) for stat result
-set iThresh     = "SetA_Zscr#10"
+# set statsfolder = "/data/NIMH_Haskins/a182/GROUP_block_tlrc_d2/"
+# set statsfile   = "ttest_allSubj_2grp"      # output effect+stats filename
+set statsfolder = "/data/NIMH_Haskins/a182/IscResults_d2/Group/"
+set statsfile   = "3dLME_2Grps_readScoreMedSplit_n42_Automask"      # output effect+stats filename
+set statsfile_space = "tlrc"
+set iMean       = "8"                 # volume label (or index) for stat result
+set iThresh     = "9"
+set cond_name   = "bot-topbot"
 set maskfile    = "MNI_mask_epiRes.nii"
 
 # Cluster parameters
@@ -72,7 +76,7 @@ set csim_NN     = "NN${csim_neigh}"  # other form of neigh
 set csim_sided  = "bisided" # test type; could be 1sided, 2sided or bisided
 set csim_pthr   = 0.01     # voxelwise thr (was higher, 0.01, in orig study)
 set csim_alpha  = 0.05      # nominal FWE
-set csim_pref   = "clust_${csim_sided}" # prefix for outputting stuff
+set csim_pref   = "${statsfile}_${cond_name}_clust_p${csim_pthr}_a${csim_alpha}_${csim_sided}" # prefix for outputting stuff
 
 # ==================== Cluster simulations =======================
 
@@ -102,7 +106,7 @@ cd $statsfolder
 set voxstat_thr = `p2dsetstat -quiet                    \
                     -pval $csim_pthr                    \
                     "-${csim_sided}"                    \
-                    -inset "${statsfile}[${iThresh}]"`
+                    -inset "${statsfile}+${statsfile_space}[${iThresh}]"`
 
 echo "++ The final cluster volume threshold is:  $clust_thrvol"
 echo "++ The voxelwise stat value threshold is:  $voxstat_thr"
@@ -137,7 +141,7 @@ echo "++ The voxelwise stat value threshold is:  $voxstat_thr"
 rm -f ${csim_pref}_report.txt ${csim_pref}_EE.nii.gz ${csim_pref}_map.nii.gz
 
 3dClusterize                                   \
-    -inset  ${statsfile}                           \
+    -inset  ${statsfile}+${statsfile_space}                           \
     -ithr   ${iThresh}                    \
     -idat   ${iMean}                     \
     -mask   ${maskfile}                        \

@@ -29,7 +29,7 @@
 # # image props
 # set image_dir = "./SUMA_IMAGES"        # store jpgs here
 # set image_pre = "suma_images"        # ... with this prefix
-# set image_fin = "${image_dir}/Srtt_PPI_StrUns_ROI167_p01.jpg"             # final movie name (with suffix)
+# set image_fin = "${image_dir}/Srtt_PPI_StrUns_ROI167_p01.jpg"             # final composite image name (with suffix)
 #
 # # size of the image window, given as:
 # # leftcorner_X  leftcorner_Y  windowwidth_X  windowwith_Y
@@ -49,7 +49,7 @@
 
 set portnum = `afni -available_npb_quiet`
 
-setenv SUMA_Position_Original $suma_pos
+setenv SUMA_Position_Original "$suma_pos"
 setenv AFNI_ENVIRON_WARNINGS NO
 setenv AFNI_PBAR_FULLRANGE NO
 setenv SUMA_DriveSumaMaxCloseWait 20 #6
@@ -106,7 +106,8 @@ sleep 15 #3
 # start driving
 DriveSuma                                              \
     -npb $portnum                                      \
-    -com viewer_cont -key 't' -key '.' # connect to AFNI & switch to regular brain
+    -com viewer_cont -key 't' -key '.' \
+    -com viewer_cont -key '.' # inflated brain (comment out for regular brain)
 
 echo "\n===NAP 3/8...===\n"
 sleep 3 #10
@@ -119,7 +120,7 @@ DriveSuma                                              \
 # zoom to fill window with side view
 DriveSuma                                              \
     -npb $portnum                                      \
-    -com viewer_cont -key 'Z' -key 'Z' -key 'Z' -key 'Z'
+    -com viewer_cont -key 'Z' -key 'Z'
 
 # left side profile
 DriveSuma                                              \

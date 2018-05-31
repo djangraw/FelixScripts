@@ -1,9 +1,9 @@
 #!/bin/tcsh -e
 
-# Created 30-May-2018 10:27:28 by MATLAB function SetUpSumaMontage_4view.m
+# Created 30-May-2018 12:06:29 by MATLAB function SetUpSumaMontage_4view.m
 
 set data_dir = "/data/NIMH_Haskins/a182/GROUP_block_tlrc_d2"
-set cmd_file = "SumaMontageCmd.tcsh"
+set cmd_file = "TEMP_AUD+VIS.tcsh"
 set afni_ulay = "MNI152_2009_SurfVol.nii"
 set afni_olay = "ttest_allSubj_1grp+tlrc"
 set suma_spec = "suma_MNI152_2009/MNI152_2009_both.spec"

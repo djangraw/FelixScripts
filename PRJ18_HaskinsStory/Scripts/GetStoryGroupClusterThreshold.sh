@@ -35,5 +35,5 @@ cd $dataDir/ClustSimFiles
            -cmd 3dClustSim.grpACF.cmd -prefix ClustSim.grpACF
 
 # run 3drefit to attach 3dClustSim results to stats
-# cmd=`cat 3dClustSim.grpACF.cmd`
-# $cmd $grpFiles
+cmd=`cat 3dClustSim.grpACF.cmd`
+$cmd $grpFiles
