@@ -1,14 +1,23 @@
+function PlotPairwiseIscMatrices(subj_sorted,readScore_sorted,roiFile,iRoi,roiName)
 % PlotPairwiseIscMatrices.m
 %
 % Created 5/21/18 by DJ.
 
 %% Set up
-roiFile = '3dLME_3Grps_readScoreMedSplit_n42_Automask_clusters+tlrc';
-iRoi = 6;
-roiName = 'lpSTG';
+info = GetStoryConstants();
+% cd(sprintf('%s/IscResults_d2/Group',info.dataDir));
+if ~exist('roiFile','var') || isempty(roiFile)
+    roiFile = '3dLME_2Grps_readScoreMedSplit_n42_Automask_top-bot_clust_p0.01_a0.05_bisided_map.nii.gz';
+end
+if ~exist('iRoi','var') || isempty(iRoi)
+    iRoi = 1;
+end
+if ~exist('roiName','var') || isempty(roiName)
+    roiName = sprintf('roi%d',iRoi);
+end
 
-fprintf('Getting Reading Scores...\n');
-[subj_sorted,readScore_sorted] = GetStoryReadingScores();
+% fprintf('Getting Reading Scores...\n');
+% [subj_sorted,readScore_sorted] = GetStoryReadingScores();
 fprintf('Getting ISC in ROI %d (%s)...\n',iRoi,roiName);
 iscInRoi = GetIscInRoi(subj_sorted,roiFile,iRoi);
 fprintf('Done!\n');

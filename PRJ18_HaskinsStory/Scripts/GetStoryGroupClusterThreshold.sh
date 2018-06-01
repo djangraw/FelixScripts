@@ -11,6 +11,7 @@ sbjBlurFile=$dataDir/ClustSimFiles/AllBlurEstimates_d2.1D # all subjects concate
 meanBlurFile=$dataDir/ClustSimFiles/MeanBlurEstimate_d2.1D # mean across $sbjBlurFile
 grpMask=$dataDir/GROUP_block_tlrc_d2/MNI_mask_epiRes.nii
 grpFiles="$dataDir/IscResults_d2/Pairwise/3dLME_2Grps_readScoreMedSplit_n42_Automask+tlrc "\
+"$dataDir/IscResults_d2/Pairwise/3dLME_OneGroup_n42_Automask+tlrc "\
 "$dataDir/GROUP_block_tlrc_d2/ttest_allSubj_2grp+tlrc "\
 "$dataDir/GROUP_block_tlrc_d2/ttest_allSubj_1grp+tlrc" # all files with group stats
 

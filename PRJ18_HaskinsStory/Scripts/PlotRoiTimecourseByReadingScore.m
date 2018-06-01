@@ -1,18 +1,27 @@
+function PlotRoiTimecourseByReadingScore(subj_sorted,readScore_sorted,roiFile,iRoi,roiName)
 % PlotRoiTimecourseByReadingScore.m
 %
 % Created 5/22/18 by DJ.
 
-roiFile = '3dLME_3Grps_readScoreMedSplit_n42_Automask_clusters+tlrc';
-iRoi = 6;
-roiName = 'rpSTG';
+info = GetStoryConstants();
+% cd(sprintf('%s/IscResults_d2/Group',info.dataDir));
+if ~exist('roiFile','var') || isempty(roiFile)
+    roiFile = '3dLME_2Grps_readScoreMedSplit_n42_Automask_top-bot_clust_p0.01_a0.05_bisided_map.nii.gz';
+end
+if ~exist('iRoi','var') || isempty(iRoi)
+    iRoi = 1;
+end
+if ~exist('roiName','var') || isempty(roiName)
+    roiName = sprintf('roi%d',iRoi);
+end
 
-[subj_sorted,readScore_sorted] = GetStoryReadingScores();
+% [subj_sorted,readScore_sorted] = GetStoryReadingScores();
 tcInRoi = GetTcInRoi(subj_sorted,roiFile,iRoi);
 
 %% Plot
 isTop = readScore_sorted>median(readScore_sorted);
-meanTc_bot = mean(tcInRoi(:,~isTop),2);
-meanTc_top = mean(tcInRoi(:,isTop),2);
+meanTc_bot = nanmean(tcInRoi(:,~isTop),2);
+meanTc_top = nanmean(tcInRoi(:,isTop),2);
 figure(562); clf; hold on;
 plot([meanTc_bot,meanTc_top]);
 title(sprintf('mean timecourse in ROI %d (%s)',iRoi,roiName));
