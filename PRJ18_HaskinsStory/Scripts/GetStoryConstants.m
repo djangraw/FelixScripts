@@ -6,13 +6,14 @@ function info = GetStoryConstants()
 hostname = char( getHostName( java.net.InetAddress.getLocalHost ) );
 if strcmp(hostname,'MH01971391MACLT') % Dave's local machine
     info.PRJDIR = '/Volumes/data/PRJ18_HaskinsStory';
+    info.dataDir = '/Volumes/NIMH_Haskins/a182'; % data directory
 else % Helix/Felix/Biowulf
     info.PRJDIR = '/data/jangrawdc/PRJ18_HaskinsStory';
+    info.dataDir = '/data/NIMH_Haskins/a182'; % data directory
 end
 
 % Directories
-info.dataDir = '/data/NIMH_Haskins/a182'; % data directory
-info.scriptDir = '/data/jangrawdc/PRJ18_HaskinsStory/Scripts'; % DJ script directory
+info.scriptDir = [info.PRJDIR '/Scripts']; % DJ script directory
 
 % Constants
 info.nT = 360; % across all runs

@@ -1,5 +1,6 @@
-function PlotRoiTimecourseByReadingScore(subj_sorted,readScore_sorted,roiFile,iRoi,roiName)
-% PlotRoiTimecourseByReadingScore.m
+function tcInRoi = PlotRoiTimecourseByReadingScore(subj_sorted,readScore_sorted,roiFile,iRoi,roiName)
+% tcInRoi = PlotRoiTimecourseByReadingScore(subj_sorted,readScore_sorted,roiFile,iRoi,roiName)
+%           PlotRoiTimecourseByReadingScore(tcInRoi,readScore_sorted,roiFile,iRoi,roiName)
 %
 % Created 5/22/18 by DJ.
 
@@ -14,9 +15,13 @@ end
 if ~exist('roiName','var') || isempty(roiName)
     roiName = sprintf('roi%d',iRoi);
 end
-
-% [subj_sorted,readScore_sorted] = GetStoryReadingScores();
-tcInRoi = GetTcInRoi(subj_sorted,roiFile,iRoi);
+% Accept either tcInRoi or subj_sorted as input
+if ismat(subj_sorted)
+    tcInRoi = subj_sorted;
+else
+    % [subj_sorted,readScore_sorted] = GetStoryReadingScores();
+    tcInRoi = GetTcInRoi(subj_sorted,roiFile,iRoi);
+end
 
 %% Plot
 isTop = readScore_sorted>median(readScore_sorted);
@@ -36,11 +41,18 @@ iAudStart = iAud([1 iGap+1]);
 iAudEnd = iAud([iGap, end]);
 iAudAll = [iAudStart;iAudEnd;nan(size(iAudStart))];
 plot(iAudAll(:),yMax*ones(numel(iAudAll),1),'m-','linewidth',2)
+for i=1:numel(iAudStart)
+    text(mean(iAudStart(i),iAudEnd(i)),yMax*0.9,'Aud','HorizontalAlignment','center');
+end
+
 iGap = find(diff(iVis)>1);
 iVisStart = iVis([1 iGap+1]);
 iVisEnd = iVis([iGap, end]);
 iVisAll = [iVisStart;iVisEnd;nan(size(iVisStart))];
 plot(iVisAll(:),yMax*ones(numel(iVisAll),1),'c-','linewidth',2)
+for i=1:numel(iAudStart)
+    text(mean(iVisStart(i),iVisEnd(i)),yMax*0.9,'Vis','HorizontalAlignment','center');
+end
 
 % annotate
 PlotHorizontalLines(0,'k');

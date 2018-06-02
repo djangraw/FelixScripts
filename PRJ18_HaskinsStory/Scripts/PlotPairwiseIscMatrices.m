@@ -1,4 +1,4 @@
-function PlotPairwiseIscMatrices(subj_sorted,readScore_sorted,roiFile,iRoi,roiName)
+function iscInRoi = PlotPairwiseIscMatrices(subj_sorted,readScore_sorted,roiFile,iRoi,roiName)
 % PlotPairwiseIscMatrices.m
 %
 % Created 5/21/18 by DJ.
@@ -15,12 +15,16 @@ end
 if ~exist('roiName','var') || isempty(roiName)
     roiName = sprintf('roi%d',iRoi);
 end
-
-% fprintf('Getting Reading Scores...\n');
-% [subj_sorted,readScore_sorted] = GetStoryReadingScores();
-fprintf('Getting ISC in ROI %d (%s)...\n',iRoi,roiName);
-iscInRoi = GetIscInRoi(subj_sorted,roiFile,iRoi);
-fprintf('Done!\n');
+% Accept either iscInRoi or subj_sorted as input
+if ismat(subj_sorted)
+    iscInRoi = subj_sorted;
+else
+    % fprintf('Getting Reading Scores...\n');
+    % [subj_sorted,readScore_sorted] = GetStoryReadingScores();
+    fprintf('Getting ISC in ROI %d (%s)...\n',iRoi,roiName);
+    iscInRoi = GetIscInRoi(subj_sorted,roiFile,iRoi);
+    fprintf('Done!\n');
+end
 
 %% Group files
 nSubj = numel(subj_sorted);

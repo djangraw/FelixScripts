@@ -16,16 +16,15 @@ cd(sprintf('%s/IscResults_d2/Pairwise',info.dataDir));
 iscTable = readtable('StoryPairwiseIscTable.txt','Delimiter','\t','ReadVariableNames',true);
 
 %% Load Mask data
+fprintf('Loading ROI mask...\n')
 cd(sprintf('%s/IscResults_d2/Group',info.dataDir));
 rois = BrikLoad(roiFile);
-isInRoi = rois==iRoi;
-fprintf('Loaded mask... %d voxels in ROI %d.\n',sum(isInRoi(:)),iRoi);
 
 %% Load ROI data
 cd(sprintf('%s/IscResults_d2/Pairwise',info.dataDir));
 nSubj = numel(subj_sorted);
 iscFiles = cell(nSubj);
-iscInRoi = nan(nSubj);
+iscInRoi = nan(nSubj,nSubj,numel(iRoi));
 for i=1:nSubj
     for j=(i+1):nSubj
         fprintf('subj %d vs. %d...\n',i,j);
@@ -36,7 +35,11 @@ for i=1:nSubj
         % load file
         V = BrikLoad(iscFiles{i,j});
         % Get mean ISC in mask
-        iscInRoi(i,j) = mean(V(isInRoi));
+        for k=1:numel(iRoi)
+            isInRoi = rois==iRoi(k);
+            fprintf('found %d voxels in ROI %d.\n',sum(isInRoi(:)),iRoi(k));
+            iscInRoi(i,j,k) = mean(V(isInRoi));
+        end
     end
 end
 fprintf('Done!\n');
