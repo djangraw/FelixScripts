@@ -3,6 +3,7 @@ function [info, beh, behNames,taskBeh,taskBehNames,otherBeh,otherBehNames] = Loa
 % [info, beh, behNames,taskBeh,taskBehNames,otherBeh,otherBehNames] = LoadHcpBehavior()
 %
 % Created 1/26/18 by DJ.
+% Updated 6/5/18 by DJ - removed unhelpful gambling task behavior (all 0s).
 
 
 behDir = '/data/jangrawdc/PRJ03_SustainedAttention/Results/FromEmily';
@@ -10,10 +11,10 @@ info = readtable([behDir '/unrestricted_esfinn_7_14_2016_8_52_0.csv']);
 beh = [info.PicSeq_Unadj, info.CardSort_Unadj, info.Flanker_Unadj, info.PicVocab_Unadj, info.ProcSpeed_Unadj, info.ListSort_Unadj, info.ReadEng_Unadj, info.PMAT24_A_CR];  
 behNames = {'Pic Seq (ep mem)','Card Sort (cog flex)','Flanker (inhib)','Pic Vocab (lang)','Pattern Compl (proc speed)','List Sort (WM)','Oral Reading Recog', 'PMAT (IQ)'};
 
-taskBeh = [info.Emotion_Task_Acc, info.Gambling_Task_Perc_NLR, ...
+taskBeh = [info.Emotion_Task_Acc, ...
     info.Language_Task_Story_Acc, info.Language_Task_Math_Acc, ...
     info.Relational_Task_Acc, info.Social_Task_Perc_TOM, info.WM_Task_2bk_Acc];
-taskBehNames = {'Emotion','Gambling','Language (story)','Language (math)','Relational','Social','WM'};
+taskBehNames = {'Emotion','Language (story)','Language (math)','Relational','Social','WM'};
 
 otherBeh = [info.Age, info.Gender];
 otherBehNames = {'Age','Gender'};

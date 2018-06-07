@@ -17,7 +17,7 @@ cd /data/jangrawdc/PRJ03_SustainedAttention/Results/FromEmily
 % info = readtable('unrestricted_esfinn_7_14_2016_8_52_0.csv');
 % beh = [info.PicSeq_Unadj, info.CardSort_Unadj, info.Flanker_Unadj, info.PicVocab_Unadj, info.ProcSpeed_Unadj, info.ListSort_Unadj, info.ReadEng_Unadj, info.PMAT24_A_CR];  
 % behNames = {'Pic Seq (ep mem)','Card Sort (cog flex)','Flanker (inhib)','Pic Vocab (lang)','Pattern Compl (proc speed)','List Sort (WM)','Oral Reading Recog', 'PMAT (IQ)'};
-[info, beh, behNames] = LoadHcpBehavior()
+[info, beh, behNames] = LoadHcpBehavior();
 
 % Load FC matrices
 foo = load(sprintf('HCP900_%s_mats',tasks{1}),'HCP900_sub_id');
@@ -130,6 +130,103 @@ else
     MakeFigureTitle(sprintf('FC derived from all TRs of each task (%s correlation)',corrtype));
 end
 
+
+
+%% === STATS STUFF ===%%%
+%% Make generalizability plot
+iBeh = find(strncmpi(behNames,'Oral Reading',12));
+iFmri = find(strcmp(tasks,'language'));
+lm = fitlm(readScore_oksubj_crop(:,iFmri), beh_oksubj_crop(:,iBeh),'VarNames',...
+    {'ReadingNetworkStrength','OralReadingScore'});
+figure(25); clf;
+subplot(1,3,1);
+lm.plot();
+% annotate plot
+axis square
+xlabel('Mean FC in Reading Network');
+ylabel('Oral Reading Recognition Performance');
+% get regular pearson correlation
+[r,p] = corr(readScore_oksubj_crop(:,iFmri), beh_oksubj_crop(:,iBeh));
+fprintf('r = %.3g, p = %.3g\n',r,p);
+
+% Make behavioral specificity plot
+iBeh = find(strncmpi(behNames,'Oral Reading',12));
+r_partmot_taskAvg = mean(r_partmot,1);
+r_partboth_taskAvg = mean(r_partboth,1);
+% test for significant differences
+
+p_partmot_taskAvg = nan(1,numel(behNames));
+p_partboth_taskAvg = nan(1,numel(behNames));
+for i=1:numel(behNames)
+    if i~=iBeh
+        p_partmot_taskAvg(i) = ranksum(r_partmot(:,i),r_partmot(:,iBeh));
+        if ~all(isnan(r_partboth(:,i)))
+            p_partboth_taskAvg(i) = ranksum(r_partboth(:,i),r_partboth(:,iBeh));
+        end
+    end
+end
+q_partmot_taskAvg = mafdr(p_partmot_taskAvg(:),'bhfdr',true);
+q_partboth_taskAvg = mafdr(p_partboth_taskAvg(:),'bhfdr',true);
+
+% plot bars
+subplot(1,3,2); cla; hold on;
+% hBar = bar([r_partmot_taskAvg; r_partboth_taskAvg]');
+hBar = bar(r_partmot_taskAvg');
+% add stars
+yStars = max(get(gca,'ylim'))-0.002;
+xBar = GetBarPositions(hBar);
+iStars = find(q_partmot_taskAvg<0.05);
+plot(xBar(1,iStars),yStars,'*','MarkerEdgeColor',get(hBar(1),'FaceColor'))
+% iStars = find(q_partboth_taskAvg<0.05);
+% plot(xBar(2,iStars),yStars,'*','MarkerEdgeColor',get(hBar(2),'FaceColor'))
+% annotate
+set(gca,'xtick',1:numel(behNames),'XTickLabel',behNames);
+% ylabel('Partial correlation with RNS');
+ylabel(sprintf('Partial correlation with RNS\nControlling for motion'));
+xlabel('Behavior');
+% legend('Controlling for motion','Controlling for motion & IQ','Location','SouthEast');
+xticklabel_rotate;
+
+% Make fMRI requirements plot
+
+iFmri = find(strcmp(tasks,'language'));
+r_partmot_behAvg = nanmean(r_partmot,2);
+r_partboth_behAvg = nanmean(r_partboth,2);
+% test for significant differences
+
+p_partmot_behAvg = nan(1,numel(tasks));
+p_partboth_behAvg = nan(1,numel(tasks));
+for i=1:numel(tasks)
+    if i~=iFmri
+        p_partmot_behAvg(i) = ranksum(r_partmot(i,:),r_partmot(iFmri,:));
+        p_partboth_behAvg(i) = ranksum(r_partboth(i,:),r_partboth(iFmri,:));
+    end
+end
+q_partmot_behAvg = mafdr(p_partmot_behAvg(:),'bhfdr',true);
+q_partboth_behAvg = mafdr(p_partboth_behAvg(:),'bhfdr',true);
+
+% plot bars
+subplot(1,3,3); cla; hold on;
+% hBar = barh([r_partmot_behAvg, r_partboth_behAvg]);
+hBar = barh(r_partmot_behAvg);
+% add stars
+xStars = max(get(gca,'xlim'))-0.002;
+yBar = GetBarPositions(hBar);
+iStars = find(q_partmot_behAvg<0.05);
+plot(repmat(xStars,size(iStars)),yBar(1,iStars),'*','MarkerEdgeColor',get(hBar(1),'FaceColor'))
+% iStars = find(q_partboth_behAvg<0.05);
+% plot(repmat(xStars,size(iStars)),yBar(2,iStars),'*','MarkerEdgeColor',get(hBar(2),'FaceColor'))
+% annotate
+set(gca,'ytick',1:numel(tasks),'YTickLabel',tasks);
+% xlabel('Partial correlation with RNS');
+xlabel(sprintf('Partial correlation with RNS\nControlling for motion'));
+ylabel('fMRI Task');
+% legend('Controlling for motion','Controlling for motion & IQ','Location','SouthEast');
+% xticklabel_rotate;
+
+
+
+%% === SPATIAL STUFF ===%%%
 %% Look at difference in FC in Reading Network Edges
 
 % Find top and bottom 1/3 of oral reading performers
