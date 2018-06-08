@@ -1,6 +1,6 @@
 % TestAllHcpTasksOnAllNihBehaviors_gradcpt.m
 %
-% Created 1/16/18 by DJ based on TestAllHcpTasksOnAllNihBehaviors.
+% Created 12/13/17 by DJ.
 
 %% Get HCP Data from all tasks
 tasks = {'emotion','gambling','language','motor','relational','rest1','rest2','social','wm'};
@@ -8,9 +8,11 @@ useEqualTrs = false;% true;
 
 % Get GradCPT Network
 cd /data/jangrawdc/PRJ03_SustainedAttention/Results
-foo = load('ReadingAndGradcptNetworks_optimal.mat');
-gradcptNetwork = foo.gradcptNetwork;
-gradcptNetwork_vec = VectorizeFc(gradcptNetwork);
+% foo = load('ReadingAndGradcptNetworks_optimal.mat');
+% readingNetwork = foo.gradcptNetwork;
+foo = load('GradCptNetwork_p01.mat');
+readingNetwork = foo.gradCptNetwork_p01;
+readingNetwork_vec = VectorizeFc(readingNetwork);
 
 % Load behavior
 cd /data/jangrawdc/PRJ03_SustainedAttention/Results/FromEmily
@@ -22,7 +24,7 @@ cd /data/jangrawdc/PRJ03_SustainedAttention/Results/FromEmily
 % Load FC matrices
 foo = load(sprintf('HCP900_%s_mats',tasks{1}),'HCP900_sub_id');
 nSubj = numel(foo.HCP900_sub_id);
-[isIncompleteSubj_0, gradcptScore, hcpMotion] = deal(nan(nSubj,numel(tasks)));
+[isIncompleteSubj_0, readScore, hcpMotion] = deal(nan(nSubj,numel(tasks)));
 for i=1:numel(tasks)
     fprintf('Task %d/%d...\n',i,numel(tasks));
     if useEqualTrs
@@ -33,8 +35,8 @@ for i=1:numel(tasks)
     hcpMats = foo.(sprintf('HCP900_%s_mats',tasks{i}));
     hcpVecs = VectorizeFc(hcpMats);    
     hcpSubj = foo.HCP900_sub_id;
-    % Get gradcpt scores
-    gradcptScore(:,i) = hcpVecs'*gradcptNetwork_vec/sum(gradcptNetwork_vec~=0);
+    % Get reading scores
+    readScore(:,i) = hcpVecs'*readingNetwork_vec/sum(readingNetwork_vec~=0);
     isIncompleteSubj_0(:,i) = all(hcpVecs==0)' | any(isnan(hcpVecs))';
     % Load Motion Data
     foo = load(sprintf('HCP900_%s_motion',tasks{i}));
@@ -47,13 +49,13 @@ behSubj = info.Subject;
 beh_oksubj = beh(iSubj,:);
 isIncompleteSubj = any(isIncompleteSubj_0,2)' | any(isnan(beh_oksubj),2)' | any(isnan(hcpMotion),2)';
 beh_oksubj_crop = beh_oksubj(~isIncompleteSubj,:);
-readScore_oksubj_crop = gradcptScore(~isIncompleteSubj,:);
+readScore_oksubj_crop = readScore(~isIncompleteSubj,:);
 mot_oksubj_crop = hcpMotion(~isIncompleteSubj,:);
 
 %% Use GradCPT Network on task data to Predict all behaviors from single task
 climits = [-0.12, 0.22];
 corrtype = 'Spearman';%'Pearson';
-% Correlate with gradcpt scores
+% Correlate with reading scores
 [r_true,p_true,r_partbeh,p_partbeh,r_partmot,p_partmot,r_partboth,p_partboth] = deal(nan(numel(tasks),size(beh_oksubj_crop,2)));
 iControl = find(strcmp(behNames,'PMAT (IQ)'));
 for i=1:numel(tasks)
@@ -130,6 +132,104 @@ else
     MakeFigureTitle(sprintf('FC derived from all TRs of each task (%s correlation)',corrtype));
 end
 
+
+
+%% === STATS STUFF ===%%%
+%% Make generalizability plot
+iBeh = find(strncmpi(behNames,'Oral Reading',12));
+iFmri = find(strcmp(tasks,'language'));
+lm = fitlm(beh_oksubj_crop(:,iBeh),readScore_oksubj_crop(:,iFmri), 'VarNames',...
+    {'OralReadingScore','ReadingNetworkStrength'});
+figure(25); clf;
+subplot(1,3,1);
+lm.plot();
+% annotate plot
+axis square
+xlabel('Oral Reading Recognition Performance');
+ylabel(sprintf('Mean FC in GradCPT Network\nDuring Language Task'));
+% get regular pearson correlation
+[r,p] = corr(readScore_oksubj_crop(:,iFmri), beh_oksubj_crop(:,iBeh));
+title(sprintf('GradCPT Network Brain-Behavior Correlation\nr = %.3g, p = %.3g\n',r,p));
+legend('Participant','Linear Fit','95% Confidence');
+
+% Make behavioral specificity plot
+iBeh = find(strncmpi(behNames,'Oral Reading',12));
+r_partmot_taskAvg = mean(r_partmot,1);
+r_partboth_taskAvg = mean(r_partboth,1);
+% test for significant differences
+
+p_partmot_taskAvg = nan(1,numel(behNames));
+p_partboth_taskAvg = nan(1,numel(behNames));
+for i=1:numel(behNames)
+    if i~=iBeh
+        p_partmot_taskAvg(i) = ranksum(r_partmot(:,i),r_partmot(:,iBeh));
+        if ~all(isnan(r_partboth(:,i)))
+            p_partboth_taskAvg(i) = ranksum(r_partboth(:,i),r_partboth(:,iBeh));
+        end
+    end
+end
+q_partmot_taskAvg = mafdr(p_partmot_taskAvg(:),'bhfdr',true);
+q_partboth_taskAvg = mafdr(p_partboth_taskAvg(:),'bhfdr',true);
+
+% plot bars
+subplot(1,3,2); cla; hold on;
+% hBar = bar([r_partmot_taskAvg; r_partboth_taskAvg]');
+hBar = bar(r_partmot_taskAvg');
+% add stars
+yStars = max(get(gca,'ylim'))-0.002;
+xBar = GetBarPositions(hBar);
+iStars = find(q_partmot_taskAvg<0.05);
+plot(xBar(1,iStars),yStars,'*','MarkerEdgeColor',get(hBar(1),'FaceColor'))
+% iStars = find(q_partboth_taskAvg<0.05);
+% plot(xBar(2,iStars),yStars,'*','MarkerEdgeColor',get(hBar(2),'FaceColor'))
+% annotate
+set(gca,'xtick',1:numel(behNames),'XTickLabel',behNames);
+% ylabel('Partial correlation with RNS');
+ylabel(sprintf('Partial correlation with RNS\nControlling for motion'));
+xlabel('Behavior');
+% legend('Controlling for motion','Controlling for motion & IQ','Location','SouthEast');
+xticklabel_rotate;
+
+% Make fMRI requirements plot
+
+iFmri = find(strcmp(tasks,'language'));
+r_partmot_behAvg = nanmean(r_partmot,2);
+r_partboth_behAvg = nanmean(r_partboth,2);
+% test for significant differences
+
+p_partmot_behAvg = nan(1,numel(tasks));
+p_partboth_behAvg = nan(1,numel(tasks));
+for i=1:numel(tasks)
+    if i~=iFmri
+        p_partmot_behAvg(i) = ranksum(r_partmot(i,:),r_partmot(iFmri,:));
+        p_partboth_behAvg(i) = ranksum(r_partboth(i,:),r_partboth(iFmri,:));
+    end
+end
+q_partmot_behAvg = mafdr(p_partmot_behAvg(:),'bhfdr',true);
+q_partboth_behAvg = mafdr(p_partboth_behAvg(:),'bhfdr',true);
+
+% plot bars
+subplot(1,3,3); cla; hold on;
+% hBar = barh([r_partmot_behAvg, r_partboth_behAvg]);
+hBar = barh(r_partmot_behAvg);
+% add stars
+xStars = max(get(gca,'xlim'))-0.002;
+yBar = GetBarPositions(hBar);
+iStars = find(q_partmot_behAvg<0.05);
+plot(repmat(xStars,size(iStars)),yBar(1,iStars),'*','MarkerEdgeColor',get(hBar(1),'FaceColor'))
+% iStars = find(q_partboth_behAvg<0.05);
+% plot(repmat(xStars,size(iStars)),yBar(2,iStars),'*','MarkerEdgeColor',get(hBar(2),'FaceColor'))
+% annotate
+set(gca,'ytick',1:numel(tasks),'YTickLabel',tasks);
+% xlabel('Partial correlation with RNS');
+xlabel(sprintf('Partial correlation with RNS\nControlling for motion'));
+ylabel('fMRI Task');
+% legend('Controlling for motion','Controlling for motion & IQ','Location','SouthEast');
+% xticklabel_rotate;
+
+
+
+%% === SPATIAL STUFF ===%%%
 %% Look at difference in FC in GradCPT Network Edges
 
 % Find top and bottom 1/3 of oral reading performers
@@ -140,11 +240,11 @@ iTop = iSorted(1:floor(nSubj_crop/3)); % top 1/3
 iBottom = iSorted(end-numel(iTop)+1:end); % bottom 1/3
 
 % Find +/- edges
-isPosEdge = gradcptNetwork_vec>0;
-isNegEdge = gradcptNetwork_vec<0;
+isPosEdge = readingNetwork_vec>0;
+isNegEdge = readingNetwork_vec<0;
 
 % Get FC
-nEdges = numel(gradcptNetwork_vec);
+nEdges = numel(readingNetwork_vec);
 [hcpVecs_mean_top, hcpVecs_mean_bot, hcpVecs_mean_all] = deal(nan(nEdges,numel(tasks)));
 [FC_top_pos, FC_bot_pos, FC_all_pos] = deal(nan(sum(isPosEdge),numel(tasks)));
 [FC_top_neg, FC_bot_neg, FC_all_neg] = deal(nan(sum(isNegEdge),numel(tasks)));
@@ -251,5 +351,7 @@ plot(xHist_diff,nHist_diff_pos(:,iLangTask),'y.-','LineWidth',2);
 xlabel(sprintf('mean FC difference in edge\n(top-bottom reading recog performers)'))
 ylabel('# positive edges')
 legend(tasks)
+
+%% Show where these are spatially
 
 

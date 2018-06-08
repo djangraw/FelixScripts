@@ -10,6 +10,7 @@ useEqualTrs = false;% true;
 cd /data/jangrawdc/PRJ03_SustainedAttention/Results
 foo = load('ReadingAndGradcptNetworks_optimal.mat');
 readingNetwork = foo.readingNetwork;
+readingNetwork = foo.readingNetwork;
 readingNetwork_vec = VectorizeFc(readingNetwork);
 
 % Load behavior
@@ -136,18 +137,19 @@ end
 %% Make generalizability plot
 iBeh = find(strncmpi(behNames,'Oral Reading',12));
 iFmri = find(strcmp(tasks,'language'));
-lm = fitlm(readScore_oksubj_crop(:,iFmri), beh_oksubj_crop(:,iBeh),'VarNames',...
-    {'ReadingNetworkStrength','OralReadingScore'});
+lm = fitlm(beh_oksubj_crop(:,iBeh),readScore_oksubj_crop(:,iFmri), 'VarNames',...
+    {'OralReadingScore','ReadingNetworkStrength'});
 figure(25); clf;
 subplot(1,3,1);
 lm.plot();
 % annotate plot
 axis square
-xlabel('Mean FC in Reading Network');
-ylabel('Oral Reading Recognition Performance');
+xlabel('Oral Reading Recognition Performance');
+ylabel(sprintf('Mean FC in Reading Network\nDuring Language Task'));
 % get regular pearson correlation
 [r,p] = corr(readScore_oksubj_crop(:,iFmri), beh_oksubj_crop(:,iBeh));
-fprintf('r = %.3g, p = %.3g\n',r,p);
+title(sprintf('Reading Network Brain-Behavior Correlation\nr = %.3g, p = %.3g\n',r,p));
+legend('Participant','Linear Fit','95% Confidence');
 
 % Make behavioral specificity plot
 iBeh = find(strncmpi(behNames,'Oral Reading',12));
