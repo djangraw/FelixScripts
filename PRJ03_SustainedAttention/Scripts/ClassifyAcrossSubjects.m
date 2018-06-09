@@ -1,5 +1,6 @@
-subjects = [9:11, 13:19,22,24:25,28,30:34,36];
-homedir = '/data/jangrawdc/PRJ03_SustainedAttention/Results/';
+vars = GetDistractionVariables();
+subjects = vars.okSubjects;
+homedir = sprintf('%s/Results/',vars.homedir);
 
 % [FwdModel_bold,FwdModel_fc] = deal(cell(1,numel(subjects)));
 label0_fc = 'attendedSpeech';
@@ -27,7 +28,7 @@ for i=1:numel(subjects) % [8 10 13 18 20]%
     fprintf('Loading files...\n');
     % Get input data
     cd(sprintf('%sSBJ%02d',homedir,subject));
-    beh = load(sprintf('Distraction-%d-QuickRun.mat',subject));
+    beh = load(sprintf('Distraction-SBJ%02d-Behavior.mat',subject));
     % Load timecourses
     datadir = dir('AfniProc*');
     cd(datadir(1).name);
@@ -148,7 +149,7 @@ if doFcPca
     fc_2dmat = FcPcTc(1:nPcsToKeep,:);    
     fprintf('Reduced dimensionality to %d PCs.\n',nPcsToKeep);
 else
-    F_2dmat = VectorizeFc(FC);
+    fc_2dmat = VectorizeFc(FC);
 end
 
 
