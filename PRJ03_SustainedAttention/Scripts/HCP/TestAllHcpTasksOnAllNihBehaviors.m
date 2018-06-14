@@ -10,7 +10,6 @@ useEqualTrs = false;% true;
 cd /data/jangrawdc/PRJ03_SustainedAttention/Results
 foo = load('ReadingAndGradcptNetworks_optimal.mat');
 readingNetwork = foo.readingNetwork;
-readingNetwork = foo.readingNetwork;
 readingNetwork_vec = VectorizeFc(readingNetwork);
 
 % Load behavior
