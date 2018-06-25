@@ -4,12 +4,10 @@
 # SubtractEchoes.sh
 #
 # SAMPLE USAGE:
-# bash SubtractEchoes.sh subject outstarter echo1FileList ...
+# bash SubtractEchoes.sh echo1FileList ...
 #
 # INPUTS:
-# 1. string indicating subject # (e.g., SBJ01)
-# 2. string to be used as prefix of output file.
-# 3. list of filenames (array of .BRIK files) e.g., files=( $(ls *_R*.BRIK) ); ${files[@]:0:y}
+# 1. list of filenames (array of .BRIK files) e.g., files=( $(ls *_R*.BRIK) ); ${files[@]:0:y}
 # 
 # OUTPUTS:
 # saves <echo1FileList[i][0:end-11]>_e2m1 (echo2 minus echo1) and _e3m2 to current directory
@@ -20,10 +18,6 @@
 set -e
 
 #parse inputs
-subject=$1
-shift
-outstarter=$1
-shift
 echo1FileList=( "$@" )
 nFiles=${#echo1FileList[@]}
 

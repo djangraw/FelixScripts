@@ -7,7 +7,7 @@ run = 11;
 fitType = 'exp';
 
 for i=1:5
-    filenames{i} = sprintf('SBJ%02d_S%02d_R%02d_Task_Echo%dof5+orig.BRIK',subject,session,run,i);
+    filenames{i} = sprintf('SBJ%02d_S%02d_R%02d_Task_Echo%dof5_detrended+orig.BRIK',subject,session,run,i);
 end
 
 echoTimes = 15.4:14.3:(15.4+14.3*4);

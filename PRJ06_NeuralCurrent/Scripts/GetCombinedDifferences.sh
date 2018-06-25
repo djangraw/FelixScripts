@@ -84,13 +84,13 @@ do
 	# echo 3dcalc -a "$thisFileBase"Echo1_detrended+orig.BRIK -b "$thisFileBase"Echo2_detrended+orig.BRIK -c "$thisFileBase"Echo3_detrended+orig.BRIK -expr \"abs\(a-b\)+abs\(b-c\)+abs\(c-a\)\" -prefix -overwrite "$thisFileBase"absdiff
 	# combine echoes
 	# 3dcalc -a "$thisFileBase"Echo1_detrended+orig.BRIK -b "$thisFileBase"Echo2_detrended+orig.BRIK -c "$thisFileBase"Echo3_detrended+orig.BRIK -expr "abs(a-b)+abs(b-c)+abs(c-a)" -prefix -overwrite "$thisFileBase"absdiff
-	echo 3dcalc -a "$thisFileBase"Echo1_detrended+orig.BRIK -b "$thisFileBase"Echo2_detrended+orig.BRIK -c "$thisFileBase"Echo3_detrended+orig.BRIK -expr \"a-b\" -prefix -overwrite "$thisFileBase"e1m2
-	echo 3dcalc -a "$thisFileBase"Echo1_detrended+orig.BRIK -b "$thisFileBase"Echo2_detrended+orig.BRIK -c "$thisFileBase"Echo3_detrended+orig.BRIK -expr \"b-c\" -prefix -overwrite "$thisFileBase"e2m3
-	echo 3dcalc -a "$thisFileBase"Echo1_detrended+orig.BRIK -b "$thisFileBase"Echo2_detrended+orig.BRIK -c "$thisFileBase"Echo3_detrended+orig.BRIK -expr \"a-c\" -prefix -overwrite "$thisFileBase"e1m3
+	echo 3dcalc -a "$thisFileBase"Echo1_detrended+orig.BRIK -b "$thisFileBase"Echo2_detrended+orig.BRIK -c "$thisFileBase"Echo3_detrended+orig.BRIK -expr \"a-b\" -prefix "$thisFileBase"e1m2 -overwrite
+	echo 3dcalc -a "$thisFileBase"Echo1_detrended+orig.BRIK -b "$thisFileBase"Echo2_detrended+orig.BRIK -c "$thisFileBase"Echo3_detrended+orig.BRIK -expr \"b-c\" -prefix "$thisFileBase"e2m3 -overwrite
+	echo 3dcalc -a "$thisFileBase"Echo1_detrended+orig.BRIK -b "$thisFileBase"Echo2_detrended+orig.BRIK -c "$thisFileBase"Echo3_detrended+orig.BRIK -expr \"a-c\" -prefix "$thisFileBase"e1m3 -overwrite
 	
-	3dcalc -a "$thisFileBase"Echo1_detrended+orig.BRIK -b "$thisFileBase"Echo2_detrended+orig.BRIK -c "$thisFileBase"Echo3_detrended+orig.BRIK -expr "a-b" -prefix -overwrite "$thisFileBase"e1m2
-	3dcalc -a "$thisFileBase"Echo1_detrended+orig.BRIK -b "$thisFileBase"Echo2_detrended+orig.BRIK -c "$thisFileBase"Echo3_detrended+orig.BRIK -expr "b-c" -prefix -overwrite "$thisFileBase"e2m3
-	3dcalc -a "$thisFileBase"Echo1_detrended+orig.BRIK -b "$thisFileBase"Echo2_detrended+orig.BRIK -c "$thisFileBase"Echo3_detrended+orig.BRIK -expr "a-c" -prefix -overwrite "$thisFileBase"e1m3
+	3dcalc -a "$thisFileBase"Echo1_detrended+orig.BRIK -b "$thisFileBase"Echo2_detrended+orig.BRIK -c "$thisFileBase"Echo3_detrended+orig.BRIK -expr "a-b" -prefix "$thisFileBase"e1m2 -overwrite
+	3dcalc -a "$thisFileBase"Echo1_detrended+orig.BRIK -b "$thisFileBase"Echo2_detrended+orig.BRIK -c "$thisFileBase"Echo3_detrended+orig.BRIK -expr "b-c" -prefix "$thisFileBase"e2m3 -overwrite
+	3dcalc -a "$thisFileBase"Echo1_detrended+orig.BRIK -b "$thisFileBase"Echo2_detrended+orig.BRIK -c "$thisFileBase"Echo3_detrended+orig.BRIK -expr "a-c" -prefix "$thisFileBase"e1m3 -overwrite
 
 	
 done
