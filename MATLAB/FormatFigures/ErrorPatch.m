@@ -106,8 +106,12 @@ switch(nargin)
         PatchColor = varargin{6};
 end
 tic
-Xcoords = [x x(end:-1:1)];
-Ycoords = [U L(end:-1:1)];
+if size(x,2) ==1, x = x'; end
+if size(y,2) ==1, y = y'; end
+if size(U,2) ==1, U = U'; end
+if size(L,2) ==1, L = L'; end
+Xcoords = [x x(end:-1:1) x(1)];
+Ycoords = [U L(end:-1:1) U(1)];
 
 Pa = patch(Xcoords,Ycoords,PatchColor);
 set(Pa,'linestyle','none','linewidth',2,'facealpha',0.5);

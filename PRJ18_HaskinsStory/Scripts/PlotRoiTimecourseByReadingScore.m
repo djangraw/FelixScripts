@@ -16,7 +16,7 @@ if ~exist('roiName','var') || isempty(roiName)
     roiName = sprintf('roi%d',iRoi);
 end
 % Accept either tcInRoi or subj_sorted as input
-if ismat(subj_sorted)
+if ismatrix(subj_sorted)
     tcInRoi = subj_sorted;
 else
     % [subj_sorted,readScore_sorted] = GetStoryReadingScores();
@@ -24,13 +24,17 @@ else
 end
 
 %% Plot
+[nT,nSubj] = size(tcInRoi);
 isTop = readScore_sorted>median(readScore_sorted);
 meanTc_bot = nanmean(tcInRoi(:,~isTop),2);
 meanTc_top = nanmean(tcInRoi(:,isTop),2);
+steTc_bot = nanstd(tcInRoi(:,~isTop),[],2)/sqrt(nSubj);
+steTc_top = nanstd(tcInRoi(:,isTop),[],2)/sqrt(nSubj);
 figure(562); clf; hold on;
-plot([meanTc_bot,meanTc_top]);
+ErrorPatch((1:nT)',meanTc_bot,steTc_bot,'b','b');
+ErrorPatch((1:nT)',meanTc_top,steTc_top,'r','r');
 title(sprintf('mean timecourse in ROI %d (%s)',iRoi,roiName));
-
+% MakeLegend({'r','b'},{'Good Readers','Poor Readers'},[2 2],[.23 .22]);
 % Show task blocks
 yLimits = get(gca,'YLim');
 yMax = yLimits(2);
@@ -42,7 +46,7 @@ iAudEnd = iAud([iGap, end]);
 iAudAll = [iAudStart;iAudEnd;nan(size(iAudStart))];
 plot(iAudAll(:),yMax*ones(numel(iAudAll),1),'m-','linewidth',2)
 for i=1:numel(iAudStart)
-    text(mean(iAudStart(i),iAudEnd(i)),yMax*0.9,'Aud','HorizontalAlignment','center');
+    text(mean([iAudStart(i),iAudEnd(i)]),yMax*0.9,'Aud','HorizontalAlignment','center');
 end
 
 iGap = find(diff(iVis)>1);
@@ -51,12 +55,12 @@ iVisEnd = iVis([iGap, end]);
 iVisAll = [iVisStart;iVisEnd;nan(size(iVisStart))];
 plot(iVisAll(:),yMax*ones(numel(iVisAll),1),'c-','linewidth',2)
 for i=1:numel(iAudStart)
-    text(mean(iVisStart(i),iVisEnd(i)),yMax*0.9,'Vis','HorizontalAlignment','center');
+    text(mean([iVisStart(i),iVisEnd(i)]),yMax*0.9,'Vis','HorizontalAlignment','center');
 end
 
 % annotate
 PlotHorizontalLines(0,'k');
 xlim([0 info.nT]);
-legend('bottom half of readers','top half of readers','Auditory blocks','Visual blocks');
+% legend('bottom half of readers','top half of readers','Auditory blocks','Visual blocks');
 xlabel('time (samples)');
 ylabel('BOLD (% signal change)');

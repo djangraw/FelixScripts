@@ -16,8 +16,9 @@ if ~exist('roiName','var') || isempty(roiName)
     roiName = sprintf('roi%d',iRoi);
 end
 % Accept either iscInRoi or subj_sorted as input
-if ismat(subj_sorted)
+if ismatrix(subj_sorted)
     iscInRoi = subj_sorted;
+    subj_sorted = 1:size(iscInRoi,1);
 else
     % fprintf('Getting Reading Scores...\n');
     % [subj_sorted,readScore_sorted] = GetStoryReadingScores();
