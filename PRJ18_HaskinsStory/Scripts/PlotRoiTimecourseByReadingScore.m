@@ -3,6 +3,7 @@ function tcInRoi = PlotRoiTimecourseByReadingScore(subj_sorted,readScore_sorted,
 %           PlotRoiTimecourseByReadingScore(tcInRoi,readScore_sorted,roiFile,iRoi,roiName)
 %
 % Created 5/22/18 by DJ.
+% Updated 9/5/18 by DJ - added stderr patches.
 
 info = GetStoryConstants();
 % cd(sprintf('%s/IscResults_d2/Group',info.dataDir));
@@ -28,11 +29,11 @@ end
 isTop = readScore_sorted>median(readScore_sorted);
 meanTc_bot = nanmean(tcInRoi(:,~isTop),2);
 meanTc_top = nanmean(tcInRoi(:,isTop),2);
-steTc_bot = nanstd(tcInRoi(:,~isTop),[],2)/sqrt(nSubj);
-steTc_top = nanstd(tcInRoi(:,isTop),[],2)/sqrt(nSubj);
+steTc_bot = nanstd(tcInRoi(:,~isTop),[],2)/sqrt(sum(~isTop));
+steTc_top = nanstd(tcInRoi(:,isTop),[],2)/sqrt(sum(isTop));
 figure(562); clf; hold on;
-ErrorPatch((1:nT)',meanTc_bot,steTc_bot,'b','b');
-ErrorPatch((1:nT)',meanTc_top,steTc_top,'r','r');
+ErrorPatch(1:nT,meanTc_bot,steTc_bot,'b','b');
+ErrorPatch(1:nT,meanTc_top,steTc_top,'r','r');
 title(sprintf('mean timecourse in ROI %d (%s)',iRoi,roiName));
 % MakeLegend({'r','b'},{'Good Readers','Poor Readers'},[2 2],[.23 .22]);
 % Show task blocks

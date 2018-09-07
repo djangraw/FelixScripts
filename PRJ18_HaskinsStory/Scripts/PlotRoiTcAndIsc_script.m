@@ -25,6 +25,26 @@ for iRoi = 4%1:nRoi
 end
 
 %% Plot ISC matrices next to each other
+nBot = sum(readScore_sorted>median(readScore_sorted));
+
+figure(246);
 for iRoi = 1:nRoi
-    subplot(1,nRoi,iRoi);
+    
+    
+    subplot(nRoi,1,iRoi); cla; hold on;
+    imagesc(iscInRoi(:,:,iRoi));
+    plot([0,nBot,nBot,0]+0.5,[0,nBot,0,0]+0.5,'b-','LineWidth',2);
+    plot([nBot,nSubj,nSubj,nBot]+0.5,[nBot,nSubj,nBot,nBot]+0.5,'y-','LineWidth',2);
+    plot([nBot,nBot,nSubj,nSubj,nBot]+0.5,[0,nBot,nBot,0,0]+0.5,'g-','LineWidth',2);
+
+    % annotate plot
+    axis square
+    xlabel(sprintf('better reader-->'))
+    ylabel(sprintf('participant\nbetter reader-->'))
+    set(gca,'ydir','normal');
+    set(gca,'xtick',[],'ytick',[]);
+    title(roiNames{iRoi})
+    set(gca,'clim',[-.2 .2]);
+    colorbar
+    
 end
