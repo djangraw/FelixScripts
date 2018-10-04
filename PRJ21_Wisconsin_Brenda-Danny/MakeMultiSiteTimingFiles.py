@@ -12,7 +12,7 @@ def MakeTimingFiles(eprimeFile,outputFolder,subtractVal=0):
     #
     # Created 9/13/18 by DJ based on MakePrrTimingFiles.py.
     # Updated 9/27/18 by DJ - added O#pics, X#pics, cue#pics, and missedHouse 1D file options.
-    
+    # Updated 10/3/18 by DJ - added PostCue# 1D file options, consolidated code for options with #s
     
     # Import packages
     from LoadMultiSiteEprimeFile import LoadMultiSiteEprimeFile
@@ -63,16 +63,20 @@ def MakeTimingFiles(eprimeFile,outputFolder,subtractVal=0):
     
     # Get times and durations of ITI1
     dfTimes['Iti1Time'] = dfEprime.loc[isNewTrial,'ITI1.OnsetTime'] - dfEprime.loc[isNewTrial,'WaitforTTL.RTTime']
-    dfTimes['Iti1Dur'] = dfEprime.loc[isNewTrial,'ITI1.OffsetTime'] - dfEprime.loc[isNewTrial,'ITI1.OnsetTime']
+    dfTimes['Iti1Dur'] = dfEprime.loc[isNewTrial,'ITI1.OnsetToOnsetTime'] 
+    # OnsetToOnsetTime is better than offset-onset, which subtracts preRelease, and duration, which is a parameter and not a record.
     
     # convert times from ms to s
     dfTimes.loc[:,'cueTime':] = dfTimes.loc[:,'cueTime':]/1000
     
     
     # Nested Loops for each trial type
-    types = ['AllOpics.1D','AllXpics.1D','House.1D','O_UnExp.1D','X_UnExp.1D','Ambiguity.1D','Certainty.1D',
-             'Threat.1D','ITI1.1D','O0pics.1D','O25pics.1D','O50pics.1D','O75pics.1D','X25pics.1D','X50pics.1D',
-             'X75pics.1D','X100pics.1D','cue0.1D','cue25.1D','cue50.1D','cue75.1D','cue100.1D','MissedHouse.1D']
+    types = ['AllOpics.1D','AllXpics.1D','O_UnExp.1D','X_UnExp.1D','House.1D',
+             'Ambiguity.1D','Certainty.1D','Threat.1D',
+             'O0pics.1D','O25pics.1D','O50pics.1D','O75pics.1D',
+             'X25pics.1D','X50pics.1D','X75pics.1D','X100pics.1D',
+             'cue0.1D','cue25.1D','cue50.1D','cue75.1D','cue100.1D',
+             'PostCue0.1D','PostCue25.1D','PostCue50.1D','PostCue75.1D','PostCue100.1D']
     for trialType in types:
         print(trialType)
         # Declare output filename
@@ -113,54 +117,27 @@ def MakeTimingFiles(eprimeFile,outputFolder,subtractVal=0):
             amps = dfTimes['cueType']/25
             isOkTrial = (dfTimes['cueType']>0)
             useAmp = True
-        elif trialType=='ITI1.1D':
-            times = dfTimes['Iti1Time']
-            durs = dfTimes['Iti1Dur']
-            isOkTrial = pd.notnull(times)
-            useDur = True
-        elif trialType=='O0pics.1D':
-            times = dfTimes['posFaceTime']
-            isOkTrial = pd.notnull(times) & (dfTimes['cueType']==0)
-        elif trialType=='O25pics.1D':
-            times = dfTimes['posFaceTime']
-            isOkTrial = pd.notnull(times) & (dfTimes['cueType']==25)
-        elif trialType=='O50pics.1D':
-            times = dfTimes['posFaceTime']
-            isOkTrial = pd.notnull(times) & (dfTimes['cueType']==50)
-        elif trialType=='O75pics.1D':
-            times = dfTimes['posFaceTime']
-            isOkTrial = pd.notnull(times) & (dfTimes['cueType']==75)
-        elif trialType=='X25pics.1D':     
-            times = dfTimes['negFaceTime']
-            isOkTrial = pd.notnull(times) & (dfTimes['cueType']==25)
-        elif trialType=='X50pics.1D':     
-            times = dfTimes['negFaceTime']
-            isOkTrial = pd.notnull(times) & (dfTimes['cueType']==50)
-        elif trialType=='X75pics.1D':     
-            times = dfTimes['negFaceTime']
-            isOkTrial = pd.notnull(times) & (dfTimes['cueType']==75)
-        elif trialType=='X100pics.1D':     
-            times = dfTimes['negFaceTime']
-            isOkTrial = pd.notnull(times) & (dfTimes['cueType']==100)
-        elif trialType=='cue0.1D':     
-            times = dfTimes['cueTime']
-            isOkTrial = pd.notnull(times) & (dfTimes['cueType']==0)
-        elif trialType=='cue25.1D':     
-            times = dfTimes['cueTime']
-            isOkTrial = pd.notnull(times) & (dfTimes['cueType']==25)
-        elif trialType=='cue50.1D':     
-            times = dfTimes['cueTime']
-            isOkTrial = pd.notnull(times) & (dfTimes['cueType']==50)
-        elif trialType=='cue75.1D':     
-            times = dfTimes['cueTime']
-            isOkTrial = pd.notnull(times) & (dfTimes['cueType']==75)
-        elif trialType=='cue100.1D':     
-            times = dfTimes['cueTime']
-            isOkTrial = pd.notnull(times) & (dfTimes['cueType']==100)
         elif trialType=='MissedHouse.1D':
             times = dfTimes['houseTime']
             isOkTrial = pd.notnull(times) & (dfTimes['houseResp']=="")
-            
+        elif trialType.startswith('O'):
+            cueNum = int(trialType[len('O'):-len('pics.1D')]);
+            times = dfTimes['posFaceTime']
+            isOkTrial = pd.notnull(times) & (dfTimes['cueType']==cueNum)
+        elif trialType.startswith('X'):
+            cueNum = int(trialType[len('X'):-len('pics.1D')]);
+            times = dfTimes['negFaceTime']
+            isOkTrial = pd.notnull(times) & (dfTimes['cueType']==cueNum)
+        elif trialType.startswith('cue'):
+            cueNum = int(trialType[len('cue'):-len('.1D')]);
+            times = dfTimes['cueTime']
+            isOkTrial = pd.notnull(times) & (dfTimes['cueType']==cueNum)
+        elif trialType.startswith('PostCue'):
+            cueNum = int(trialType[len('PostCue'):-len('.1D')]);
+            times = dfTimes['Iti1Time']
+            durs = dfTimes['Iti1Dur']
+            isOkTrial = pd.notnull(times) & (dfTimes['cueType']==cueNum)
+            useDur = True
             
         # Write to file
         print("Writing %s..."%outFile)
