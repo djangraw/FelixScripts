@@ -14,4 +14,4 @@ do
 done
 
 # Run swarm
-swarm -f $outTxt -t 2 -g 12 --module freesurfer/6.0.0 --time 36:00:00 --logdir logs --job-name dave_fs
+swarm -f $outTxt -t 2 -g 12 --module freesurfer/6.0.0 --time 36:00:00 --logdir logs --job-name story_fs
