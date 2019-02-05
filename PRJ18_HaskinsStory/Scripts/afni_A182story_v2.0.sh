@@ -47,10 +47,11 @@ do
 		-regress_apply_mot_types demean deriv                               \
 		-regress_est_blur_epits                                             \
 		-regress_est_blur_errts                                             \
-		-regress_run_clustsim no
-		-regress_reml_exec
-	-jobs 12 \
+		-regress_run_clustsim no \
+		-regress_reml_exec \
+		-regress_opts_3dD \
+			-jobs 12 \
 	-bash -execute
 
 	cd ../
-}
+done
