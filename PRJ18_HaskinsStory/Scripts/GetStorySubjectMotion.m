@@ -15,6 +15,7 @@ function [subjMotion, censorFraction] = GetStorySubjectMotion(subjects)
 % Created 5/15/18 by DJ based on GetSrttSubjectMotion.
 % Updated 5/22/18 by DJ - use censored motion and directory <subj>.storyISC
 % Updated 5/23/18 by DJ - use directory <subj>.storyISC_d2
+% Updated 2/5/19 by DJ - use directory a182_v2/<subj>/<subj>.story
 
 % Set Up
 % motionStr = 'average motion (per TR)';
@@ -26,7 +27,8 @@ censorFraction = nan(1,numel(subjects));
 % Get Motion
 for i=1:numel(subjects)
     % Get text from file
-    filename = sprintf('/data/NIMH_Haskins/a182/%s/%s.storyISC/out.ss_review.%s.txt',subjects{i},subjects{i},subjects{i});
+%     filename = sprintf('/data/NIMH_Haskins/a182/%s/%s.storyISC/out.ss_review.%s.txt',subjects{i},subjects{i},subjects{i});
+    filename = sprintf('/data/NIMH_Haskins/a182_v2/%s/%s.story/out.ss_review.%s.txt',subjects{i},subjects{i},subjects{i});
     if ~exist(filename,'file')
         fprintf('Skipping %s...\n',subjects{i});
     else
