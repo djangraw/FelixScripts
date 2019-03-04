@@ -18,6 +18,24 @@ fprintf('okReadSubj_bot="');
 fprintf('%s ',subj_sorted{~isTop_sorted});
 fprintf('\b"\n');
 
+%% Print for R script
+% display results for easy input into R script
+fprintf('===FOR TWO-GROUP R SCRIPT:===\n');
+fprintf('# list labels for Group 1 - ReadScore <= MEDIAN(ReadScore)\n')
+fprintf('G1Subj <- c(');
+fprintf('''%s'',', subj_sorted{~isTop_sorted});
+fprintf('\b)\n\n');
+fprintf('# list labels for Group 2 - ReadScore > MEDIAN(ReadScore)\n')
+fprintf('G2Subj <- c(');
+fprintf('''%s'',', subj_sorted{isTop_sorted});
+fprintf('\b)\n');
+fprintf('\n');
+fprintf('===FOR ONE-GROUP R SCRIPT:===\n');
+fprintf('# list all the subject or session labels\n')
+fprintf('G1Subj <- c(');
+fprintf('''%s'',', subj_sorted{:});
+fprintf('\b)\n\n');
+
 %% Plot
 figure(1); clf;
 bar(weights);

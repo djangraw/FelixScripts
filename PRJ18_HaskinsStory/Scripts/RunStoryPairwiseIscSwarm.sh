@@ -9,6 +9,7 @@ set -e
 # Updated 5/22/18 by DJ - storyISC_d2 directory/output, fanaticor
 # Updated 5/23/18 by DJ - used MNI mask instead of automask option
 # Updated 3/1/19 by DJ - new fileList structure, set 3dTcorrelate polort flag to -1 to avoid redundant detrending
+# Updated 3/4/19 by DJ - new R script and mean/ttest filenames
 
 # ---declare directory constants
 source /data/jangrawdc/PRJ18_HaskinsStory/Scripts/00_CommonVariables.sh
@@ -67,20 +68,21 @@ done
 # Make R script to run after
 echo "#!/bin/bash" >> $rScript
 echo "module load R" >> $rScript
-echo "nohup R CMD BATCH 3dLME_ISC_2Grps_readScoreMedSplit_n42.R 3dLME_ISC_2Grps_readScoreMedSplit_n42.diary" >> $rScript
+echo "nohup R CMD BATCH 3dLME_ISC_2Grps_readScoreMedSplit_n$nFiles.R 3dLME_ISC_2Grps_readScoreMedSplit_n$nFiles.diary" >> $rScript
 
 # run swarm command (batching 20 commands per job)
 jobid=`swarm -g 2 -t 1 -b 20 -f $swarmFile --partition=norm --module=afni --time=0:10:00 --job-name=Isc --logdir=logsDJ`
 
 # run R job
-sbatch --partition=norm --mem=20g -dependency=afterok:$jobid $rScript
+sbatch --partition=norm --mem=100g --time=8:00:00 -dependency=afterok:$jobid $rScript
 
 # take mean across files
 #echo === Getting mean across ISC results...
-#3dMean -prefix "$outDir"ISC_Mean"$nFiles"files+tlrc ${outprefix[*]}
+# outFiles=($(ls $outDir/ISC_h*.HEAD))`
+# 3dMean -prefix ${outDir}/${outstarter}Mean${nFiles}files+tlrc ${outFiles[@]}
 
 # Run t-test against 0
 # echo === Getting t-test results across ISC results...
-# 3dttest++ -overwrite -mask $mask -toz -prefix "$outDir""$outstarter""$nFiles"files+tlrc -setA ${outprefix[*]} #-DAFNI_AUTOMATIC_FDR=NO #don't apply FDR correction #>/dev/null # suppress stdout # output z scores instead of t values
+# 3dttest++ -overwrite -mask $mask -toz -prefix ${outDir}/${outstarter}Ttest${nFiles}files+tlrc -setA ${outFiles[@]} #-DAFNI_AUTOMATIC_FDR=NO #don't apply FDR correction #>/dev/null # suppress stdout # output z scores instead of t values
 
 echo === DONE! ===

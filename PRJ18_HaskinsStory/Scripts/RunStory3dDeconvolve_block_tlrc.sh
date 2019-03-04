@@ -4,17 +4,23 @@ set -e
 # RunStory3dDeconvolve_block_tlrc.sh
 #
 # Created 5/22/18 by DJ.
+# Updated 3/4/19 by DJ - a182_v2 version of filenames, use pb05, no stim_times_subtract 12
 
 # set up
 source /data/jangrawdc/PRJ18_HaskinsStory/Scripts/00_CommonVariables.sh
 subj=$1
-cd $dataDir/$subj/${subj}.storyISC_d2
+cd $dataDir/$subj/${subj}.story
+
+# move old REML_cmd if it exists
+if [ -f stats.REML_cmd ]; then
+  mv stats.REML_cmd stats.${subj}_REML_cmd
+fi
 
 # ------------------------------
 # run the regression analysis
 mkdir -p stimuli
 cp $dataDir/$subj/stim_times/stim_times_story/*.txt stimuli/
-3dDeconvolve -input pb04.$subj.r*.blur+tlrc.HEAD                           \
+3dDeconvolve -input pb05.$subj.r*.scale+tlrc.HEAD                           \
     -censor censor_${subj}_combined_2.1D                                   \
     -ortvec ROIPC.FSvent.1D ROIPC.FSvent                                   \
     -polort 3                                                              \
@@ -36,7 +42,6 @@ cp $dataDir/$subj/stim_times/stim_times_story/*.txt stimuli/
     -stim_label 13 aud                                                   \
     -stim_times_AM1 14 stimuli/c2_visual.txt 'dmBLOCK(0)'                \
     -stim_label 14 vis                                                   \
-    -stim_times_subtract 12                                              \
     -num_glt 3                                                           \
     -gltsym 'SYM: +0.5*aud +0.5*vis'                                     \
     -glt_label 1 audio+visual                                            \

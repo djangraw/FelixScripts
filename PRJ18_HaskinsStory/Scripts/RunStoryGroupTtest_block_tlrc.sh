@@ -5,10 +5,11 @@ set -e
 #
 # Created 5/22/18 by DJ.
 # Updated 5/23/18 by DJ -switched to _d2, MNI mask
+# Updated 3/4/19 by DJ - a182_v2 version of filenames
 
 # set up
 source ./00_CommonVariables.sh
-grpFolder=$dataDir/GROUP_block_tlrc_d2
+grpFolder=$dataDir/GROUP_block_tlrc
 AFNI_HOME=`which afni` # Get AFNI directory
 AFNI_HOME=${AFNI_HOME%/*} # remove afni (and last slash)
 # make directory for output
@@ -16,7 +17,7 @@ mkdir -p $grpFolder
 
 # Get file for each subject WITH COMPLETE READING PHENOTYPING
 for subj in ${okReadSubj[@]}; do
-    ln -s $dataDir/$subj/$subj.storyISC_d2/stats.block.${subj}_REML+tlrc.* $grpFolder/
+    ln -s $dataDir/$subj/$subj.story/stats.block.${subj}_REML+tlrc.* $grpFolder/
 done
 
 # Make EPI-res mask
