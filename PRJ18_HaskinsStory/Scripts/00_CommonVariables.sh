@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# Updated 3/4/19 by DJ - updated okReadSubj_top and _bot
+
 PRJDIR='/data/jangrawdc/PRJ18_HaskinsStory';
 
 dataDir='/data/NIMH_Haskins/a182_v2' # data directory
@@ -44,16 +46,15 @@ okReadSubj="h1002 h1003 h1004 h1010 h1011 "\
 okReadSubj=($okReadSubj) #convert to array
 
 # top half readers
-okReadSubj_top="h1142 h1024 h1057 h1034 h1076 h1097 "\
-"h1028 h1154 h1013 h1058 h1002 h1093 h1118 h1152 "\
-"h1174 h1022 h1036 h1108 h1167 h1014 h1088 h1010 "\
-"h1175 h1005 h1179 h1061 h1054 h1161 h1012 h1007 "\
-"h1059 h1011 h1040 h1016"
-okReadSubj_top=($okReadSubj_top)
+okReadSubj_top="h1157 h1028 h1073 h1036 h1093 h1118 "\
+"h1031 h1169 h1016 h1074 h1002 h1102 h1152 h1167 "\
+"h1185 h1027 h1043 h1146 h1179 h1018 h1098 h1012 "\
+"h1186 h1010 h1189 h1082 h1061 h1175 h1014 h1011 "\
+"h1076 h1013 h1048 h1022"
+
 # bottom half readers
-okReadSubj_bot="h1027 h1087 h1096 h1038 h1035 h1029 "\
-"h1176 h1018 h1003 h1068 h1098 h1168 h1146 h1157 "\
-"h1102 h1074 h1031 h1083 h1163 h1113 h1180 h1150 "\
-"h1048 h1106 h1095 h1169 h1082 h1120 h1153 h1050 "\
-"h1004 h1046 h1073 h1043 h1129"
-okReadSubj_bot=($okReadSubj_bot)
+okReadSubj_bot="h1029 h1097 h1108 h1046 h1038 h1034 "\
+"h1187 h1024 h1003 h1083 h1120 h1180 h1161 h1174 "\
+"h1129 h1088 h1035 h1096 h1176 h1150 h1197 h1163 "\
+"h1058 h1142 h1106 h1184 h1095 h1153 h1168 h1059 "\
+"h1004 h1057 h1087 h1054 h1154"
