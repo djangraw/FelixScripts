@@ -4,16 +4,17 @@ set -e
 # GetStoryGroupClusterThreshold.sh
 #
 # Created 5/25/18 by DJ.
+# Updated 3/5/19 by DJ - adjusted paths for a182_v2 version
 
 # declare variables
 source /data/jangrawdc/PRJ18_HaskinsStory/Scripts/00_CommonVariables.sh
-sbjBlurFile=$dataDir/ClustSimFiles/AllBlurEstimates_d2.1D # all subjects concatenated
-meanBlurFile=$dataDir/ClustSimFiles/MeanBlurEstimate_d2.1D # mean across $sbjBlurFile
-grpMask=$dataDir/GROUP_block_tlrc_d2/MNI_mask_epiRes.nii
-grpFiles="$dataDir/IscResults_d2/Pairwise/3dLME_2Grps_readScoreMedSplit_n42_Automask+tlrc "\
-"$dataDir/IscResults_d2/Pairwise/3dLME_OneGroup_n42_Automask+tlrc "\
-"$dataDir/GROUP_block_tlrc_d2/ttest_allSubj_2grp+tlrc "\
-"$dataDir/GROUP_block_tlrc_d2/ttest_allSubj_1grp+tlrc" # all files with group stats
+sbjBlurFile=$dataDir/ClustSimFiles/AllBlurEstimates.1D # all subjects concatenated
+meanBlurFile=$dataDir/ClustSimFiles/MeanBlurEstimate.1D # mean across $sbjBlurFile
+grpMask=$dataDir/GROUP_block_tlrc/MNI_mask_epiRes.nii
+grpFiles="$dataDir/IscResults/Pairwise/3dLME_2Grps_readScoreMedSplit_n69_Automask+tlrc "\
+"$dataDir/IscResults/Pairwise/3dLME_1Grp_n69_Automask+tlrc "\
+"$dataDir/GROUP_block_tlrc/ttest_allSubj_2grp+tlrc "\
+"$dataDir/GROUP_block_tlrc/ttest_allSubj_1grp+tlrc" # all files with group stats
 
 # set up
 mkdir -p $dataDir/ClustSimFiles
@@ -22,7 +23,7 @@ rm -f $sbjBlurFile $meanBlurFile
 # concatenate all blur estimates
 for subj in ${okReadSubj[@]}
 do
-  cd $dataDir/$subj/${subj}.storyISC_d2
+  cd $dataDir/$subj/${subj}.story
   1dcat blur_est.$subj.1D[0..2]{3} >> $sbjBlurFile
 done
 

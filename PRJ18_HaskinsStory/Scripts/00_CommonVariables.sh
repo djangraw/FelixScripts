@@ -51,6 +51,7 @@ okReadSubj_top="h1157 h1028 h1073 h1036 h1093 h1118 "\
 "h1185 h1027 h1043 h1146 h1179 h1018 h1098 h1012 "\
 "h1186 h1010 h1189 h1082 h1061 h1175 h1014 h1011 "\
 "h1076 h1013 h1048 h1022"
+okReadSubj_top=($okReadSubj_top) # convert to array
 
 # bottom half readers
 okReadSubj_bot="h1029 h1097 h1108 h1046 h1038 h1034 "\
@@ -58,3 +59,4 @@ okReadSubj_bot="h1029 h1097 h1108 h1046 h1038 h1034 "\
 "h1129 h1088 h1035 h1096 h1176 h1150 h1197 h1163 "\
 "h1058 h1142 h1106 h1184 h1095 h1153 h1168 h1059 "\
 "h1004 h1057 h1087 h1054 h1154"
+okReadSubj_bot=($okReadSubj_bot) # convert to array

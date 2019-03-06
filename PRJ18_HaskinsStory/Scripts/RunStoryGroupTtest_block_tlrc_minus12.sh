@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-# RunStoryGroupTtest_block_tlrc.sh
+# RunStoryGroupTtest_block_tlrc_minus12.sh
 #
 # Created 5/22/18 by DJ.
 # Updated 5/23/18 by DJ -switched to _d2, MNI mask
@@ -17,22 +17,22 @@ mkdir -p $grpFolder
 
 # Get file for each subject WITH COMPLETE READING PHENOTYPING
 for subj in ${okReadSubj[@]}; do
-    ln -sf $dataDir/$subj/$subj.story/stats.block.${subj}_REML+tlrc.* $grpFolder/
+    ln -sf $dataDir/$subj/$subj.story/stats.block_minus12.${subj}_REML+tlrc.* $grpFolder/
 done
 
 # Make EPI-res mask
 3dAutomask -overwrite -prefix ${grpFolder}/MNI_mask.nii ${AFNI_HOME}/MNI152_T1_2009c+tlrc
-3dfractionize -overwrite -prefix ${grpFolder}/MNI_mask_epiRes.nii -template ${grpFolder}/stats.block.${okSubj[0]}_REML+tlrc -input ${grpFolder}/MNI_mask.nii
+3dfractionize -overwrite -prefix ${grpFolder}/MNI_mask_epiRes.nii -template ${grpFolder}/stats.block_minus12.${okSubj[0]}_REML+tlrc -input ${grpFolder}/MNI_mask.nii
 
 # Run Group T-Test on data
 cd $grpFolder
 unset topFile botFile
 for i in ${!okReadSubj_top[@]}; do
-  topFile[$i]="stats.block.${okReadSubj_top[$i]}_REML+tlrc"
+  topFile[$i]="stats.block_minus12.${okReadSubj_top[$i]}_REML+tlrc"
 done
 unset botFile
 for i in ${!okReadSubj_bot[@]}; do
-  botFile[$i]="stats.block.${okReadSubj_bot[$i]}_REML+tlrc"
+  botFile[$i]="stats.block_minus12.${okReadSubj_bot[$i]}_REML+tlrc"
 done
 
 # Run T Test
