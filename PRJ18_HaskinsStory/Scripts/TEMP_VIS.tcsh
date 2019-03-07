@@ -1,11 +1,11 @@
 #!/bin/tcsh -e
 
-# Created 05-Mar-2019 14:35:44 by MATLAB function SetUpSumaMontage_4view.m
+# Created 06-Mar-2019 15:29:20 by MATLAB function SetUpSumaMontage_4view.m
 
 set data_dir = "/data/NIMH_Haskins/a182_v2/GROUP_block_tlrc"
 set cmd_file = "TEMP_VIS.tcsh"
 set afni_ulay = "MNI152_2009_SurfVol.nii"
-set afni_olay = "ttest_allSubj_1grp+tlrc"
+set afni_olay = "ttest_allSubj_1grp_minus12+tlrc"
 set suma_spec = "suma_MNI152_2009/MNI152_2009_both.spec"
 set suma_sv = "MNI152_2009_SurfVol.nii"
 set beta_ind = "8"

@@ -37,7 +37,7 @@ done
 
 # Run T Test
 echo "3dttest++ -zskip -brickwise -mask MNI_mask_epiRes.nii -overwrite -prefix ttest_allSubj_2grp -setA ${topFile[@]} -setB ${botFile[@]}"
-3dttest++ -zskip -brickwise -mask MNI_mask_epiRes.nii -overwrite -prefix ttest_allSubj_2grp -setA ${topFile[@]} -setB ${botFile[@]}
+3dttest++ -zskip -brickwise -mask MNI_mask_epiRes.nii -overwrite -prefix ttest_allSubj_2grp_minus12 -setA ${topFile[@]} -setB ${botFile[@]}
 
 echo "3dttest++ -zskip -brickwise -mask MNI_mask_epiRes.nii -overwrite -prefix ttest_allSubj_1grp -setA ${topFile[@]} ${botFile[@]}"
-3dttest++ -zskip -brickwise -mask MNI_mask_epiRes.nii -overwrite -prefix ttest_allSubj_1grp -setA ${topFile[@]} ${botFile[@]}
+3dttest++ -zskip -brickwise -mask MNI_mask_epiRes.nii -overwrite -prefix ttest_allSubj_1grp_minus12 -setA ${topFile[@]} ${botFile[@]}
