@@ -1,6 +1,6 @@
 #!/bin/tcsh -e
 
-# Created 06-Mar-2019 15:48:44 by MATLAB function SetUpSumaMontage_4view.m
+# Created 25-Mar-2019 13:19:59 by MATLAB function SetUpSumaMontage_4view.m
 
 set data_dir = "/data/NIMH_Haskins/a182_v2/GROUP_block_tlrc"
 set cmd_file = "TEMP_AUD.tcsh"
@@ -12,9 +12,9 @@ set beta_ind = "2"
 set thresh_ind = "3"
 set image_dir = "./SUMA_IMAGES"
 set image_pre = "suma_images"
-set image_fin = "SUMA_IMAGES/suma_4view_1grp_aud_lim0p2_q01.jpg"
+set image_fin = "SUMA_IMAGES/suma_4view_1grp_aud_lim0.3_q0.01.jpg"
 set suma_pos = "50 50 500 425"
-set func_range = "0.2"
+set func_range = "0.3"
 set thr_thresh = "0.01 *q"
 set my_cbar = "Reds_and_Blues_w_Green"
 

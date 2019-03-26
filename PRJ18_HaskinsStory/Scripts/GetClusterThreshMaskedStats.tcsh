@@ -61,22 +61,22 @@
 # specify group stats files
 # set statsfolder = "/data/NIMH_Haskins/a182/GROUP_block_tlrc_d2/"
 # set statsfile   = "ttest_allSubj_2grp"      # output effect+stats filename
-set statsfolder = "/data/NIMH_Haskins/a182/IscResults_d2/Group/"
-set statsfile   = "3dLME_2Grps_readScoreMedSplit_n42_Automask"      # output effect+stats filename
-set statsfile_space = "tlrc"
-set iMean       = "8"                 # volume label (or index) for stat result
-set iThresh     = "9"
-set cond_name   = "bot-topbot"
-set maskfile    = "MNI_mask_epiRes.nii"
+# set statsfolder = "/data/NIMH_Haskins/a182/IscResults_d2/Group/"
+# set statsfile   = "3dLME_2Grps_readScoreMedSplit_n42_Automask"      # output effect+stats filename
+# set statsfile_space = "tlrc"
+# set iMean       = "8"                 # volume label (or index) for stat result
+# set iThresh     = "9"
+# set cond_name   = "bot-topbot"
+# set maskfile    = "MNI_mask_epiRes.nii"
 
 # Cluster parameters
-set csim_folder = "/data/NIMH_Haskins/a182/ClustSimFiles"
-set csim_neigh  = 1         # neighborhood; could be NN=1,2,3
-set csim_NN     = "NN${csim_neigh}"  # other form of neigh
-set csim_sided  = "bisided" # test type; could be 1sided, 2sided or bisided
-set csim_pthr   = 0.01     # voxelwise thr (was higher, 0.01, in orig study)
-set csim_alpha  = 0.05      # nominal FWE
-set csim_pref   = "${statsfile}_${cond_name}_clust_p${csim_pthr}_a${csim_alpha}_${csim_sided}" # prefix for outputting stuff
+# set csim_folder = "/data/NIMH_Haskins/a182/ClustSimFiles"
+# set csim_neigh  = 1         # neighborhood; could be NN=1,2,3
+# set csim_NN     = "NN${csim_neigh}"  # other form of neigh
+# set csim_sided  = "bisided" # test type; could be 1sided, 2sided or bisided
+# set csim_pthr   = 0.01     # voxelwise thr (was higher, 0.01, in orig study)
+# set csim_alpha  = 0.05      # nominal FWE
+# set csim_pref   = "${statsfile}_${cond_name}_clust_p${csim_pthr}_a${csim_alpha}_${csim_sided}" # prefix for outputting stuff
 
 # ==================== Cluster simulations =======================
 
@@ -84,6 +84,10 @@ set csim_pref   = "${statsfile}_${cond_name}_clust_p${csim_pthr}_a${csim_alpha}_
 # user's choice of parameters as set above.  The "-verb 0" means that
 # just the threshold number of voxels is returned, so we can save that
 # as a variable.
+echo 1d_tool.py -verb 0                                \
+                        -infile ${csim_folder}/ClustSim.grpACF.${csim_NN}_${csim_sided}.1D  \
+                        -csim_pthr   $csim_pthr                       \
+                        -csim_alpha "$csim_alpha"
 set clust_thrvol = `1d_tool.py -verb 0                                \
                         -infile ${csim_folder}/ClustSim.grpACF.${csim_NN}_${csim_sided}.1D  \
                         -csim_pthr   $csim_pthr                       \
