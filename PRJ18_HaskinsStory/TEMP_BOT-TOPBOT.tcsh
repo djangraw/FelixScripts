@@ -1,12 +1,12 @@
 #!/bin/tcsh -e
 
-# Created 27-Mar-2019 17:20:05 by MATLAB function SetUpClusterThreshMaskedStats.m
+# Created 29-Mar-2019 10:19:29 by MATLAB function SetUpClusterThreshMaskedStats.m
 
 set statsfolder = "/data/NIMH_Haskins/a182_v2/IscResults/Group/"
-set statsfile = "3dLME_2Grps_readScoreMedSplit_n69_Automask"
+set statsfile = "3dLME_2Grps_readScoreMedSplit_n69_Automask_aud-vis"
 set statsfile_space = "tlrc"
-set iMean = "8"
-set iThresh = "9"
+set iMean = "10"
+set iThresh = "11"
 set cond_name = "bot-topbot"
 set maskfile = "MNI_mask_epiRes.nii"
 set cmd_file = "TEMP_BOT-TOPBOT.tcsh"
