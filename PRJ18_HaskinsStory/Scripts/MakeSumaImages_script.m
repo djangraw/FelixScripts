@@ -119,6 +119,26 @@ SetUpSumaMontage_4view('/data/NIMH_Haskins/a182_v2/IscResults/Group','TEMP_AUD-V
 
 % ====== AUD/VIS ISC ======== %
 
+%% 1-grp AUD ISC, p<0.01 alpha<0.05
+SetUpSumaMontage_4view('/data/NIMH_Haskins/a182_v2/IscResults/Group','TEMP_1GRP_CLUST.tcsh','MNI152_2009_SurfVol.nii',...
+    '3dLME_1Grp_n69_Automask_aud_all_clust_p0.01_a0.05_bisided_EE.nii.gz','suma_MNI152_2009/MNI152_2009_both.spec','MNI152_2009_SurfVol.nii',...
+    0,0,'./SUMA_IMAGES','','SUMA_IMAGES/suma_4view_ISC_aud_all_lim0p1_p01_a05.jpg',[],0.1,'0','');
+
+% pause(60)
+%% 1-grp VIS ISC, p<0.01 alpha<0.05
+SetUpSumaMontage_4view('/data/NIMH_Haskins/a182_v2/IscResults/Group','TEMP_1GRP_CLUST.tcsh','MNI152_2009_SurfVol.nii',...
+    '3dLME_1Grp_n69_Automask_vis_all_clust_p0.01_a0.05_bisided_EE.nii.gz','suma_MNI152_2009/MNI152_2009_both.spec','MNI152_2009_SurfVol.nii',...
+    0,0,'./SUMA_IMAGES','','SUMA_IMAGES/suma_4view_ISC_vis_all_lim0p1_p01_a05.jpg',[],0.1,'0','');
+
+% pause(60)
+%% 1-grp AUD-VIS ISC, p<0.01 alpha<0.05
+SetUpSumaMontage_4view('/data/NIMH_Haskins/a182_v2/IscResults/Group','TEMP_1GRP_CLUST.tcsh','MNI152_2009_SurfVol.nii',...
+    '3dLME_1Grp_n69_Automask_aud-vis_all_clust_p0.01_a0.05_bisided_EE.nii.gz','suma_MNI152_2009/MNI152_2009_both.spec','MNI152_2009_SurfVol.nii',...
+    0,0,'./SUMA_IMAGES','','SUMA_IMAGES/suma_4view_ISC_aud-vis_all_lim0p1_p01_a05.jpg',[],0.1,'0','');
+
+% pause(60)
+
+
 %% 2-grp AUD ISC top-bot,q<0.01
 SetUpSumaMontage_4view('/data/NIMH_Haskins/a182_v2/IscResults/Group','TEMP_TOP-BOT_CLUST.tcsh','MNI152_2009_SurfVol.nii',...
     '3dLME_2Grps_readScoreMedSplit_n69_Automask_aud+tlrc','suma_MNI152_2009/MNI152_2009_both.spec','MNI152_2009_SurfVol.nii',...
