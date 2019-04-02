@@ -3,6 +3,7 @@
 # Created 5/18/18 by DJ based on 3dLME_ISC_OneGroup.R from EF.
 # Updated 12/11/18 by DJ - _d3, including inputs to accommodate Vis & Aud versions
 # Updated 3/4/19 by DJ - a182_v2 version with 69 ok subjects
+# Updated 4/2/19 by DJ - comments
 
 # get inputs
 args = commandArgs(trailingOnly=TRUE)

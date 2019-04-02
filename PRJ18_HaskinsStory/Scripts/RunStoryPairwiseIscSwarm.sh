@@ -76,7 +76,7 @@ jobid=`swarm -g 2 -t 1 -b 20 -f $swarmFile --partition=norm --module=afni --time
 # Make sbatch file to run 1-group 3dLME R script
 echo "#!/bin/bash" >> $rScript1
 echo "module load R" >> $rScript1
-echo "nohup R CMD BATCH 3dLME_ISC_1Grp_n$nFiles.R 3dLME_ISC_2Grps_readScoreMedSplit_n$nFiles.diary" >> $rScript1
+echo "nohup R CMD BATCH 3dLME_ISC_1Grp_n$nFiles.R 3dLME_ISC_1Grp_n$nFiles.diary" >> $rScript1
 
 # Make sbatch file to run 2-group 3dLME R script
 echo "#!/bin/bash" >> $rScript2
