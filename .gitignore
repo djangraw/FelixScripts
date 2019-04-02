@@ -5,6 +5,7 @@
 !*.m
 !*.py
 !*.md
+!*.R
 !.gitignore
 abin*
 ._*
