@@ -123,7 +123,7 @@ echo "module load R" >> $rScript_aud
 echo "Rscript 3dLME_ISC_2Grps_readScoreMedSplit_n69.R StoryPairwiseIscTable_aud.txt 3dLME_2Grps_readScoreMedSplit_n69_Automask_aud" >> $rScript_aud
 
 # run swarm command (batching 20 commands per job)
-jobid=`swarm -g 2 -t 1 -b 20 -f $swarmFile --partition=nnorm --module=afni --time=0:10:00 --job-name=Isc --logdir=logsDJ`
+jobid=`swarm -g 2 -t 1 -b 20 -f $swarmFile --partition=norm --module=afni --time=0:10:00 --job-name=Isc --logdir=logsDJ`
 jobid_vis=`swarm -g 2 -t 1 -b 20 -f $swarmFile_vis --partition=norm --module=afni --time=0:10:00 --job-name=IscV --logdir=logsDJ`
 jobid_aud=`swarm -g 2 -t 1 -b 20 -f $swarmFile_aud --partition=norm --module=afni --time=0:10:00 --job-name=IscA --logdir=logsDJ`
 

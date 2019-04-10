@@ -84,8 +84,8 @@ echo "module load R" >> $rScript2
 echo "nohup R CMD BATCH 3dLME_ISC_2Grps_readScoreMedSplit_n$nFiles.R 3dLME_ISC_2Grps_readScoreMedSplit_n$nFiles.diary" >> $rScript2
 
 # run R jobs (requesting lots of memory)
-sbatch --partition=norm --mem=100g --time=8:00:00 -dependency=afterok:$jobid $rScript1
-sbatch --partition=norm --mem=100g --time=8:00:00 -dependency=afterok:$jobid $rScript2
+sbatch --partition=norm --mem=64g --time=8:00:00 -dependency=afterok:$jobid $rScript1
+sbatch --partition=norm --mem=64g --time=8:00:00 -dependency=afterok:$jobid $rScript2
 
 
 # take mean across files
