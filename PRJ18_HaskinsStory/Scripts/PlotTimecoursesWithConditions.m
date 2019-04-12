@@ -9,7 +9,7 @@ if ~exist('steTimecourses','var') || isempty(steTimecourses)
 end
 
 %% Plot
-figure(562); clf; hold on;
+cla; hold on;
 TR = 2;
 colors = {'r','g','b','c','m','y','k'};
 for i=1:size(timecourses,2)

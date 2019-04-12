@@ -1,6 +1,6 @@
-function SetUpClusterThreshMaskedStats(statsfolder,statsfile,statsfile_space,iMean,iThresh,cond_name,maskfile,cmd_file,csim_folder,csim_neigh,csim_NN,csim_sided,csim_pthr_csim_alpha,csim_pref)
+function SetUpClusterThreshMaskedStats(statsfolder,statsfile,statsfile_space,iMean,iThresh,cond_name,maskfile,cmd_file,csim_folder,csim_neigh,csim_NN,csim_sided,csim_pthr,csim_alpha,csim_pref)
 
-% SetUpClusterThreshMaskedStats(statsfolder,statsfile,statsfile_space,iMean,iThresh,cond_name,maskfile,csim_folder,csim_neigh,csim_NN,csim_sided,csim_pthr_csim_alpha,csim_pref)
+% SetUpClusterThreshMaskedStats(statsfolder,statsfile,statsfile_space,iMean,iThresh,cond_name,maskfile,csim_folder,csim_neigh,csim_NN,csim_sided,csim_pthr,csim_alpha,csim_pref)
 %
 % Created 3/25/19 by DJ based on SetUpSumaMontage_4view.m.
 
