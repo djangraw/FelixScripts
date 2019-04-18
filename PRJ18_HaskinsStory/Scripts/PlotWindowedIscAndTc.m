@@ -1,15 +1,17 @@
 % PlotWindowedIscAndTc.m
 % 
 % Created 4/11/19 by DJ.
+% Updated 4/17/19 by DJ - added loop
 
 constants = GetStoryConstants();
 
 set(523,'Position',[4 200 1914 862])
 
 groupDiffMaps = {sprintf('%s/IscResults/Group/3dLME_2Grps_readScoreMedSplit_n69_Automask_top-bot_clust_p0.01_a0.05_bisided_EE.nii.gz',constants.dataDir), ''};
-roiTerms = {'anteriorcingulate','dlpfc','inferiorfrontal','inferiortemporal','supramarginalgyrus','primaryauditory','primaryvisual'};
-roiNames = {'ACC','DLPFC','IFG','ITG','SMG','A1','V1'};
+roiTerms = {'anteriorcingulate','dlpfc','inferiorfrontal','inferiortemporal','supramarginalgyrus','primaryauditory','primaryvisual','frontaleye'};
+roiNames = {'ACC','DLPFC','IFG','ITG','SMG','A1','V1','FEF'};
 sides={'r','l',''};
+
 
 for i=1:length(groupDiffMaps)
     fprintf('====Map %d/%d...\n',i,length(groupDiffMaps));
@@ -17,12 +19,16 @@ for i=1:length(groupDiffMaps)
         fprintf('===ROI %d/%d...\n',j,length(roiTerms));
         for k=1:length(sides)
             fprintf('==Hemisphere %d/%d...\n',k,length(sides));
+            %%
             groupDiffMap = groupDiffMaps{i};
             neuroSynthMask = sprintf('%s/NeuroSynthTerms/%s_association-test_z_FDR_0.01_epiRes.nii.gz',constants.dataDir,roiTerms{j});
             roiName = sprintf('%s%s',sides{k},roiNames{j});
             
-            % groupDiffMap = sprintf('%s/IscResults/Group/3dLME_2Grps_readScoreMedSplit_n69_Automask_top-bot_clust_p0.01_a0.05_bisided_EE.nii.gz',constants.dataDir);
-            % groupDiffMap = '';
+%             groupDiffMap = sprintf('%s/IscResults/Group/3dLME_2Grps_readScoreMedSplit_n69_Automask_top-bot_clust_p0.01_a0.05_bisided_EE.nii.gz',constants.dataDir);
+%             groupDiffMap = '';
+% 
+%             neuroSynthMask = sprintf('%s/NeuroSynthTerms/rITC_87_mask_0003+tlrc',constants.dataDir);
+%             roiName = '100Vox-rITG';
 
             % neuroSynthMask = sprintf('%s/NeuroSynthTerms/anteriorcingulate_association-test_z_FDR_0.01_epiRes.nii.gz',constants.dataDir);
             % roiName = 'ACC';
@@ -67,7 +73,7 @@ for i=1:length(groupDiffMaps)
                 mapName = sprintf('%s * top-bot p<0.01, a<0.05 (%d voxels)',roiName,nVoxels);
             end
 
-            %%
+            % Get ISC in ROI
             winLength = 15;
             TR = 2;
             clear iscInRoi
@@ -78,7 +84,7 @@ for i=1:length(groupDiffMaps)
 
             tIsc = ((1:length(iscInRoi)) + winLength/2)*TR;
 
-            %%
+            % Get timecourse in ROI
             clear tcInRoi
             topResult = sprintf('%s/MeanErrtsFanaticor_top+tlrc',constants.dataDir);
             tcInRoi(:,1) = GetTimecourseInRoi(topResult,olap);
@@ -87,7 +93,7 @@ for i=1:length(groupDiffMaps)
 
             t = (1:length(tcInRoi))*TR;
 
-            %%
+            % Plot ISC
             figure(523); clf;
             subplot(2,1,1);
             PlotTimecoursesWithConditions(tIsc,iscInRoi)
@@ -97,7 +103,7 @@ for i=1:length(groupDiffMaps)
             MakeLegend({'r','g'},{'Top Readers','Bottom Readers'},[2,2],[0.17,0.9]);
             xlim([0,t(end)])
 
-            %%
+            % Plot timecourse
             % figure(524); clf;
             subplot(2,1,2);
             PlotTimecoursesWithConditions(t,tcInRoi)
@@ -105,6 +111,8 @@ for i=1:length(groupDiffMaps)
             title(mapName);
             % MakeLegend({'r','g'},{'Top Readers','Bottom Readers'},[2,2],[0.17,0.9]);
             xlim([0,t(end)])
+            
+            % Save figure
             if isempty(groupDiffMap)
                 print(sprintf('%s/NeuroSynthTerms/SUMA_IMAGES/%s_%ds-win-isc+tc.png',constants.dataDir,roiName,winLength*TR),'-dpng')
             else
