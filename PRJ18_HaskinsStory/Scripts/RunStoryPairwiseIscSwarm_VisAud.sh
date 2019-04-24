@@ -10,23 +10,27 @@ set -e
 # Updated 5/23/18 by DJ - used MNI mask instead of automask option
 # Updated 12/10/18 by DJ - Vis-only and Aud-only versions
 # Updated 3/26/19 by DJ - updated to 69-subj version
+# Updated 4/23/19 by DJ - added transition (_trans) version
 
 # ---declare directory constants
 source /data/jangrawdc/PRJ18_HaskinsStory/Scripts/00_CommonVariables.sh
 # outstarter="storyISC_"
 outDir=${dataDir}/IscResults/Pairwise
 
-swarmFile=${scriptDir}/IscSwarmCommand_TEMP
-swarmFile_vis=${scriptDir}/IscSwarmCommand_vis
-swarmFile_aud=${scriptDir}/IscSwarmCommand_aud
+# swarmFile=${scriptDir}/IscSwarmCommand_TEMP
+# swarmFile_vis=${scriptDir}/IscSwarmCommand_vis
+# swarmFile_aud=${scriptDir}/IscSwarmCommand_aud
+swarmFile_trans=${scriptDir}/IscSwarmCommand_trans
 
-rScript=${scriptDir}/IscRCommand_TEMP
-rScript_vis=${scriptDir}/IscRCommand_vis
-rScript_aud=${scriptDir}/IscRCommand_aud
+# rScript=${scriptDir}/IscRCommand_TEMP
+# rScript_vis=${scriptDir}/IscRCommand_vis
+# rScript_aud=${scriptDir}/IscRCommand_aud
+rScript_trans=${scriptDir}/IscRCommand_trans
 
-iscTable=${outDir}/StoryPairwiseIscTable_TEMP.txt
-iscTable_vis=${outDir}/StoryPairwiseIscTable_vis.txt
-iscTable_aud=${outDir}/StoryPairwiseIscTable_aud.txt
+# iscTable=${outDir}/StoryPairwiseIscTable_TEMP.txt
+# iscTable_vis=${outDir}/StoryPairwiseIscTable_vis.txt
+# iscTable_aud=${outDir}/StoryPairwiseIscTable_aud.txt
+iscTable_trans=${outDir}/StoryPairwiseIscTable_trans.txt
 
 AFNI_HOME=`which afni` # Get AFNI directory
 AFNI_HOME=${AFNI_HOME%/*} # remove afni (and last slash)
@@ -39,22 +43,26 @@ nFiles=${#okSubj[@]}
 for (( i=0; i<$nFiles; i++ ))
 do
   fileIn="${okSubj[$i]}/${okSubj[$i]}.story/errts.${okSubj[$i]}.fanaticor+tlrc" # or should it be .tproject+tlrc?
-  visOut="${okSubj[$i]}/${okSubj[$i]}.story/errts.${okSubj[$i]}.fanaticor_vis+tlrc"
-  audOut="${okSubj[$i]}/${okSubj[$i]}.story/errts.${okSubj[$i]}.fanaticor_aud+tlrc"
+  # visOut="${okSubj[$i]}/${okSubj[$i]}.story/errts.${okSubj[$i]}.fanaticor_vis+tlrc"
+  # audOut="${okSubj[$i]}/${okSubj[$i]}.story/errts.${okSubj[$i]}.fanaticor_aud+tlrc"
+  transOut="${okSubj[$i]}/${okSubj[$i]}.story/errts.${okSubj[$i]}.fanaticor_trans+tlrc"
 
   # 3dTcat -prefix $visOut $fileIn'[31..54, 89..117, 244..268, 301..327]'
   # 3dTcat -prefix $audOut $fileIn'[57..88, 120..149, 212..242, 271..299]'
-  3dTcat -prefix $visOut $fileIn'[33..54, 91..117, 246..268, 303..327]' # in samples, with onsets delayed 6s for HRF ramp-up
-  3dTcat -prefix $audOut $fileIn'[58..87, 121..148, 214..242, 272..299]' # in samples, with onsets delayed 6s for HRF ramp-up
+  # 3dTcat -prefix $visOut $fileIn'[33..54, 91..117, 246..268, 303..327]' # in samples, with onsets delayed 6s for HRF ramp-up
+  # 3dTcat -prefix $audOut $fileIn'[58..87, 121..148, 214..242, 272..299]' # in samples, with onsets delayed 6s for HRF ramp-up
+  # 3dTcat -prefix $transOut $fileIn'[29..33, 54..58, 87..91, 117..121, 148..152, 210..214, 242..246, 268..272, 299..303, 327..331]' # in samples, with onsets delayed 6s for HRF ramp-up
+  3dTcat -overwrite -prefix $transOut $fileIn'[31..35, 55..59, 88..92, 118s..122, 149..153, 212..216, 243..247, 269..273, 300..304, 328..332]' # in samples, 2-10s after block offset
 
-  fileList[$i]=$fileIn
-  fileList_vis[$i]=$visOut
-  fileList_aud[$i]=$audOut
+  # fileList[$i]=$fileIn
+  # fileList_vis[$i]=$visOut
+  # fileList_aud[$i]=$audOut
+  fileList_trans[$i]=$transOut
 
 done
 # Make EPI-res mask
-3dAutomask -overwrite -prefix ${outDir}/MNI_mask.nii ${AFNI_HOME}/MNI152_T1_2009c+tlrc
-3dfractionize -overwrite -prefix ${outDir}/MNI_mask_epiRes.nii -template ${fileList[0]} -input ${outDir}/MNI_mask.nii
+# 3dAutomask -overwrite -prefix ${outDir}/MNI_mask.nii ${AFNI_HOME}/MNI152_T1_2009c+tlrc
+# 3dfractionize -overwrite -prefix ${outDir}/MNI_mask_epiRes.nii -template ${fileList[0]} -input ${outDir}/MNI_mask.nii
 mask=${outDir}/MNI_mask_epiRes.nii
 
 # Display info about files
@@ -63,10 +71,11 @@ echo "$nFiles files given as input."
 echo mask = $mask
 
 # Set up: make headers
-rm -f $swarmFile $swarmFile_aud $swarmFile_vis $iscTable $iscTable_aud $iscTable_vis $rScript $rScript_aud $rScript_vis
-echo -e "Subj\tSubj2\tInputFile">>$iscTable
-echo -e "Subj\tSubj2\tInputFile">>$iscTable_vis
-echo -e "Subj\tSubj2\tInputFile">>$iscTable_aud
+# rm -f $swarmFile $swarmFile_aud $swarmFile_vis $iscTable $iscTable_aud $iscTable_vis $rScript $rScript_aud $rScript_vis
+# echo -e "Subj\tSubj2\tInputFile">>$iscTable
+# echo -e "Subj\tSubj2\tInputFile">>$iscTable_vis
+# echo -e "Subj\tSubj2\tInputFile">>$iscTable_aud
+echo -e "Subj\tSubj2\tInputFile">>$iscTable_trans
 
 # Loop 1: ISC across files
 echo "=== Getting ISCs across files..."
@@ -78,59 +87,75 @@ do
       echo "   ...vs. file $jFile"
       # get ISCs
       echo Running ISC...
-      file1=${dataDir}/${fileList[$iFile]} # correlate with
-      file2=${dataDir}/${fileList[$jFile]} # correlate with
-      tempfile=${outDir}/TEMP_${okSubj[$iFile]}_${okSubj[$jFile]}_story+tlrc # unmasked output of 3dTcorrelate
-      iscfile=${outDir}/ISC_${okSubj[$iFile]}_${okSubj[$jFile]}_story+tlrc # masked output of 3dTcorrelate+3dcalc
-      # run 3dTcorrelate WITHOUT automask to cut out small-value voxels... this did strange things last time.
-      echo "3dTcorrelate -polort -1 -prefix $tempfile $file1 $file2; 3dcalc -a $tempfile -b $mask -overwrite -prefix $iscfile -expr 'a*step(b)'" >> $swarmFile
-      # echo "3dcalc -a $tempfile -b $mask -overwrite -prefix $iscfile -expr 'a*step(b)'" >> $swarmFile
-      # make table for follow-up R script
-      echo -e "${okSubj[$iFile]}\t${okSubj[jFile]}\t${iscfile}" >> $iscTable
+      # file1=${dataDir}/${fileList[$iFile]} # correlate with
+      # file2=${dataDir}/${fileList[$jFile]} # correlate with
+      # tempfile=${outDir}/TEMP_${okSubj[$iFile]}_${okSubj[$jFile]}_story+tlrc # unmasked output of 3dTcorrelate
+      # iscfile=${outDir}/ISC_${okSubj[$iFile]}_${okSubj[$jFile]}_story+tlrc # masked output of 3dTcorrelate+3dcalc
+      # # run 3dTcorrelate WITHOUT automask to cut out small-value voxels... this did strange things last time.
+      # echo "3dTcorrelate -polort -1 -prefix $tempfile $file1 $file2; 3dcalc -a $tempfile -b $mask -overwrite -prefix $iscfile -expr 'a*step(b)'" >> $swarmFile
+      # # echo "3dcalc -a $tempfile -b $mask -overwrite -prefix $iscfile -expr 'a*step(b)'" >> $swarmFile
+      # # make table for follow-up R script
+      # echo -e "${okSubj[$iFile]}\t${okSubj[jFile]}\t${iscfile}" >> $iscTable
+      #
+      # file1=${dataDir}/${fileList_vis[$iFile]} # correlate with
+      # file2=${dataDir}/${fileList_vis[$jFile]} # correlate with
+      # tempfile=${outDir}/TEMP_${okSubj[$iFile]}_${okSubj[$jFile]}_story_vis+tlrc # unmasked output of 3dTcorrelate
+      # iscfile=${outDir}/ISC_${okSubj[$iFile]}_${okSubj[$jFile]}_story_vis+tlrc # masked output of 3dTcorrelate+3dcalc
+      # # run 3dTcorrelate WITHOUT automask to cut out small-value voxels... this did strange things last time.
+      # echo "3dTcorrelate -polort -1 -prefix $tempfile $file1 $file2; 3dcalc -a $tempfile -b $mask -overwrite -prefix $iscfile -expr 'a*step(b)'" >> $swarmFile_vis
+      # # echo "3dcalc -a $tempfile -b $mask -overwrite -prefix $iscfile -expr 'a*step(b)'" >> $swarmFile_vis
+      # # make table for follow-up R script
+      # echo -e "${okSubj[$iFile]}\t${okSubj[jFile]}\t${iscfile}" >> $iscTable_vis
+      #
+      #
+      # file1=${dataDir}/${fileList_aud[$iFile]} # correlate with
+      # file2=${dataDir}/${fileList_aud[$jFile]} # correlate with
+      # tempfile=${outDir}/TEMP_${okSubj[$iFile]}_${okSubj[$jFile]}_story_aud+tlrc # unmasked output of 3dTcorrelate
+      # iscfile=${outDir}/ISC_${okSubj[$iFile]}_${okSubj[$jFile]}_story_aud+tlrc # masked output of 3dTcorrelate+3dcalc
+      # # run 3dTcorrelate WITHOUT automask to cut out small-value voxels... this did strange things last time.
+      # echo "3dTcorrelate -polort -1 -prefix $tempfile $file1 $file2; 3dcalc -a $tempfile -b $mask -overwrite -prefix $iscfile -expr 'a*step(b)'" >> $swarmFile_aud
+      # # echo "3dcalc -a $tempfile -b $mask -overwrite -prefix $iscfile -expr 'a*step(b)'" >> $swarmFile_aud
+      # # make table for follow-up R script
+      # echo -e "${okSubj[$iFile]}\t${okSubj[jFile]}\t${iscfile}" >> $iscTable_aud
 
-      file1=${dataDir}/${fileList_vis[$iFile]} # correlate with
-      file2=${dataDir}/${fileList_vis[$jFile]} # correlate with
-      tempfile=${outDir}/TEMP_${okSubj[$iFile]}_${okSubj[$jFile]}_story_vis+tlrc # unmasked output of 3dTcorrelate
-      iscfile=${outDir}/ISC_${okSubj[$iFile]}_${okSubj[$jFile]}_story_vis+tlrc # masked output of 3dTcorrelate+3dcalc
-      # run 3dTcorrelate WITHOUT automask to cut out small-value voxels... this did strange things last time.
-      echo "3dTcorrelate -polort -1 -prefix $tempfile $file1 $file2; 3dcalc -a $tempfile -b $mask -overwrite -prefix $iscfile -expr 'a*step(b)'" >> $swarmFile_vis
-      # echo "3dcalc -a $tempfile -b $mask -overwrite -prefix $iscfile -expr 'a*step(b)'" >> $swarmFile_vis
-      # make table for follow-up R script
-      echo -e "${okSubj[$iFile]}\t${okSubj[jFile]}\t${iscfile}" >> $iscTable_vis
 
-
-      file1=${dataDir}/${fileList_aud[$iFile]} # correlate with
-      file2=${dataDir}/${fileList_aud[$jFile]} # correlate with
-      tempfile=${outDir}/TEMP_${okSubj[$iFile]}_${okSubj[$jFile]}_story_aud+tlrc # unmasked output of 3dTcorrelate
-      iscfile=${outDir}/ISC_${okSubj[$iFile]}_${okSubj[$jFile]}_story_aud+tlrc # masked output of 3dTcorrelate+3dcalc
+      file1=${dataDir}/${fileList_trans[$iFile]} # correlate with
+      file2=${dataDir}/${fileList_trans[$jFile]} # correlate with
+      tempfile=${outDir}/TEMP_${okSubj[$iFile]}_${okSubj[$jFile]}_story_trans+tlrc # unmasked output of 3dTcorrelate
+      iscfile=${outDir}/ISC_${okSubj[$iFile]}_${okSubj[$jFile]}_story_trans+tlrc # masked output of 3dTcorrelate+3dcalc
       # run 3dTcorrelate WITHOUT automask to cut out small-value voxels... this did strange things last time.
-      echo "3dTcorrelate -polort -1 -prefix $tempfile $file1 $file2; 3dcalc -a $tempfile -b $mask -overwrite -prefix $iscfile -expr 'a*step(b)'" >> $swarmFile_aud
+      echo "3dTcorrelate -polort -1 -overwrite -prefix $tempfile $file1 $file2; 3dcalc -a $tempfile -b $mask -overwrite -prefix $iscfile -expr 'a*step(b)'" >> $swarmFile_trans
       # echo "3dcalc -a $tempfile -b $mask -overwrite -prefix $iscfile -expr 'a*step(b)'" >> $swarmFile_aud
       # make table for follow-up R script
-      echo -e "${okSubj[$iFile]}\t${okSubj[jFile]}\t${iscfile}" >> $iscTable_aud
+      echo -e "${okSubj[$iFile]}\t${okSubj[jFile]}\t${iscfile}" >> $iscTable_trans
 
     done
 done
 
 # Make R script to run after
-echo "module load R" >> $rScript
-echo "nohup R CMD BATCH 3dLME_ISC_2Grps_readScoreMedSplit_n42.R 3dLME_ISC_2Grps_readScoreMedSplit_n69.diary" >> $rScript
-echo "#!/bin/bash" >> $rScript_vis
-echo "module load R" >> $rScript_vis
-echo "Rscript 3dLME_ISC_2Grps_readScoreMedSplit_n69.R StoryPairwiseIscTable_vis.txt 3dLME_2Grps_readScoreMedSplit_n69_Automask_vis" >> $rScript_vis
-echo "#!/bin/bash" >> $rScript_aud
-echo "module load R" >> $rScript_aud
-echo "Rscript 3dLME_ISC_2Grps_readScoreMedSplit_n69.R StoryPairwiseIscTable_aud.txt 3dLME_2Grps_readScoreMedSplit_n69_Automask_aud" >> $rScript_aud
+# echo "module load R" >> $rScript
+# echo "nohup R CMD BATCH 3dLME_ISC_2Grps_readScoreMedSplit_n42.R 3dLME_ISC_2Grps_readScoreMedSplit_n69.diary" >> $rScript
+# echo "#!/bin/bash" >> $rScript_vis
+# echo "module load R" >> $rScript_vis
+# echo "Rscript 3dLME_ISC_2Grps_readScoreMedSplit_n69.R StoryPairwiseIscTable_vis.txt 3dLME_2Grps_readScoreMedSplit_n69_Automask_vis" >> $rScript_vis
+# echo "#!/bin/bash" >> $rScript_aud
+# echo "module load R" >> $rScript_aud
+# echo "Rscript 3dLME_ISC_2Grps_readScoreMedSplit_n69.R StoryPairwiseIscTable_aud.txt 3dLME_2Grps_readScoreMedSplit_n69_Automask_aud" >> $rScript_aud
+echo "#!/bin/bash" >> $rScript_trans
+echo "module load R" >> $rScript_trans
+echo "Rscript 3dLME_ISC_2Grps_readScoreMedSplit_n69.R StoryPairwiseIscTable_trans.txt 3dLME_2Grps_readScoreMedSplit_n69_Automask_trans" >> $rScript_trans
 
 # run swarm command (batching 20 commands per job)
-jobid=`swarm -g 2 -t 1 -b 20 -f $swarmFile --partition=norm --module=afni --time=0:10:00 --job-name=Isc --logdir=logsDJ`
-jobid_vis=`swarm -g 2 -t 1 -b 20 -f $swarmFile_vis --partition=norm --module=afni --time=0:10:00 --job-name=IscV --logdir=logsDJ`
-jobid_aud=`swarm -g 2 -t 1 -b 20 -f $swarmFile_aud --partition=norm --module=afni --time=0:10:00 --job-name=IscA --logdir=logsDJ`
+# jobid=`swarm -g 2 -t 1 -b 20 -f $swarmFile --partition=norm --module=afni --time=0:10:00 --job-name=Isc --logdir=logsDJ`
+# jobid_vis=`swarm -g 2 -t 1 -b 20 -f $swarmFile_vis --partition=norm --module=afni --time=0:10:00 --job-name=IscV --logdir=logsDJ`
+# jobid_aud=`swarm -g 2 -t 1 -b 20 -f $swarmFile_aud --partition=norm --module=afni --time=0:10:00 --job-name=IscA --logdir=logsDJ`
+jobid_trans=`swarm -g 2 -t 1 -b 20 -f $swarmFile_trans --partition=norm --module=afni --time=0:10:00 --job-name=IscT --logdir=logsDJ`
 
 # run R job
-sbatch --partition=norm --mem=64g --time=8:00:00 -dependency=afterok:$jobid $rScript
-sbatch --partition=norm --mem=64g --time=8:00:00 -dependency=afterok:$jobid_vis $rScript_vis
-sbatch --partition=norm --mem=64g --time=8:00:00 -dependency=afterok:$jobid_aud $rScript_aud
+# sbatch --partition=norm --mem=64g --time=8:00:00 --dependency=afterok:$jobid $rScript
+# sbatch --partition=norm --mem=64g --time=8:00:00 --dependency=afterok:$jobid_vis $rScript_vis
+# sbatch --partition=norm --mem=64g --time=8:00:00 --dependency=afterok:$jobid_aud $rScript_aud
+sbatch --partition=norm --mem=64g --time=8:00:00 --dependency=afterok:$jobid_trans $rScript_trans
 
 # take mean across files
 #echo === Getting mean across ISFC results...
