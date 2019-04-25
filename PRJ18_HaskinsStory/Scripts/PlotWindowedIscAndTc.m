@@ -19,7 +19,7 @@ for i=1:length(groupDiffMaps)
         fprintf('===ROI %d/%d...\n',j,length(roiTerms));
         for k=1:length(sides)
             fprintf('==Hemisphere %d/%d...\n',k,length(sides));
-            %%
+            
             groupDiffMap = groupDiffMaps{i};
             neuroSynthMask = sprintf('%s/NeuroSynthTerms/%s_association-test_z_FDR_0.01_epiRes.nii.gz',constants.dataDir,roiTerms{j});
             roiName = sprintf('%s%s',sides{k},roiNames{j});
@@ -27,8 +27,8 @@ for i=1:length(groupDiffMaps)
 %             groupDiffMap = sprintf('%s/IscResults/Group/3dLME_2Grps_readScoreMedSplit_n69_Automask_top-bot_clust_p0.01_a0.05_bisided_EE.nii.gz',constants.dataDir);
 %             groupDiffMap = '';
 % 
-%             neuroSynthMask = sprintf('%s/NeuroSynthTerms/rITC_87_mask_0003+tlrc',constants.dataDir);
-%             roiName = '100Vox-rITG';
+%             neuroSynthMask = sprintf('%s/NeuroSynthTerms/thalamus_association-test_z_FDR_0.01_epiRes.nii.gz',constants.dataDir);
+%             roiName = 'thalamus';
 
             % neuroSynthMask = sprintf('%s/NeuroSynthTerms/anteriorcingulate_association-test_z_FDR_0.01_epiRes.nii.gz',constants.dataDir);
             % roiName = 'ACC';
@@ -51,6 +51,9 @@ for i=1:length(groupDiffMaps)
             % neuroSynthMask = sprintf('%s/NeuroSynthTerms/primaryvisual_association-test_z_FDR_0.01_epiRes.nii.gz',constants.dataDir);
             % roiName = 'lVis';
 
+%             groupDiffMap='';
+%             neuroSynthMask=sprintf('%s/IscResults/Group/MNI_mask_epiRes.nii',constants.dataDir);
+%             roiName='wholeBrain';
 
             if isempty(groupDiffMap)
                 olap = GetMaskOverlap(neuroSynthMask);

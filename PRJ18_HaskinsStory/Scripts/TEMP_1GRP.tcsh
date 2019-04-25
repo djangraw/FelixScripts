@@ -1,9 +1,9 @@
 #!/bin/tcsh -e
 
-# Created 01-Apr-2019 10:34:18 by MATLAB function SetUpClusterThreshMaskedStats.m
+# Created 24-Apr-2019 09:27:01 by MATLAB function SetUpClusterThreshMaskedStats.m
 
 set statsfolder = "/data/NIMH_Haskins/a182_v2/IscResults/Group/"
-set statsfile = "3dLME_1Grp_n69_Automask"
+set statsfile = "3dLME_1Grp_n69_Automask_trans"
 set statsfile_space = "tlrc"
 set iMean = "0"
 set iThresh = "1"
