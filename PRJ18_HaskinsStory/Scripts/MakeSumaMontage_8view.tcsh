@@ -1,5 +1,4 @@
 #!/bin/tcsh -e
-#!/bin/tcsh -e
 
 ########################################################################
 #
@@ -65,7 +64,7 @@ afni -npb $portnum -niml -yesplugouts $afni_ulay $afni_olay &
 # Need to slooow things down occasionally (-> sleep commands) for
 # proper viewing behavior.  The number/length of naps may be
 # computer/data set dependent.
-echo "\n===NAP 1/8...===\n"
+echo "\n===NAP 1/12...===\n"
 sleep 10 #15
 
 # just for starters
@@ -101,7 +100,7 @@ suma                                                    \
     -spec "$suma_spec"                                  \
     -sv   $suma_sv               &
 
-echo "\n===NAP 2/8...===\n"
+echo "\n===NAP 2/12...===\n"
 sleep 15 #3
 
 # start driving
@@ -110,7 +109,7 @@ DriveSuma                                              \
     -com viewer_cont -key 't' -key '.' \
     -com viewer_cont -key '.' # inflated brain (comment out for regular brain)
 
-echo "\n===NAP 3/8...===\n"
+echo "\n===NAP 3/12...===\n"
 sleep 3 #10
 
 # crosshair off, node off, faceset off, label off, background white
@@ -123,25 +122,57 @@ DriveSuma                                              \
     -npb $portnum                                      \
     -com viewer_cont -key 'Z' -key 'Z'
 
-# left side profile
+sleep 1
+
+# ------------------ take 8 pictures ------------------ #
+# ---1. top view
 DriveSuma                                              \
     -npb $portnum                                      \
-    -com viewer_cont -key 'Ctrl+left'
-
-# wait a while
-echo "\n===NAP 4/8...===\n"
-sleep 3 #7
-
-# ------------------ take 4 pictures ------------------ #
+    -com viewer_cont -key 'Ctrl+up'
+# wait for display to update
+sleep 1 #1
 # smile for the photo
 DriveSuma                                         \
     -npb $portnum                                 \
     -com viewer_cont -key 'Ctrl+r'
 # wait for image capture
-echo "\n===NAP 5/8...===\n"
+echo "\n===NAP 7/12...===\n"
 sleep 1 #2
 
-# right side profile
+# ---2. bottom view
+DriveSuma                                              \
+    -npb $portnum                                      \
+    -com viewer_cont -key 'Ctrl+down'                  \
+    -key 'z' -key 'z' -key 'z' -key 'z'
+# wait for display to update
+sleep 1 #1
+# smile for the photo
+DriveSuma                                         \
+    -npb $portnum                                 \
+    -com viewer_cont -key 'Ctrl+r'
+# wait for image capture
+echo "\n===NAP 8/12...===\n"
+sleep 1 #2
+
+# ---3. left side profile
+DriveSuma                                              \
+    -npb $portnum                                      \
+    -com viewer_cont -key 'Ctrl+left'                  \
+    -key 'Z' -key 'Z' -key 'Z' -key 'Z' -key 'Z'
+
+# wait a while
+echo "\n===NAP 4/12...===\n"
+sleep 1 #3
+
+# smile for the photo
+DriveSuma                                         \
+    -npb $portnum                                 \
+    -com viewer_cont -key 'Ctrl+r'
+# wait for image capture
+echo "\n===NAP 5/12...===\n"
+sleep 1 #2
+
+# ---4. right side profile
 DriveSuma                                              \
     -npb $portnum                                      \
     -com viewer_cont -key 'Ctrl+right'
@@ -152,13 +183,14 @@ DriveSuma                                         \
     -npb $portnum                                 \
     -com viewer_cont -key 'Ctrl+r'
 # wait for image capture
-echo "\n===NAP 6/8...===\n"
+echo "\n===NAP 6/12...===\n"
 sleep 1 #2
 
-# left medial profile (hide right hemisphere)
+
+# ---5. front view
 DriveSuma                                              \
     -npb $portnum                                      \
-    -com viewer_cont -key 'Ctrl+]'
+    -com viewer_cont -key 'Ctrl+shift+up'
 # wait for display to update
 sleep 1 #1
 # smile for the photo
@@ -166,10 +198,40 @@ DriveSuma                                         \
     -npb $portnum                                 \
     -com viewer_cont -key 'Ctrl+r'
 # wait for image capture
-echo "\n===NAP 7/8...===\n"
+echo "\n===NAP 9/12...===\n"
 sleep 1 #2
 
-# right medial profile (hide left hemisphere)
+# ---6. back view
+DriveSuma                                              \
+    -npb $portnum                                      \
+    -com viewer_cont -key 'Ctrl+shift+down'
+# wait for display to update
+sleep 1 #1
+# smile for the photo
+DriveSuma                                         \
+    -npb $portnum                                 \
+    -com viewer_cont -key 'Ctrl+r'
+# wait for image capture
+echo "\n===NAP 10/12...===\n"
+sleep 1 #2
+
+# ---7. left medial profile (hide right hemisphere)
+DriveSuma                                              \
+    -npb $portnum                                      \
+    -com viewer_cont -key 'Ctrl+]'                     \
+    -key 'Ctrl+right'                                  \
+    -key 'Z' -key 'Z' -key 'Z' -key 'Z'
+# wait for display to update
+sleep 1 #1
+# smile for the photo
+DriveSuma                                         \
+    -npb $portnum                                 \
+    -com viewer_cont -key 'Ctrl+r'
+# wait for image capture
+echo "\n===NAP 11/12...===\n"
+sleep 1 #2
+
+# ---8. right medial profile (hide left hemisphere)
 DriveSuma                                              \
     -npb $portnum                                      \
     -com viewer_cont -key 'Ctrl+]'                     \
@@ -182,7 +244,7 @@ DriveSuma                                         \
     -npb $portnum                                 \
     -com viewer_cont -key 'Ctrl+r'
 # wait for image capture
-echo "\n===NAP 8/8...===\n"
+echo "\n===NAP 12/12...===\n"
 sleep 1 #2
 
 

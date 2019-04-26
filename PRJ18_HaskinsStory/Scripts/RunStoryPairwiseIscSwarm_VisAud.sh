@@ -103,7 +103,7 @@ do
       # # make table for follow-up R script
       # echo -e "${okSubj[$iFile]}\t${okSubj[jFile]}\t${iscfile}" >> $iscTable
 
-      # AUDITORY
+      # VISUAL
       file1=${dataDir}/${fileList_vis[$iFile]} # correlate with
       file2=${dataDir}/${fileList_vis[$jFile]} # correlate with
       tempfile=${outDir}/TEMP_${okSubj[$iFile]}_${okSubj[$jFile]}_story_vis+tlrc # unmasked output of 3dTcorrelate
@@ -114,7 +114,7 @@ do
       # make table for follow-up R script
       echo -e "${okSubj[$iFile]}\t${okSubj[jFile]}\t${iscfile}" >> $iscTable_vis
 
-      # VISUAL
+      # AUDITORY
       file1=${dataDir}/${fileList_aud[$iFile]} # correlate with
       file2=${dataDir}/${fileList_aud[$jFile]} # correlate with
       tempfile=${outDir}/TEMP_${okSubj[$iFile]}_${okSubj[$jFile]}_story_aud+tlrc # unmasked output of 3dTcorrelate
@@ -145,13 +145,13 @@ done
 # echo "nohup R CMD BATCH 3dLME_ISC_2Grps_readScoreMedSplit_n42.R 3dLME_ISC_2Grps_readScoreMedSplit_n69.diary" >> $rScript
 echo "#!/bin/bash" >> $rScript_vis
 echo "module load R" >> $rScript_vis
-echo "Rscript 3dLME_ISC_2Grps_readScoreMedSplit_n69.R StoryPairwiseIscTable_vis.txt 3dLME_2Grps_readScoreMedSplit_n69_Automask_vis" >> $rScript_vis
+echo "Rscript 3dLME_ISC_2Grps_readScoreMedSplit_n69.R $iscTable_vis 3dLME_2Grps_readScoreMedSplit_n69_Automask_vis" >> $rScript_vis
 echo "#!/bin/bash" >> $rScript_aud
 echo "module load R" >> $rScript_aud
-echo "Rscript 3dLME_ISC_2Grps_readScoreMedSplit_n69.R StoryPairwiseIscTable_aud.txt 3dLME_2Grps_readScoreMedSplit_n69_Automask_aud" >> $rScript_aud
+echo "Rscript 3dLME_ISC_2Grps_readScoreMedSplit_n69.R $iscTable_aud 3dLME_2Grps_readScoreMedSplit_n69_Automask_aud" >> $rScript_aud
 echo "#!/bin/bash" >> $rScript_trans
 echo "module load R" >> $rScript_trans
-echo "Rscript 3dLME_ISC_2Grps_readScoreMedSplit_n69.R StoryPairwiseIscTable_trans.txt 3dLME_2Grps_readScoreMedSplit_n69_Automask_trans" >> $rScript_trans
+echo "Rscript 3dLME_ISC_2Grps_readScoreMedSplit_n69.R $iscTable_trans 3dLME_2Grps_readScoreMedSplit_n69_Automask_trans" >> $rScript_trans
 
 # run swarm command (batching 20 commands per job)
 # jobid=`swarm -g 2 -t 1 -b 20 -f $swarmFile --partition=norm --module=afni --time=0:10:00 --job-name=Isc --logdir=logsDJ`
