@@ -5,24 +5,22 @@ set -e
 # GetStoryIscAudVisDiff.sh
 #
 # Created 3/27/19 by DJ based on RunStoryPairwiseIscSwarm_VisAud.sh
+# Updated 4/30/19 by DJ - removed nT division, conversion back z-->r (per Gang's suggestion), added TransAud and TransVis diffs
 
-# ---declare directory constants
+# Declare directory constants
 source /data/jangrawdc/PRJ18_HaskinsStory/Scripts/00_CommonVariables.sh
-# outstarter="storyISC_"
 outDir=${dataDir}/IscResults/Pairwise
-
+# Declare output filenames
 iscTable_diff=${outDir}/StoryPairwiseIscTable_aud-vis.txt
+iscTable_transaud=${outDir}/StoryPairwiseIscTable_trans-aud.txt
+iscTable_transvis=${outDir}/StoryPairwiseIscTable_trans-vis.txt
 
-AFNI_HOME=`which afni` # Get AFNI directory
-AFNI_HOME=${AFNI_HOME%/*} # remove afni (and last slash)
-
-# handle directories
+# (re)create directories & tables
 cd $outDir
-rm -f $iscTable_diff
+rm -f $iscTable_diff $iscTable_transaud $iscTable_transvis
 echo -e "Subj\tSubj2\tInputFile">>$iscTable_diff
-
-nT_aud=`3dinfo -nT ${dataDir}/${okSubj[0]}/${okSubj[0]}.story/errts.${okSubj[0]}.fanaticor_aud+tlrc`
-nT_vis=`3dinfo -nT ${dataDir}/${okSubj[0]}/${okSubj[0]}.story/errts.${okSubj[0]}.fanaticor_vis+tlrc`
+echo -e "Subj\tSubj2\tInputFile">>$iscTable_transaud
+echo -e "Subj\tSubj2\tInputFile">>$iscTable_transvis
 
 nFiles=${#okSubj[@]}
 echo "=== Getting ISCs across $nFiles files..."
@@ -31,13 +29,22 @@ do
     echo "===File $iFile/$nFiles"
     for (( jFile=$iFile+1; jFile<$nFiles; jFile++ ))
     do
-      echo "   ...vs. file $jFile"
+        echo "   ...vs. file $jFile"
+        # Define inputs
         visIsc=${outDir}/ISC_${okSubj[$iFile]}_${okSubj[$jFile]}_story_vis+tlrc # masked output of 3dTcorrelate+3dcalc
         audIsc=${outDir}/ISC_${okSubj[$iFile]}_${okSubj[$jFile]}_story_aud+tlrc # masked output of 3dTcorrelate+3dcalc
-        tempZ=${outDir}/TEMP_${okSubj[$iFile]}_${okSubj[$jFile]}_story_aud-vis+tlrc
+        transIsc=${outDir}/ISC_${okSubj[$iFile]}_${okSubj[$jFile]}_story_trans+tlrc # masked output of 3dTcorrelate+3dcalc
+        # Define output files
         iscDiff=${outDir}/ISC_${okSubj[$iFile]}_${okSubj[$jFile]}_story_aud-vis+tlrc
-        3dcalc -a $audIsc -b $visIsc -overwrite -prefix $tempZ -expr "(0.5*(log(1+a)-log(1-a)) - 0.5*(log(1+b)-log(1-b))) / sqrt((1/($nT_aud-3)) + (1/($nT_vis-3)))"
-        3dcalc -z $tempZ -overwrite -prefix $iscDiff -expr '(exp(2*z)-1)/(exp(2*z)+1)'
+        iscTransAud=${outDir}/ISC_${okSubj[$iFile]}_${okSubj[$jFile]}_story_trans-aud+tlrc
+        iscTransVis=${outDir}/ISC_${okSubj[$iFile]}_${okSubj[$jFile]}_story_trans-vis+tlrc
+        # fisher z transform correlation coefficients and subtract resulting z's
+        3dcalc -a $audIsc -b $visIsc -overwrite -prefix $iscDiff -expr "(0.5*(log(1+a)-log(1-a)) - 0.5*(log(1+b)-log(1-b)))"
+        3dcalc -a $transIsc -b $audIsc -overwrite -prefix $iscTransAud -expr "(0.5*(log(1+a)-log(1-a)) - 0.5*(log(1+b)-log(1-b)))"
+        3dcalc -a $transIsc -b $visIsc -overwrite -prefix $iscTransVis -expr "(0.5*(log(1+a)-log(1-a)) - 0.5*(log(1+b)-log(1-b)))"
+        # Add results to isc tables
         echo -e "${okSubj[$iFile]}\t${okSubj[jFile]}\t${iscDiff}" >> $iscTable_diff
+        echo -e "${okSubj[$iFile]}\t${okSubj[jFile]}\t${iscTransAud}" >> $iscTable_transaud
+        echo -e "${okSubj[$iFile]}\t${okSubj[jFile]}\t${iscTransVis}" >> $iscTable_transvis
     done
 done
