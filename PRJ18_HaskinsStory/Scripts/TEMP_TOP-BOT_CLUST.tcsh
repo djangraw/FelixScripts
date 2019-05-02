@@ -1,20 +1,20 @@
 #!/bin/tcsh -e
 
-# Created 25-Apr-2019 17:18:57 by MATLAB function SetUpSumaMontage_4view.m
+# Created 01-May-2019 14:25:00 by MATLAB function SetUpSumaMontage_4view.m
 
 set data_dir = "/data/NIMH_Haskins/a182_v2/IscResults/Group"
 set cmd_file = "TEMP_TOP-BOT_CLUST.tcsh"
 set afni_ulay = "MNI152_2009_SurfVol.nii"
-set afni_olay = "3dLME_2Grps_readScoreMedSplit_n69_Automask_vis_top-bot_clust_p0.01_a0.05_bisided_EE.nii.gz"
+set afni_olay = "3dLME_2Grps_readScoreMedSplit_n69_Automask_trans-vis_top-bot_clust_p0.01_a0.05_bisided_EE.nii.gz"
 set suma_spec = "suma_MNI152_2009/MNI152_2009_both.spec"
 set suma_sv = "MNI152_2009_SurfVol.nii"
 set beta_ind = "0"
 set thresh_ind = "0"
 set image_dir = "./SUMA_IMAGES"
 set image_pre = "suma_images"
-set image_fin = "SUMA_IMAGES/suma_8view_ISC_vis_top-bot_lim0p1_p01_a05.jpg"
+set image_fin = "SUMA_IMAGES/suma_8view_ISC_trans-vis_top-bot_lim0p6_p01_a05.jpg"
 set suma_pos = "50 50 500 425"
-set func_range = "0.1"
+set func_range = "0.6"
 set thr_thresh = "0"
 set my_cbar = "Reds_and_Blues_w_Green"
 

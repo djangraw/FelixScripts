@@ -1,23 +1,22 @@
 #!/bin/tcsh -e
 
-# Created 25-Mar-2019 13:18:42 by MATLAB function SetUpSumaMontage_4view.m
+# Created 01-May-2019 10:42:57 by MATLAB function SetUpClusterThreshMaskedStats.m
 
-set data_dir = "/data/NIMH_Haskins/a182_v2/GROUP_block_tlrc"
+set statsfolder = "/data/NIMH_Haskins/a182_v2/GROUP_block_tlrc/"
+set statsfile = "ttest_allSubj_2grp_minus12"
+set statsfile_space = "tlrc"
+set iMean = "42"
+set iThresh = "43"
+set cond_name = "aud+vis"
+set maskfile = "MNI_mask_epiRes.nii"
 set cmd_file = "TEMP_AUD+VIS.tcsh"
-set afni_ulay = "MNI152_2009_SurfVol.nii"
-set afni_olay = "ttest_allSubj_1grp_minus12+tlrc"
-set suma_spec = "suma_MNI152_2009/MNI152_2009_both.spec"
-set suma_sv = "MNI152_2009_SurfVol.nii"
-set beta_ind = "14"
-set thresh_ind = "15"
-set image_dir = "./SUMA_IMAGES"
-set image_pre = "suma_images"
-set image_fin = "SUMA_IMAGES/suma_4view_1grp_aud+vis_lim0.3_q0.01.jpg"
-set suma_pos = "50 50 500 425"
-set func_range = "0.3"
-set thr_thresh = "0.01 *q"
-set my_cbar = "Reds_and_Blues_w_Green"
+set csim_folder = "/data/NIMH_Haskins/a182_v2/ClustSimFiles"
+set csim_neigh = "1"
+set csim_NN = "NN${csim_neigh}"
+set csim_sided = "bisided"
+set csim_pthr = "0.01"
+set csim_alpha = "0.05"
+set csim_pref = "${statsfile}_${cond_name}_clust_p${csim_pthr}_a${csim_alpha}_${csim_sided}"
 
 # run script
-cd $data_dir
-source /data/jangrawdc/PRJ18_HaskinsStory/Scripts/MakeSumaMontage_4view.tcsh
+source /data/jangrawdc/PRJ18_HaskinsStory/Scripts/GetClusterThreshMaskedStats.tcsh

@@ -11,7 +11,7 @@
 # Updated 5/17/17 by DJ to rotate brain with constant overlay.
 # Updated 2/21/18 by DJ - made into 4-view montage maker
 # Updated 5/29/18 by DJ - removed user settings so we could source this command
-#
+# Updated 5/1/19 by DJ - added commands at the end to exit AFNI & SUMA windows
 ########################################################################
 
 # ======================= main user settings =========================
@@ -194,3 +194,12 @@ montage -background '#000000' -geometry +0+0 `ls $image_dir/${image_pre}*`  $ima
 rm $image_dir/${image_pre}*
 
 echo "\n===DONE!===\n"
+
+# Quit AFNI & SUMA
+plugout_drive -echo_edu                                  \
+    -npb $portnum                                        \
+    -com "QUIT"
+
+DriveSuma                                              \
+    -npb $portnum                                      \
+    -com kill_suma

@@ -1,6 +1,6 @@
 #!/bin/tcsh -e
 
-# Created 24-Apr-2019 09:27:01 by MATLAB function SetUpClusterThreshMaskedStats.m
+# Created 01-May-2019 10:43:06 by MATLAB function SetUpClusterThreshMaskedStats.m
 
 set statsfolder = "/data/NIMH_Haskins/a182_v2/IscResults/Group/"
 set statsfile = "3dLME_1Grp_n69_Automask_trans"
