@@ -5,6 +5,7 @@ function tcInRoi = GetTcInRoi(subjects,roiFile,iRoi)
 % Created 5/22/18 by DJ.
 % Updated 5/30/18 by DJ - _d2 results.
 % Updated 4/8/19 by DJ - v2 analysis.
+% Updated 5/22/19 by DJ - accept matrix as roiFile input
 
 if ~exist('roiFile','var') || isempty(roiFile)
     roiFile = '3dLME_2Grps_readScoreMedSplit_n42_Automask_top-bot_clust_p0.01_a0.05_bisided_map.nii.gz';
@@ -14,11 +15,14 @@ if ~exist('iRoi','var') || isempty(iRoi)
 end
 
 %% Load Mask data
-fprintf('Loading ROI mask...\n')
 info = GetStoryConstants();
 cd(sprintf('%s/IscResults/Group',info.dataDir));
-rois = BrikLoad(roiFile);
-
+if ischar(roiFile)
+    fprintf('Loading ROI mask...\n')
+    rois = BrikLoad(roiFile);
+else
+    rois = roiFile;
+end
 %% Load timecourses (after 3dDeconvolve)
 tcInRoi = nan(info.nT,numel(subjects),numel(iRoi));
 fprintf('Loading timecourses for %d subjects...\n',numel(subjects));

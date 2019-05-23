@@ -2,16 +2,19 @@
 % 
 % Created 4/11/19 by DJ.
 % Updated 4/17/19 by DJ - added loop
+% Updated 5/22/19 by DJ - switched from NeuroSynth to atlas
 
 constants = GetStoryConstants();
 
+figure(523); clf;
 set(523,'Position',[4 200 1914 862])
 
 groupDiffMaps = {sprintf('%s/IscResults/Group/3dLME_2Grps_readScoreMedSplit_n69_Automask_top-bot_clust_p0.01_a0.05_bisided_EE.nii.gz',constants.dataDir), ''};
-roiTerms = {'anteriorcingulate','dlpfc','inferiorfrontal','inferiortemporal','supramarginalgyrus','primaryauditory','primaryvisual','frontaleye'};
-roiNames = {'ACC','DLPFC','IFG','ITG','SMG','A1','V1','FEF'};
+% roiTerms = {'anteriorcingulate','dlpfc','inferiorfrontal','inferiortemporal','supramarginalgyrus','primaryauditory','primaryvisual','frontaleye'};
+% roiNames = {'ACC','DLPFC','IFG','ITG','SMG','A1','V1','FEF'};
+roiTerms = {'ACC','IFG-pOp','IFG-pOrb','IFG-pTri','ITG','SMG','STG','CG'};
+roiNames = {'ACC','IFG-pOp','IFG-pOrb','IFG-pTri','ITG','SMG','STG (Aud)','CalcGyr (Vis)'};
 sides={'r','l',''};
-
 
 for i=1:length(groupDiffMaps)
     fprintf('====Map %d/%d...\n',i,length(groupDiffMaps));
@@ -21,7 +24,8 @@ for i=1:length(groupDiffMaps)
             fprintf('==Hemisphere %d/%d...\n',k,length(sides));
             
             groupDiffMap = groupDiffMaps{i};
-            neuroSynthMask = sprintf('%s/NeuroSynthTerms/%s_association-test_z_FDR_0.01_epiRes.nii.gz',constants.dataDir,roiTerms{j});
+%             neuroSynthMask = sprintf('%s/NeuroSynthTerms/%s_association-test_z_FDR_0.01_epiRes.nii.gz',constants.dataDir,roiTerms{j});
+            neuroSynthMask = sprintf('%s/atlasRois/atlas_%s+tlrc',constants.dataDir,roiTerms{j});
             roiName = sprintf('%s%s',sides{k},roiNames{j});
             
 %             groupDiffMap = sprintf('%s/IscResults/Group/3dLME_2Grps_readScoreMedSplit_n69_Automask_top-bot_clust_p0.01_a0.05_bisided_EE.nii.gz',constants.dataDir);
@@ -117,9 +121,11 @@ for i=1:length(groupDiffMaps)
             
             % Save figure
             if isempty(groupDiffMap)
-                print(sprintf('%s/NeuroSynthTerms/SUMA_IMAGES/%s_%ds-win-isc+tc.png',constants.dataDir,roiName,winLength*TR),'-dpng')
+%                 print(sprintf('%s/NeuroSynthTerms/SUMA_IMAGES/%s_%ds-win-isc+tc.png',constants.dataDir,roiName,winLength*TR),'-dpng')
+                print(sprintf('%s/atlasRois/SUMA_IMAGES/%s_%ds-win-isc+tc.png',constants.dataDir,roiName,winLength*TR),'-dpng')
             else
-                print(sprintf('%s/NeuroSynthTerms/SUMA_IMAGES/%s_top-bot_%ds-win-isc+tc.png',constants.dataDir,roiName,winLength*TR),'-dpng')
+%                 print(sprintf('%s/NeuroSynthTerms/SUMA_IMAGES/%s_top-bot_%ds-win-isc+tc.png',constants.dataDir,roiName,winLength*TR),'-dpng')
+                print(sprintf('%s/atlasRois/SUMA_IMAGES/%s_top-bot_%ds-win-isc+tc.png',constants.dataDir,roiName,winLength*TR),'-dpng')
             end
         end
     end
