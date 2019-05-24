@@ -64,15 +64,16 @@ iscInRoi = GetIscInRoi(subj_sorted,roiBrik,1:nRoi);
 nBot = sum(readScore_sorted>median(readScore_sorted));
 
 figure(246);
-set(246,'Position',[10,10,100,1000]);
+set(246,'Position',[10,10,600,1000]);
 for iRoi = 1:nRoi
     
     
-    subplot(nRoi,1,iRoi); cla; hold on;
+    subplot(ceil(nRoi/2),2,iRoi); cla; hold on;
     imagesc(iscInRoi(:,:,iRoi));
+    plot([nBot,nBot,nSubj,nSubj,nBot]+1.5,[0,nBot,nBot,0,0]-0.5,'g-','LineWidth',2);
     plot([0,nBot,nBot,0]+0.5,[0,nBot,0,0]+0.5,'b-','LineWidth',2);
     plot([nBot,nSubj,nSubj,nBot]+0.5,[nBot,nSubj,nBot,nBot]+0.5,'y-','LineWidth',2);
-    plot([nBot,nBot,nSubj,nSubj,nBot]+0.5,[0,nBot,nBot,0,0]+0.5,'g-','LineWidth',2);
+
 
     % annotate plot
     axis square
@@ -81,7 +82,15 @@ for iRoi = 1:nRoi
     set(gca,'ydir','normal');
     set(gca,'xtick',[],'ytick',[]);
     title(roiNames{iRoi})
-    set(gca,'clim',[-.2 .2]);
+    if strcmp(roiNames{iRoi},'STG (Aud)')
+        set(gca,'clim',[-.3 .3]);
+    elseif strcmp(roiNames{iRoi},'CalcGyr (Vis)')
+        set(gca,'clim',[-.15 .15]);
+    else
+        set(gca,'clim',[-.075 .075]);
+    end
+    ylim([1 nSubj]-0.5)
+%     colormap jet
     colorbar
     
 end
