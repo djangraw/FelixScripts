@@ -1,17 +1,20 @@
-function PlotTimecoursesWithConditions(t,timecourses,steTimecourses)
+function PlotTimecoursesWithConditions(t,timecourses,steTimecourses,colors)
 % PlotTimecoursesWithConditions(t,timecourses,steTimecourses)
 %
 % Created 4/10/19 by DJ.
+% Updated 5/24/19 by DJ - added colors input.
     
-    
+% Set defaults
 if ~exist('steTimecourses','var') || isempty(steTimecourses)
     steTimecourses = zeros(size(timecourses));
+end
+if ~exist('colors','var') || isempty(colors)
+    colors = {'r','g','b','c','m','y','k'};
 end
 
 %% Plot
 cla; hold on;
 TR = 2;
-colors = {'r','g','b','c','m','y','k'};
 for i=1:size(timecourses,2)
     ErrorPatch(t,timecourses(:,i),steTimecourses(:,i),colors{i},colors{i});
 end

@@ -8,16 +8,18 @@ constants = GetStoryConstants();
 
 figure(523); clf;
 set(523,'Position',[4 200 1914 862])
+
 figure(525); clf;
 set(525,'Position',[671   726   484   338])
 
-groupDiffMaps = {sprintf('%s/IscResults/Group/3dLME_2Grps_readScoreMedSplit_n69_Automask_top-bot_clust_p0.01_a0.05_bisided_EE.nii.gz',constants.dataDir), ''};
+% groupDiffMaps = {sprintf('%s/IscResults/Group/3dLME_2Grps_readScoreMedSplit_n69_Automask_top-bot_clust_p0.01_a0.05_bisided_EE.nii.gz',constants.dataDir), ''};
+groupDiffMaps = {''};
 % roiTerms = {'anteriorcingulate','dlpfc','inferiorfrontal','inferiortemporal','supramarginalgyrus','primaryauditory','primaryvisual','frontaleye'};
 % roiNames = {'ACC','DLPFC','IFG','ITG','SMG','A1','V1','FEF'};
 roiTerms = {'ACC','IFG-pOp','IFG-pOrb','IFG-pTri','ITG','SMG','STG','CG'};
 roiNames = {'ACC','IFG-pOp','IFG-pOrb','IFG-pTri','ITG','SMG','STG (Aud)','CalcGyr (Vis)'};
 % sides={'r','l',''};
-sides={'r','l',''};
+sides={''};
 
 [iAud,iVis,iBase] = GetStoryBlockTiming();
 
@@ -96,66 +98,82 @@ for i=1:length(groupDiffMaps)
 
             tIsc = ((1:length(iscInRoi)) + winLength/2)*TR;
 
-%             % Get timecourse in ROI
-%             clear tcInRoi
-%             topResult = sprintf('%s/MeanErrtsFanaticor_top+tlrc',constants.dataDir);
-%             tcInRoi(:,1) = GetTimecourseInRoi(topResult,olap);
-%             botResult = sprintf('%s/MeanErrtsFanaticor_bot+tlrc',constants.dataDir);
-%             tcInRoi(:,2) = GetTimecourseInRoi(botResult,olap);
-% 
-%             t = (1:length(tcInRoi))*TR;
-% 
-%             % Plot ISC
-%             figure(523); clf;
-%             subplot(2,1,1);
-%             PlotTimecoursesWithConditions(tIsc,iscInRoi)
+            % Get timecourse in ROI
+            clear tcInRoi
+            topResult = sprintf('%s/MeanErrtsFanaticor_top+tlrc',constants.dataDir);
+            tcInRoi(:,1) = GetTimecourseInRoi(topResult,olap);
+            botResult = sprintf('%s/MeanErrtsFanaticor_bot+tlrc',constants.dataDir);
+            tcInRoi(:,2) = GetTimecourseInRoi(botResult,olap);
+            % Add STDERR
+            clear tcInRoi_ste
+            topResult = sprintf('%s/SteErrtsFanaticor_top+tlrc',constants.dataDir);
+            tcInRoi_ste(:,1) = GetTimecourseInRoi(topResult,olap);            
+            botResult = sprintf('%s/SteErrtsFanaticor_bot+tlrc',constants.dataDir);
+            tcInRoi_ste(:,2) = GetTimecourseInRoi(botResult,olap);
+
+            t = (1:length(tcInRoi))*TR;
+
+            % Plot ISC
+            figure(523); clf;
+%             subplot(3,1,1);
+%             colors = {[1 0 0],[112 48 160]/255};
+%             PlotTimecoursesWithConditions(tIsc,iscInRoi,[],colors)
 %             ylabel('mean ISC')
 %             xlabel('time of window center (sec)')
 %             title(mapName);
-%             MakeLegend({'r','g'},{'Top Readers','Bottom Readers'},[2,2],[0.17,0.9]);
 %             xlim([0,t(end)])
-% 
-%             % Plot timecourse
-%             % figure(524); clf;
-%             subplot(2,1,2);
-%             PlotTimecoursesWithConditions(t,tcInRoi)
-%             ylabel('Mean BOLD signal change (%)')
-%             title(mapName);
-%             % MakeLegend({'r','g'},{'Top Readers','Bottom Readers'},[2,2],[0.17,0.9]);
-%             xlim([0,t(end)])
-%             
-%             % Save figure
-%             if isempty(groupDiffMap)
-% %                 print(sprintf('%s/NeuroSynthTerms/SUMA_IMAGES/%s_%ds-win-isc+tc.png',constants.dataDir,roiName,winLength*TR),'-dpng')
-%                 print(sprintf('%s/atlasRois/SUMA_IMAGES/%s_%ds-win-isc+tc.png',constants.dataDir,roiName,winLength*TR),'-dpng')
-%             else
-% %                 print(sprintf('%s/NeuroSynthTerms/SUMA_IMAGES/%s_top-bot_%ds-win-isc+tc.png',constants.dataDir,roiName,winLength*TR),'-dpng')
-%                 print(sprintf('%s/atlasRois/SUMA_IMAGES/%s_top-bot_%ds-win-isc+tc.png',constants.dataDir,roiName,winLength*TR),'-dpng')
-%             end
-%             
-            % Make summary barplot (median per block type)
-            figure(525); clf;
-            iscInRoi_padded = zeros(length(tcInRoi),2);
-            iscInRoi_padded((1:length(iscInRoi)) + ceil(winLength/2),:) = iscInRoi;
-            medAud = median(iscInRoi_padded(iAud,:));
-            medVis = median(iscInRoi_padded(iVis,:));
-            medBase = median(iscInRoi_padded(iBase,:));
-            bar([medAud',medVis',medBase']);
-            set(gca,'xtick',1:2,'xticklabels',{'Top 1/2','Bottom 1/2'});
-            xlabel('Reading Score')
-            ylabel(sprintf('Median %ds Sliding-Window ISC',winLength*TR))
-            legend({'Aud','Vis','Base'})
-            grid on;
+
+            % Plot timecourse
+            subplot(2,1,1);
+            PlotTimecoursesWithConditions(t,tcInRoi,[],colors)
+            ylabel('Mean BOLD signal change (%)')
             title(mapName);
+            xlim([0,t(end)])
+
+            subplot(2,1,2);
+            PlotTimecoursesWithConditions(t,tcInRoi_ste,[],colors)
+            ylabel('StdErr of BOLD signal change (%)')
+            title(mapName);
+            xlim([0,t(end)])
+            
+            % Add legend
+            MakeLegend(colors,{'Top Readers','Bottom Readers'},[2,2],[0.17,0.9]);
+            
             
             % Save figure
             if isempty(groupDiffMap)
-%                 print(sprintf('%s/NeuroSynthTerms/SUMA_IMAGES/%s_%ds-win-isc_block-bar.png',constants.dataDir,roiName,winLength*TR),'-dpng')
-                print(sprintf('%s/atlasRois/SUMA_IMAGES/%s_%ds-win-isc_block-bar.png',constants.dataDir,roiName,winLength*TR),'-dpng')
+%                 print(sprintf('%s/NeuroSynthTerms/SUMA_IMAGES/%s_%ds-win-isc+tc.png',constants.dataDir,roiName,winLength*TR),'-dpng')
+%                 print(sprintf('%s/atlasRois/SUMA_IMAGES/%s_%ds-win-isc+tc.png',constants.dataDir,roiName,winLength*TR),'-dpng')
+                print(sprintf('%s/atlasRois/SUMA_IMAGES/%s_tc+ste.png',constants.dataDir,roiName),'-dpng')
             else
-%                 print(sprintf('%s/NeuroSynthTerms/SUMA_IMAGES/%s_top-bot_%ds-win-isc_block-bar.png',constants.dataDir,roiName,winLength*TR),'-dpng')
-                print(sprintf('%s/atlasRois/SUMA_IMAGES/%s_top-bot_%ds-win-isc_block-bar.png',constants.dataDir,roiName,winLength*TR),'-dpng')
+%                 print(sprintf('%s/NeuroSynthTerms/SUMA_IMAGES/%s_top-bot_%ds-win-isc+tc.png',constants.dataDir,roiName,winLength*TR),'-dpng')
+%                 print(sprintf('%s/atlasRois/SUMA_IMAGES/%s_top-bot_%ds-win-isc+tc.png',constants.dataDir,roiName,winLength*TR),'-dpng')
+                print(sprintf('%s/atlasRois/SUMA_IMAGES/%s_top-bot_tc+ste.png',constants.dataDir,roiName),'-dpng')
             end
+            
+%             % Make summary barplot (median per block type)
+%             figure(525); clf;
+%             iscInRoi_padded = zeros(length(tcInRoi),2);
+%             iscInRoi_padded((1:length(iscInRoi)) + ceil(winLength/2),:) = iscInRoi;
+%             medAud = median(iscInRoi_padded(iAud,:));
+%             medVis = median(iscInRoi_padded(iVis,:));
+%             medBase = median(iscInRoi_padded(iBase,:));
+%             bar([medAud',medVis',medBase']);
+%             set(gca,'xtick',1:2,'xticklabels',{'Top 1/2','Bottom 1/2'});
+%             xlabel('Reading Score')
+%             ylabel(sprintf('Median %ds Sliding-Window ISC',winLength*TR))
+%             legend({'Aud','Vis','Base'})
+%             grid on;
+%             title(mapName);
+%             
+%             % Save figure
+%             if isempty(groupDiffMap)
+% %                 print(sprintf('%s/NeuroSynthTerms/SUMA_IMAGES/%s_%ds-win-isc_block-bar.png',constants.dataDir,roiName,winLength*TR),'-dpng')
+%                 print(sprintf('%s/atlasRois/SUMA_IMAGES/%s_%ds-win-isc_block-bar.png',constants.dataDir,roiName,winLength*TR),'-dpng')
+%             else
+% %                 print(sprintf('%s/NeuroSynthTerms/SUMA_IMAGES/%s_top-bot_%ds-win-isc_block-bar.png',constants.dataDir,roiName,winLength*TR),'-dpng')
+%                 print(sprintf('%s/atlasRois/SUMA_IMAGES/%s_top-bot_%ds-win-isc_block-bar.png',constants.dataDir,roiName,winLength*TR),'-dpng')
+%             end
             
         end
     end
