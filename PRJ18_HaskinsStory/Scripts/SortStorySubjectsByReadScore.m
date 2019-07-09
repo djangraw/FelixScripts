@@ -1,7 +1,7 @@
 function [subj_sorted,readScore_sorted,iq_sorted,isTop_sorted] = SortStorySubjectsByReadScore()
 
 info = GetStoryConstants;
-[readScores,IQs,weights,weightNames] = GetStoryReadingScores(info.okReadSubj);
+[readScores,weights,weightNames,IQs,ages] = GetStoryReadingScores(info.okReadSubj);
 
 %% Sort
 [readScore_sorted,order] = sort(readScores,'descend');
@@ -41,8 +41,12 @@ figure(1); clf;
 bar(weights);
 set(gca,'xtick',1:numel(weights),'xticklabel',show_symbols(weightNames));
 xticklabel_rotate([],45)
-ylabel('Weight in Reading PC1')
+ylabel('Weight in Reading Score')
+grid on
+set(gcf,'Position',[184   164   709   441]);
+saveas(gcf,sprintf('%s/Results/ReadScoreWeights.eps',info.PRJDIR));
 
+%%
 figure(2); clf;
 plot(readScores,IQs,'.');
 xlabel('Reading PC1')

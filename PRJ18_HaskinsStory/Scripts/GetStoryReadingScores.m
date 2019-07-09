@@ -1,8 +1,9 @@
-function [readScores, IQs,weights,weightNames] = GetStoryReadingScores(subjects)
+function [readScores, weights,weightNames,IQs,ages] = GetStoryReadingScores(subjects)
 
-% [readScores, IQs] = GetStoryReadingScores(subjects)
+% [readScores, weights,weightNames,IQs,ages] = GetStoryReadingScores(subjects)
 %
 % Created 2/5/19 by DJ.
+% Updated 7/8/19 by DJ - added ages output, reordered outputs
 
 %% Set up
 info = GetStoryConstants;
@@ -38,9 +39,10 @@ readScores_allSubj = allReadScores*weights;
 
 %% Reorder
 readSubj = behTable.haskinsID;
-[readScores,IQs] = deal(nan(size(subjects)));
+[readScores,IQs,ages] = deal(nan(size(subjects)));
 for i=1:numel(subjects)
     readScores(i) = readScores_allSubj(strcmp(readSubj,subjects{i}));
     IQs(i) = behTable.WASIVerified__Perf_IQ(strcmp(readSubj,subjects{i}));
+    ages(i) = behTable.MRIScans__ProfileAge(strcmp(readSubj,subjects{i}));
 end
 
