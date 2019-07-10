@@ -248,7 +248,7 @@ if doPause, pause(60); end
 
 
 
-
+% ============= AGE & IQ ================= %
 
 %% 2-grp ISC AGE top-bot, p<0.01 alpha<0.05
 SetUpSumaMontage_8view('/data/NIMH_Haskins/a182_v2/IscResults/Group','TEMP_AUD-VIS_CLUST.tcsh','MNI152_2009_SurfVol.nii',...
@@ -264,4 +264,37 @@ SetUpSumaMontage_8view('/data/NIMH_Haskins/a182_v2/IscResults/Group','TEMP_AUD-V
 
 if doPause, pause(60); end
 
+%% 2-grp ISC IQ and ReadScore conjunction (top-bot, p<0.01 alpha<0.05)
+SetUpSumaMontage_8view('/data/NIMH_Haskins/a182_v2/IscResults/Group','TEMP_AUD-VIS_CLUST.tcsh','MNI152_2009_SurfVol.nii',...
+    'Conjunction_readScore-plus-2IQ+tlrc.BRIK.gz','suma_MNI152_2009/MNI152_2009_both.spec','MNI152_2009_SurfVol.nii',...
+    0,0,'./SUMA_IMAGES','','SUMA_IMAGES/suma_8view_Conj_readScorePlus2Iq-top-bot_p01_a05.jpg',[],32,'0','ROI_i32');
 
+if doPause, pause(60); end
+
+%% 2-grp VIS ISC IQ and ReadScore conjunction (top-bot, p<0.01 alpha<0.05)
+SetUpSumaMontage_8view('/data/NIMH_Haskins/a182_v2/IscResults/Group','TEMP_AUD-VIS_CLUST.tcsh','MNI152_2009_SurfVol.nii',...
+    'Conjunction_readScore-plus-2IQ_vis+tlrc.BRIK.gz','suma_MNI152_2009/MNI152_2009_both.spec','MNI152_2009_SurfVol.nii',...
+    0,0,'./SUMA_IMAGES','','SUMA_IMAGES/suma_8view_Conj_readScorePlus2Iq_vis-top-bot_p01_a05.jpg',[],32,'0','ROI_i32');
+
+if doPause, pause(60); end
+
+%% 2-grp AUD ISC IQ and ReadScore conjunction (top-bot, p<0.01 alpha<0.05)
+SetUpSumaMontage_8view('/data/NIMH_Haskins/a182_v2/IscResults/Group','TEMP_AUD-VIS_CLUST.tcsh','MNI152_2009_SurfVol.nii',...
+    'Conjunction_readScore-plus-2IQ_aud+tlrc.BRIK.gz','suma_MNI152_2009/MNI152_2009_both.spec','MNI152_2009_SurfVol.nii',...
+    0,0,'./SUMA_IMAGES','','SUMA_IMAGES/suma_8view_Conj_readScorePlus2Iq_aud-top-bot_p01_a05.jpg',[],32,'0','ROI_i32');
+
+if doPause, pause(60); end
+
+%% 2-grp AUD and VIS ISC conjunction, ReadScore groups (top-bot, p<0.01 alpha<0.05)
+SetUpSumaMontage_8view('/data/NIMH_Haskins/a182_v2/IscResults/Group','TEMP_AUD-VIS_CLUST.tcsh','MNI152_2009_SurfVol.nii',...
+    'Conjunction_readScoreGrps_aud-plus-2vis+tlrc.BRIK.gz','suma_MNI152_2009/MNI152_2009_both.spec','MNI152_2009_SurfVol.nii',...
+    0,0,'./SUMA_IMAGES','','SUMA_IMAGES/suma_8view_Conj_readScoreGrps_audPlus2Vis_top-bot_p01_a05.jpg',[],32,'0','ROI_i32');
+
+if doPause, pause(60); end
+
+%% 2-grp AUD and VIS ISC conjunction, IQ groups (top-bot, p<0.01 alpha<0.05)
+SetUpSumaMontage_8view('/data/NIMH_Haskins/a182_v2/IscResults/Group','TEMP_AUD-VIS_CLUST.tcsh','MNI152_2009_SurfVol.nii',...
+    'Conjunction_iqGrps_aud-plus-2vis+tlrc.BRIK.gz','suma_MNI152_2009/MNI152_2009_both.spec','MNI152_2009_SurfVol.nii',...
+    0,0,'./SUMA_IMAGES','','SUMA_IMAGES/suma_8view_Conj_iqGrps_audPlus2Vis_top-bot_p01_a05.jpg',[],32,'0','ROI_i32');
+
+if doPause, pause(60); end
