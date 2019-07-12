@@ -1,6 +1,7 @@
 #!/bin/bash
 
 # Updated 3/4/19 by DJ - updated okReadSubj_top and _bot
+# Updated 7/11/19 by DJ - added okReadSubj_iqMatched
 
 PRJDIR='/data/jangrawdc/PRJ18_HaskinsStory';
 
@@ -60,3 +61,13 @@ okReadSubj_bot="h1029 h1097 h1108 h1046 h1038 h1034 "\
 "h1058 h1142 h1106 h1184 h1095 h1153 h1168 h1059 "\
 "h1004 h1057 h1087 h1054 h1154"
 okReadSubj_bot=($okReadSubj_bot) # convert to array
+
+
+# set of 40 subjects in which groups are matched for IQ
+okReadSubj_iqMatched="h1013 h1012 h1167 h1031 h1043 "\
+"h1146 h1098 h1018 h1169 h1014 h1197 h1083 h1129 "\
+"h1142 h1187 h1046 h1088 h1029 h1161 h1108 h1179 "\
+"h1175 h1186 h1152 h1102 h1082 h1189 h1010 h1011 "\
+"h1076 h1176 h1058 h1180 h1038 h1024 h1120 h1003 "\
+"h1168 h1034 h1004"
+okReadSubj_iqMatched=($okReadSubj_iqMatched) # convert to array

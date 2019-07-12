@@ -54,13 +54,15 @@ lm = fitlm(readScores_ok,IQs_ok);
 plot(lm);
 xlabel('reading score (1st PC)')
 ylabel('IQ')
+% link axes to make median lines plot fully
+linkaxes(GetSubplots(gcf),'xy');
 % plot lines
 PlotVerticalLines(nanmedian(readScores_ok),'k--');
 PlotHorizontalLines(nanmedian(IQs_ok),'k--');
 title(sprintf('Haskins Story Data, n=%d Subjects',numel(readScores_ok)))
 legend('subject','fit','95% CI','','median')
 
-linkaxes(GetSubplots(gcf),'xy');
+
 
 
 
