@@ -14,44 +14,47 @@ groupDiffMaps = {''};
 roiTerms = {'ACC','IFG-pOp','IFG-pOrb','IFG-pTri','ITG','SMG','STG','CG'};
 roiNames = {'ACC','IFG-pOp','IFG-pOrb','IFG-pTri','ITG','SMG','STG (Aud)','CalcGyr (Vis)'};
 % sides={'r','l',''};
-side = {''};
+sides = {''};
 
 
 nRoi = numel(roiNames);
 
 mapName = cell(1,nRoi);
-for j=1:length(roiTerms)
-    fprintf('===ROI %d/%d...\n',j,length(roiTerms));
+for i=1:length(groupDiffMaps)
+    groupDiffMap = groupDiffMaps{i};
+    for j=1:length(roiTerms)
+        fprintf('===ROI %d/%d...\n',j,length(roiTerms));
+        for k=1:numel(sides)
+    %             neuroSynthMask = sprintf('%s/NeuroSynthTerms/%s_association-test_z_FDR_0.01_epiRes.nii.gz',constants.dataDir,roiTerms{j});
+            neuroSynthMask = sprintf('%s/atlasRois/atlas_%s+tlrc',constants.dataDir,roiTerms{j});
+            roiName = sprintf('%s%s',sides{k},roiNames{j});
 
-%             neuroSynthMask = sprintf('%s/NeuroSynthTerms/%s_association-test_z_FDR_0.01_epiRes.nii.gz',constants.dataDir,roiTerms{j});
-    neuroSynthMask = sprintf('%s/atlasRois/atlas_%s+tlrc',constants.dataDir,roiTerms{j});
-    roiName = sprintf('%s%s',sides{k},roiNames{j});
 
+            olap = GetMaskOverlap(neuroSynthMask);
 
-    olap = GetMaskOverlap(neuroSynthMask);
+            % handle hemisphere splits
+            if roiName(1)=='r'
+                midline = size(olap,1)/2;
+                olap(1:midline,:,:) = false;
+            elseif roiName(1)=='l'
+                midline = size(olap,1);
+                olap(midline:end,:,:) = false;
+            end
+            nVoxels = sum(olap(:));
+            fprintf('%d voxels in mask %s.\n',nVoxels,roiName);
+            if isempty(groupDiffMap)
+                mapName{j} = sprintf('%s (%d voxels)',roiName,nVoxels);
+            else
+                mapName{j} = sprintf('%s * top-bot p<0.01, a<0.05 (%d voxels)',roiName,nVoxels);
+            end
 
-    % handle hemisphere splits
-    if roiName(1)=='r'
-        midline = size(olap,1)/2;
-        olap(1:midline,:,:) = false;
-    elseif roiName(1)=='l'
-        midline = size(olap,1);
-        olap(midline:end,:,:) = false;
+            if j==1
+                roiBrik = olap;
+            else
+                roiBrik = roiBrik + j*olap;
+            end  
+        end
     end
-    nVoxels = sum(olap(:));
-    fprintf('%d voxels in mask %s.\n',nVoxels,roiName);
-    if isempty(groupDiffMap)
-        mapName{j} = sprintf('%s (%d voxels)',roiName,nVoxels);
-    else
-        mapName{j} = sprintf('%s * top-bot p<0.01, a<0.05 (%d voxels)',roiName,nVoxels);
-    end
-    
-    if j==1
-        roiBrik = olap;
-    else
-        roiBrik = roiBrik + j*olap;
-    end  
-    
 end
 %%
 tcInRoi = GetTcInRoi(subj_sorted,roiBrik,1:nRoi);
@@ -94,4 +97,4 @@ for iRoi = 1:nRoi
     colorbar
     
 end
-saveas(246,sprintf('%s/IscResults/Group/SUMA_IMAGES/top-bot_atlasRois_isccol.png',constants.dataDir));
+%saveas(246,sprintf('%s/IscResults/Group/SUMA_IMAGES/top-bot_atlasRois_isccol.png',constants.dataDir));
