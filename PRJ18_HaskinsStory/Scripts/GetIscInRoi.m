@@ -4,6 +4,8 @@ function iscInRoi = GetIscInRoi(subj_sorted,roiFile,iRoi)
 % Updated 5/30/18 by DJ - _d2 results.
 % Updated 4/8/19 by DJ - v2 analysis.
 % Updated 5/22/19 by DJ - accept matrix as roiFile input
+% Updated 8/16/19 by DJ - convert voxel ISCs (r values) to Fisher z's, 
+%                         take mean, then convert back to r
 
 if ~exist('roiFile','var') || isempty(roiFile)
     roiFile = '3dLME_2Grps_readScoreMedSplit_n42_Automask_top-bot_clust_p0.01_a0.05_bisided_map.nii.gz';
@@ -44,7 +46,10 @@ for i=1:nSubj
         for k=1:numel(iRoi)
             isInRoi = rois==iRoi(k);
             fprintf('found %d voxels in ROI %d.\n',sum(isInRoi(:)),iRoi(k));
-            iscInRoi(i,j,k) = mean(V(isInRoi));
+            % convert R to z score, mean, and convert back to R
+            iscInRoi(i,j,k) = tanh(mean(atanh(V(isInRoi))));
+            % take simple mean without converting
+%             iscInRoi(i,j,k) = mean(V(isInRoi));
         end
     end
 end
