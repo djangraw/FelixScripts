@@ -1,4 +1,6 @@
-%%
+%% SubsampleToMatchGroupIqs.m
+% Created 7/11/19 by DJ.
+
 isTopIq = IQs>nanmedian(IQs);
 isTopRead = readScores>nanmedian(readScores);
 
