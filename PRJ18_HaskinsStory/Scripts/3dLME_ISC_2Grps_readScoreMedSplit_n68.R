@@ -1,5 +1,5 @@
 #!/usr/local/apps/R/3.5/3.5.2/bin/Rscript
-# 3dLME_2Grps_readScoreMedSplit_n40-iqMatched.R
+# 3dLME_2Grps_readScoreMedSplit_n68.R
 #
 # Created 5/18/18 by DJ based on 3dLME_2Grps_gstpMedSplit_n22.R from EF.
 # Updated 5/22/18 by DJ - IscResults_d2 directory
@@ -7,17 +7,17 @@
 # Updated 12/11/18 by DJ - _d3, including inputs to accommodate Vis & Aud versions
 # Updated 3/4/19 by DJ - a182_v2 version with 69 ok subjects
 # Updated 4/2/19 by DJ - comments
-# Updated 7/9/19 by DJ - switched groups to 40-subj with matched IQ
-# Updated 8/21/19 by DJ - removed h1161, who saw 2nd run twice, recalc'd groups
+# Updated 8/21/19 by DJ - removed h1161, who saw 2nd run twice, renamed to _n68
+
 
 # get inputs
 args <- commandArgs(trailingOnly=TRUE)
 
-# list labels for Group 1 - readScore <= MEDIAN(readScore)
-G1Subj <- c('h1029','h1083','h1142','h1088','h1097','h1046','h1108','h1197','h1129','h1187','h1168','h1058','h1120','h1003','h1174','h1035','h1034','h1024','h1004','h1150')
+# list labels for Group 1 - ReadScore <= MEDIAN(ReadScore)
+G1Subj <- c('h1029','h1097','h1108','h1046','h1038','h1034','h1187','h1024','h1003','h1083','h1120','h1180','h1174','h1129','h1088','h1035','h1096','h1176','h1150','h1197','h1163','h1058','h1142','h1106','h1184','h1095','h1153','h1168','h1059','h1004','h1057','h1087','h1054','h1154')
 
-# list labels for Group 2 - readScore > MEDIAN(readScore)
-G2Subj <- c('h1098','h1036','h1185','h1169','h1061','h1012','h1014','h1027','h1013','h1048','h1082','h1011','h1189','h1152','h1175','h1010','h1186','h1102','h1076','h1179')
+# list labels for Group 2 - ReadScore > MEDIAN(ReadScore)
+G2Subj <- c('h1157','h1028','h1073','h1036','h1093','h1118','h1031','h1169','h1016','h1074','h1002','h1102','h1152','h1167','h1185','h1027','h1043','h1146','h1179','h1018','h1098','h1012','h1186','h1010','h1189','h1082','h1061','h1175','h1014','h1011','h1076','h1013','h1048','h1022')
 
 # move to results directory
 setwd("/data/NIMH_Haskins/a182_v2/IscResults/Pairwise")
@@ -37,7 +37,7 @@ if (length(args)>1) {
   # inFile <- 'StoryPairwiseIscTable_vis.txt'
 
   # Output file name
-  outFile <- '3dLME_2Grps_readScoreMedSplit_n40-iqMatched_Automask'
+  outFile <- '3dLME_2Grps_readScoreMedSplit_n68_Automask'
 
 }
 print(paste("input:",inFile))

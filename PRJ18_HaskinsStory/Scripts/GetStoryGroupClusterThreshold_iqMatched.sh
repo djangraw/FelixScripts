@@ -7,6 +7,7 @@ set -e
 # Updated 3/5/19 by DJ - adjusted paths for a182_v2 version
 # Updated 3/6/19 by DJ - use minu12 group results
 # Updated 7/11/19 by DJ - moved to 40 iqMatched subjects
+# Updated 8/21/19 by DJ - more complete list of grpFiles
 
 # declare variables
 source /data/jangrawdc/PRJ18_HaskinsStory/Scripts/00_CommonVariables.sh
@@ -14,8 +15,7 @@ sbjBlurFile=$dataDir/ClustSimFiles/AllBlurEstimates_iqMatched.1D # all subjects 
 meanBlurFile=$dataDir/ClustSimFiles/MeanBlurEstimate_iqMatched.1D # mean across $sbjBlurFile
 grpMask=$dataDir/GROUP_block_tlrc/MNI_mask_epiRes.nii
 
-grpFiles="$dataDir/IscResults/Group/3dLME_2Grps_readScoreMedSplit_n40-iqMatched_Automask+tlrc "\
-"$dataDir/IscResults/Group/3dLME_2Grps_iqMedSplit_n40-readMatched_Automask+tlrc" # all files with group stats
+grpFiles="`ls $dataDir/IscResults/Group/3dLME*n40*.HEAD`" # all files with group stats
 
 # set up
 mkdir -p $dataDir/ClustSimFiles

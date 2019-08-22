@@ -6,6 +6,7 @@ set -e
 # Created 5/22/18 by DJ.
 # Updated 5/23/18 by DJ -switched to _d2, MNI mask
 # Updated 3/4/19 by DJ - a182_v2 version of filenames
+# Updated 8/21/19 by DJ - set ttest++ commmands to overwrite
 
 # set up
 source ./00_CommonVariables.sh
@@ -36,8 +37,8 @@ for i in ${!okReadSubj_bot[@]}; do
 done
 
 # Run T Test
-echo "3dttest++ -zskip -brickwise -mask MNI_mask_epiRes.nii -overwrite -prefix ttest_allSubj_2grp -setA ${topFile[@]} -setB ${botFile[@]}"
-3dttest++ -zskip -brickwise -mask MNI_mask_epiRes.nii -overwrite -prefix ttest_allSubj_2grp_minus12 -setA ${topFile[@]} -setB ${botFile[@]}
+echo "3dttest++ -overwrite -zskip -brickwise -mask MNI_mask_epiRes.nii -overwrite -prefix ttest_allSubj_2grp -setA ${topFile[@]} -setB ${botFile[@]}"
+3dttest++ -overwrite -zskip -brickwise -mask MNI_mask_epiRes.nii -overwrite -prefix ttest_allSubj_2grp_minus12 -setA ${topFile[@]} -setB ${botFile[@]}
 
-echo "3dttest++ -zskip -brickwise -mask MNI_mask_epiRes.nii -overwrite -prefix ttest_allSubj_1grp -setA ${topFile[@]} ${botFile[@]}"
-3dttest++ -zskip -brickwise -mask MNI_mask_epiRes.nii -overwrite -prefix ttest_allSubj_1grp_minus12 -setA ${topFile[@]} ${botFile[@]}
+echo "3dttest++ -overwrite -zskip -brickwise -mask MNI_mask_epiRes.nii -overwrite -prefix ttest_allSubj_1grp -setA ${topFile[@]} ${botFile[@]}"
+3dttest++ -overwrite -zskip -brickwise -mask MNI_mask_epiRes.nii -overwrite -prefix ttest_allSubj_1grp_minus12 -setA ${topFile[@]} ${botFile[@]}

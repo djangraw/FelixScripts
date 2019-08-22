@@ -31,12 +31,12 @@ subj_botIq = subjects(iq<=cutoff);
 
 fprintf('===FOR AGE TWO-GROUP R SCRIPT:===\n');
 fprintf('# list labels for Group 1 - age <= MEDIAN(age)\n')
-fprintf('G1Subj <- c(%s)\n',join(subj_botAge,''','''));
+fprintf('G1Subj <- c(''%s'')\n',join(subj_botAge,''','''));
 fprintf('# list labels for Group 2 - age > MEDIAN(age)\n')
-fprintf('G2Subj <- c(%s)\n',join(subj_topAge,''','''));
+fprintf('G2Subj <- c(''%s'')\n',join(subj_topAge,''','''));
 
 fprintf('===FOR IQ TWO-GROUP R SCRIPT:===\n');
 fprintf('# list labels for Group 1 - IQ <= MEDIAN(IQ)\n')
-fprintf('G1Subj <- c(%s)\n',join(subj_botIq,''','''));
+fprintf('G1Subj <- c(''%s'')\n',join(subj_botIq,''','''));
 fprintf('# list labels for Group 2 - IQ > MEDIAN(IQ)\n')
-fprintf('G2Subj <- c(%s)\n',join(subj_topIq,''','''));
+fprintf('G2Subj <- c(''%s'')\n',join(subj_topIq,''','''));

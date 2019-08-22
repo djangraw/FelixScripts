@@ -1,5 +1,5 @@
 #!/usr/local/apps/R/3.5/3.5.2/bin/Rscript
-# 3dLME_2Grps_readScoreMedSplit_n40-iqMatched.R
+# 3dLME_2Grps_iqMedSplit_n40-readMatched.R
 #
 # Created 5/18/18 by DJ based on 3dLME_2Grps_gstpMedSplit_n22.R from EF.
 # Updated 5/22/18 by DJ - IscResults_d2 directory
@@ -7,17 +7,17 @@
 # Updated 12/11/18 by DJ - _d3, including inputs to accommodate Vis & Aud versions
 # Updated 3/4/19 by DJ - a182_v2 version with 69 ok subjects
 # Updated 4/2/19 by DJ - comments
-# Updated 7/9/19 by DJ - switched groups to 40-subj with matched IQ
-# Updated 8/21/19 by DJ - removed h1161, who saw 2nd run twice, recalc'd groups
+# Updated 7/5/19 by DJ - switched groups to IQ median split
+# Updated 7/9/19 by DJ - switched groups to 40-subj with matched readScore
 
 # get inputs
 args <- commandArgs(trailingOnly=TRUE)
 
-# list labels for Group 1 - readScore <= MEDIAN(readScore)
-G1Subj <- c('h1029','h1083','h1142','h1088','h1097','h1046','h1108','h1197','h1129','h1187','h1168','h1058','h1120','h1003','h1174','h1035','h1034','h1024','h1004','h1150')
+# list labels for Group 1 - IQ <= MEDIAN(IQ)
+G1Subj <- c('h1179','h1175','h1186','h1152','h1102','h1082','h1189','h1010','h1011','h1076','h1176','h1058','h1180','h1038','h1024','h1120','h1003','h1168','h1034','h1004')
 
-# list labels for Group 2 - readScore > MEDIAN(readScore)
-G2Subj <- c('h1098','h1036','h1185','h1169','h1061','h1012','h1014','h1027','h1013','h1048','h1082','h1011','h1189','h1152','h1175','h1010','h1186','h1102','h1076','h1179')
+# list labels for Group 2 - IQ > MEDIAN(IQ)
+G2Subj <- c('h1013','h1012','h1167','h1031','h1043','h1146','h1098','h1018','h1169','h1014','h1197','h1083','h1129','h1142','h1187','h1046','h1088','h1029','h1161','h1108')
 
 # move to results directory
 setwd("/data/NIMH_Haskins/a182_v2/IscResults/Pairwise")
@@ -37,7 +37,7 @@ if (length(args)>1) {
   # inFile <- 'StoryPairwiseIscTable_vis.txt'
 
   # Output file name
-  outFile <- '3dLME_2Grps_readScoreMedSplit_n40-iqMatched_Automask'
+  outFile <- '3dLME_2Grps_iqMedSplit_n40-readMatched_Automask'
 
 }
 print(paste("input:",inFile))

@@ -6,16 +6,14 @@ set -e
 # Created 5/25/18 by DJ.
 # Updated 3/5/19 by DJ - adjusted paths for a182_v2 version
 # Updated 3/6/19 by DJ - use minu12 group results
+# Updated 8/21/19 by DJ - more complete list of grpFiles
 
 # declare variables
 source /data/jangrawdc/PRJ18_HaskinsStory/Scripts/00_CommonVariables.sh
 sbjBlurFile=$dataDir/ClustSimFiles/AllBlurEstimates.1D # all subjects concatenated
 meanBlurFile=$dataDir/ClustSimFiles/MeanBlurEstimate.1D # mean across $sbjBlurFile
 grpMask=$dataDir/GROUP_block_tlrc/MNI_mask_epiRes.nii
-grpFiles="$dataDir/IscResults/Group/3dLME_2Grps_readScoreMedSplit_n69_Automask+tlrc "\
-"$dataDir/IscResults/Group/3dLME_1Grp_n69_Automask+tlrc "\
-"$dataDir/GROUP_block_tlrc/ttest_allSubj_2grp_minus12+tlrc "\
-"$dataDir/GROUP_block_tlrc/ttest_allSubj_1grp_minus12+tlrc" # all files with group stats
+grpFiles="`ls $dataDir/IscResults/Group/3dLME*n68*.HEAD` `ls $dataDir/GROUP_block_tlrc/ttest_allSubj_*_minus12+tlrc.HEAD`" # all files with group stats
 
 # set up
 mkdir -p $dataDir/ClustSimFiles

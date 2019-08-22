@@ -1,17 +1,23 @@
 %% SubsampleToMatchGroupIqs.m
 % Created 7/11/19 by DJ.
 
+info = GetStoryConstants();
+[readScores, weights,weightNames,IQs,ages] = GetStoryReadingScores(info.okReadSubj);
+
 isTopIq = IQs>nanmedian(IQs);
 isTopRead = readScores>nanmedian(readScores);
-
-nRand = 5000;
+%%
+nRand = 10000;
 
 coef = nan(1,nRand);
 pVal = nan(1,nRand);
 iKeep_all = cell(1,nRand);
 tic();
+fprintf('Running %d randomizations...\n',nRand);
 for i=1:nRand
-
+    if mod(i,500)==0
+        fprintf('%.1f%% done...\n',i/nRand*100);
+    end
     iKeep = cell(1,4);
     iThis = find(isTopIq & isTopRead & ~isnan(IQs));
     iKeep{1} = randsample(iThis,10);
@@ -38,6 +44,7 @@ IQs_ok = IQs(iKeep_all{iBest});
 readScores_ok = readScores(iKeep_all{iBest});
 
 figure(634); clf;
+set(gcf,'Position',[671   615   984   457]);
 subplot(1,2,1);
 cla; hold on;
 lm = fitlm(readScores,IQs);
@@ -63,7 +70,7 @@ PlotVerticalLines(nanmedian(readScores_ok),'k--');
 PlotHorizontalLines(nanmedian(IQs_ok),'k--');
 title(sprintf('Haskins Story Data, n=%d Subjects',numel(readScores_ok)))
 legend('subject','fit','95% CI','','median')
-
+saveas(gcf,sprintf('%s/Results/readScoreByIq_n40matching.eps',info.PRJDIR),'epsc')
 
 
 
