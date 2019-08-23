@@ -4,13 +4,13 @@ function [readScores, weights,weightNames,IQs,ages] = GetStoryReadingScores(subj
 %
 % Created 2/5/19 by DJ.
 % Updated 7/8/19 by DJ - added ages output, reordered outputs
+% Updated 8/22/19 by DJ - use info.behFile
 
 %% Set up
 info = GetStoryConstants;
 
 % Read behavior file
-behFile = [info.PRJDIR '/A182IncludedSubjectBehavior_2019-01-04.xlsx'];
-behTable = readtable(behFile);
+behTable = readtable(info.behFile);
 
 %% Use all subjects to get first PC
 % Append all reading scores

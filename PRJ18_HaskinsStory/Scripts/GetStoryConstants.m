@@ -3,6 +3,7 @@ function info = GetStoryConstants()
 % Created 5/15/18 by DJ.
 % Updated 2/5/19 by DJ.
 % Updated 8/21/19 by DJ - removed subject h1161, who saw 2nd run twice.
+% Updated 8/22/19 by DJ - added behFile
 
 % Find out if this is local or cluster machine
 hostname = char( getHostName( java.net.InetAddress.getLocalHost ) );
@@ -64,3 +65,4 @@ info.okReadSubj_iqMatched = {'h1003' 'h1004' 'h1010' 'h1011' 'h1012' ...
     'h1152' 'h1168' 'h1169' 'h1174' 'h1175' 'h1179' 'h1185' 'h1186' ...
     'h1187' 'h1189' 'h1197'};
 
+info.behFile = [info.PRJDIR '/A182IncludedSubjectBehavior_2019-01-04.xlsx'];

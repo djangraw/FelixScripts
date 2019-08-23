@@ -1,6 +1,7 @@
 function [iscWin,tWin] = GetSlidingWindowIsc(subj_sorted,readScore_sorted,winLength)
 
 % Created 4/9/19 by DJ.
+% Updated 8/22/19 by DJ - added stderr calculations
 
 %% Load data
 constants = GetStoryConstants();
@@ -49,6 +50,7 @@ nWin = nT-winLength+1;
 % corrMat = nan(nSubj,nSubj,nWin,nInMask);
 [pDiffTopBot,pDiffTopTB,pDiffBotTB] = deal(nan(nInMask,nWin));
 [meanTopTop,meanTopBot,meanBotBot] = deal(nan(nInMask,nWin));
+[steTopTop,steTopBot,steBotBot] = deal(nan(nInMask,nWin));
 for iVox=1:nInMask
     if mod(iVox,100)==0
         fprintf('voxel %d/%d (%.1f%%)...\n',iVox,nInMask,iVox/nInMask*100);
@@ -62,6 +64,11 @@ for iVox=1:nInMask
         meanTopTop(iVox,iWin) = nanmean(zTopTop);
         meanTopBot(iVox,iWin) = nanmean(zTopBot);
         meanBotBot(iVox,iWin) = nanmean(zBotBot);
+        
+        % Get stderrs
+        steTopTop(iVox,iWin) = nanstd(zTopTop)/sqrt(sum(~isnan(zTopTop)));
+        steTopBot(iVox,iWin) = nanstd(zTopBot)/sqrt(sum(~isnan(zTopBot)));
+        steBotBot(iVox,iWin) = nanstd(zBotBot)/sqrt(sum(~isnan(zBotBot)));
         
         % Get stats
         [~,pDiffTopBot(iVox,iWin)] = ttest2(zTopTop,zBotBot);
@@ -90,6 +97,27 @@ V = zeros(nVox,nWin);
 V(isInMask,:) = meanBotBot; % mean z score
 V = reshape(V,[Info.DATASET_DIMENSIONS(1:3),nWin]);
 filename = sprintf('%s/IscResults/Group/SlidingWindowIsc_win%d_botbot',constants.dataDir,winLength);
+Opt = struct('Prefix',filename,'OverWrite','y');
+WriteBrik(V,Info,Opt);
+
+V = zeros(nVox,nWin);
+V(isInMask,:) = steTopTop; % mean z score
+V = reshape(V,[Info.DATASET_DIMENSIONS(1:3),nWin]);
+filename = sprintf('%s/IscResults/Group/SlidingWindowIsc_win%d_toptop_ste',constants.dataDir,winLength);
+Opt = struct('Prefix',filename,'OverWrite','y');
+WriteBrik(V,Info,Opt);
+
+V = zeros(nVox,nWin);
+V(isInMask,:) = steTopBot; % mean z score
+V = reshape(V,[Info.DATASET_DIMENSIONS(1:3),nWin]);
+filename = sprintf('%s/IscResults/Group/SlidingWindowIsc_win%d_topbot_ste',constants.dataDir,winLength);
+Opt = struct('Prefix',filename,'OverWrite','y');
+WriteBrik(V,Info,Opt);
+
+V = zeros(nVox,nWin);
+V(isInMask,:) = steBotBot; % mean z score
+V = reshape(V,[Info.DATASET_DIMENSIONS(1:3),nWin]);
+filename = sprintf('%s/IscResults/Group/SlidingWindowIsc_win%d_botbot_ste',constants.dataDir,winLength);
 Opt = struct('Prefix',filename,'OverWrite','y');
 WriteBrik(V,Info,Opt);
 

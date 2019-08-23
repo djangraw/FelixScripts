@@ -36,7 +36,7 @@ for i=1:numel(vars)
         eval(sprintf('%s = d.%s;',vars{i},vars{i}));
     end
 end
-
+fprintf('csim_pthr = %g\n',csim_pthr);
 %% Write commands
 fid = fopen(cmd_file,'w');
 fprintf(fid,'#!/bin/tcsh -e\n\n');
