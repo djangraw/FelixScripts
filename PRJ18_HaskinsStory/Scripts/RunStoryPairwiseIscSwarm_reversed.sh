@@ -5,6 +5,7 @@ set -e
 # RunStoryPairwiseIscSwarm_reversed.sh
 #
 # Created 8/21/19 by DJ based on RunStoryPairwiseIscSwarm.sh, for reversed subjects h1012 and h1120.
+# Updated 8/23/19 by DJ - set 3dTcorrelate to -overwrite
 
 # ---declare directory constants
 source /data/jangrawdc/PRJ18_HaskinsStory/Scripts/00_CommonVariables.sh # creates variables dataDir, scriptDir, okSubj (subject list)
@@ -57,7 +58,7 @@ do
 
         # Write correlation and mask commands to swarm file in one line
         # run 3dTcorrelate WITHOUT automask to cut out small-value voxels... this did strange things last time.
-        echo "3dTcorrelate -polort -1 -prefix $tempfile $file1 $file2; 3dcalc -a $tempfile -b $mask -overwrite -prefix $iscfile -expr 'a*step(b)'" >> $swarmFile
+        echo "3dTcorrelate -polort -1 -overwrite -prefix $tempfile $file1 $file2; 3dcalc -a $tempfile -b $mask -overwrite -prefix $iscfile -expr 'a*step(b)'" >> $swarmFile
         # echo "3dcalc -a $tempfile -b $mask -overwrite -prefix $iscfile -expr 'a*step(b)'" >> $swarmFile # us this line to do masking only
       fi
     done

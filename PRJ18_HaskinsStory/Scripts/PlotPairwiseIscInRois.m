@@ -57,7 +57,7 @@ for i=1:length(groupDiffMaps)
     end
 end
 %%
-tcInRoi = GetTcInRoi(subj_sorted,roiBrik,1:nRoi);
+% tcInRoi = GetTcInRoi(subj_sorted,roiBrik,1:nRoi);
 iscInRoi = GetIscInRoi(subj_sorted,roiBrik,1:nRoi);
 
 
@@ -73,9 +73,9 @@ for iRoi = 1:nRoi
     
     subplot(ceil(nRoi/2),2,iRoi); cla; hold on;
     imagesc(iscInRoi(:,:,iRoi));
-    plot([nBot,nBot,nSubj,nSubj,nBot]+1.5,[0,nBot,nBot,0,0]-0.5,'g-','LineWidth',2);
-    plot([0,nBot,nBot,0]+0.5,[0,nBot,0,0]+0.5,'b-','LineWidth',2);
-    plot([nBot,nSubj,nSubj,nBot]+0.5,[nBot,nSubj,nBot,nBot]+0.5,'y-','LineWidth',2);
+%     plot([nBot,nBot,nSubj,nSubj,nBot]+1.5,[0,nBot,nBot,0,0]-0.5,'g-','LineWidth',2);
+    plot([0,nBot,nBot,0]+0.5,[0,nBot,0,0]+0.5,'-','color',[112 48 160]/255,'LineWidth',2);
+    plot([nBot,nSubj,nSubj,nBot]+0.5,[nBot,nSubj,nBot,nBot]+0.5,'r-','LineWidth',2);
 
 
     % annotate plot
@@ -97,4 +97,4 @@ for iRoi = 1:nRoi
     colorbar
     
 end
-%saveas(246,sprintf('%s/IscResults/Group/SUMA_IMAGES/top-bot_atlasRois_isccol.png',constants.dataDir));
+saveas(246,sprintf('%s/IscResults/Group/SUMA_IMAGES/top-bot_atlasRois_isccol.png',constants.dataDir));
