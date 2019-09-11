@@ -17,9 +17,12 @@ set(525,'Position',[671   726   484   338])
 
 groupDiffMaps = {''};
 
-roiMask = BrikLoad(sprintf('%s/IscResults/Group/3dLME_2Grps_readScoreMedSplit_n68_Automask_top-bot_clust_p0.002_a0.05_bisided_map.nii.gz',constants.dataDir));
-roiIndices = 1:8;
-roiNames = {'lITC+lHC+thalamus','lMidTG+AngGyr','ACC','rCer','lIns+lTempPole','mPFC','lMidFG','lIFG'};
+% roiMask = BrikLoad(sprintf('%s/IscResults/Group/3dLME_2Grps_readScoreMedSplit_n68_Automask_top-bot_clust_p0.002_a0.05_bisided_map.nii.gz',constants.dataDir));
+% roiIndices = 1:8;
+% roiNames = {'lITC+lHC+thalamus','lMidTG+AngGyr','ACC','rCer','lIns+lTempPole','mPFC','lMidFG','lIFG'};
+roiMask = BrikLoad(sprintf('%s/IscResults/Group/3dLME_2Grps_readScoreMedSplit_n40-iqMatched_Automask_top-bot_clust_p0.002_a0.05_bisided_map.nii.gz',constants.dataDir));
+roiIndices = 1:14;
+roiNames = {'IFG-pTri/MidFG','lITG/lMidTG','lSPL/Precun','rSPL/rPostCG','rCer(V1/Crus1)','lIns','lSMedG/lSFG','rMidTG','lPrec/lCalcG','midbrain/VTA','lMidTG/lSTG','laSTG','lMidFG/lSFG','rIOG/rITG'};
 
 
 
@@ -68,10 +71,17 @@ for iRoi=1:length(roiIndices)
     tcInRoi_ste(:,2) = GetTimecourseInRoi(botResult,isInRoi);
 
     t = (1:length(tcInRoi))*TR;
-
-    % Plot ISC
     figure(523); clf;
+    % Plot timecourse
     subplot(2,1,1);
+    PlotTimecoursesWithConditions(t,tcInRoi,tcInRoi_ste,colors)
+    ylabel('Mean BOLD signal change (%)')
+    xlabel('time (sec)')
+    title(mapName);
+    xlim([0,t(end)])
+    
+    % Plot ISC
+    subplot(2,1,2);
     colors = {[1 0 0],[112 48 160]/255};
     PlotTimecoursesWithConditions(tIsc,iscInRoi,iscInRoi_ste,colors)
     ylabel('mean ISC')
@@ -79,23 +89,15 @@ for iRoi=1:length(roiIndices)
     title(mapName);
     xlim([0,t(end)])
 
-    % Plot timecourse
-    subplot(2,1,2);
-    PlotTimecoursesWithConditions(t,tcInRoi,tcInRoi_ste,colors)
-    ylabel('Mean BOLD signal change (%)')
-    xlabel('time (sec)')
-    title(mapName);
-    xlim([0,t(end)])
-
     % Add legend
-    MakeLegend(colors,{'Top Readers','Bottom Readers'},[2,2],[0.17,0.9]);
+    MakeLegend(colors,{'Good Readers','Poor Readers'},[2,2],[0.17,0.9]);
 
 
     % Save figure
     if isempty(groupDiffMap)
-        print(sprintf('%s/atlasRois/SUMA_IMAGES/ROI%02d_%s_%ds-win-isc+tc.png',constants.dataDir,iRoi,roiName,winLength*TR),'-dpng')
+        print(sprintf('%s/atlasRois/SUMA_IMAGES/ROI%02d_%s_%ds-win-isc+tc.png',constants.dataDir,iRoi,strrep(roiName,'/','-'),winLength*TR),'-dpng')
     else
-        print(sprintf('%s/atlasRois/SUMA_IMAGES/ROI%02d_%s_top-bot_%ds-win-isc+tc.png',constants.dataDir,iRoi,roiName,winLength*TR),'-dpng')
+        print(sprintf('%s/atlasRois/SUMA_IMAGES/ROI%02d_%s_top-bot_%ds-win-isc+tc.png',constants.dataDir,iRoi,strrep(roiName,'/','-'),winLength*TR),'-dpng')
     end
 
 end

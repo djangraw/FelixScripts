@@ -316,3 +316,10 @@ SetUpSumaMontage_8view('/data/NIMH_Haskins/a182_v2/IscResults/Group','TEMP_AUD-V
     0,0,'./SUMA_IMAGES','',sprintf('SUMA_IMAGES/suma_8view_ISC_iqGrps_n40-readScoreMatched_top-bot_lim0.1_p%g_a0.05.jpg',csim_pthr),[],0.1,'0','');
 
 if doPause, pause(60); end
+
+%% 2-grp ISC Readscore grps, IQ matched, top-bot, p<0.01 alpha<0.05: CLUSTER MASK
+SetUpSumaMontage_8view('/data/NIMH_Haskins/a182_v2/IscResults/Group','TEMP_AUD-VIS_CLUSTMAP.tcsh','MNI152_2009_SurfVol.nii',...
+    sprintf('3dLME_2Grps_readScoreMedSplit_n40-iqMatched_Automask_top-bot_clust_p%g_a0.05_bisided_map.nii.gz',csim_pthr),'suma_MNI152_2009/MNI152_2009_both.spec','MNI152_2009_SurfVol.nii',...
+    0,0,'./SUMA_IMAGES','',sprintf('SUMA_IMAGES/suma_8view_ISC_readScoreGrps_n40-iqMatched_top-bot_clustmap_p%g_a0.05.jpg',csim_pthr),[],32,'0','roi_i32');
+
+
