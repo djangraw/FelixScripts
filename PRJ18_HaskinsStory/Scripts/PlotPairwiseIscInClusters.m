@@ -178,3 +178,39 @@ for iRoi = 1:nRoi
     grid on;
 end
 saveas(247,sprintf('%s/IscResults/Group/SUMA_IMAGES/readScoreSplit_n40-iqMatched_top-bot_p0.002_a0.05_clusterRois_groupIscBars.png',constants.dataDir));
+
+
+%% Do dimensional analyis within each group
+iscInRoi_z_sym = UnvectorizeFc(VectorizeFc(iscInRoi_z),0,true);
+
+meanIscWithAllOthers = squeeze(mean(iscInRoi_z_sym(:,:,:),1));
+
+nCols = ceil(sqrt(nRoi));
+nRows = ceil(nRoi/nCols);
+figure(248); clf;
+set(248,'Position',[10,10,1400,1000]);
+[rTop,pTop,rBot,pBot,rAll,pAll] = deal(nan(1,nRoi));
+for iRoi = 1:nRoi
+    subplot(nRows,nCols,iRoi); cla; hold on;
+    [rTop(iRoi),pTop(iRoi)] = corr(readScore_sorted(isTop)',meanIscWithAllOthers(isTop,iRoi));
+    [rBot(iRoi),pBot(iRoi)] = corr(readScore_sorted(isBot)',meanIscWithAllOthers(isBot,iRoi));
+    [rAll(iRoi),pAll(iRoi)] = corr(readScore_sorted',meanIscWithAllOthers(:,iRoi));
+    plot(find(isTop),meanIscWithAllOthers(isTop,iRoi),'r.');
+    plot(find(isBot),meanIscWithAllOthers(isBot,iRoi),'b.');
+    xlabel('reading rank (1=low)')
+    ylabel('mean ISC with all others (z)')
+    title(roiNames{iRoi})
+    fprintf('ROI %d (%s): pTop=%.1g, pBot=%.1g, pAll=%.1g\n',iRoi,roiNames{iRoi},pTop(iRoi),pBot(iRoi),pAll(iRoi));
+    fprintf('   <0: [%s]\n',num2str(find(meanIscWithAllOthers(:,iRoi)<0)'));
+end
+legend('good reader','poor reader')
+figure(249); clf; hold on;
+plot(pTop,'.-');
+plot(pBot,'.-');
+plot(pAll,'.-');
+PlotHorizontalLines(0.05,'k--');
+legend('top readers','bottom readers','all readers')
+grid on;
+ylabel('p value of readScore-meanIsc correlation');
+set(gca,'xtick',1:nRoi,'xticklabel',roiNames);
+xticklabel_rotate;
