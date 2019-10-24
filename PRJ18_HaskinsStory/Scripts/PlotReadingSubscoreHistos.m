@@ -65,5 +65,6 @@ for i=1:nTests
         min(readSubscores(:,i)),max(readSubscores(:,i)));
     % test good-poor
     [p,h] = ranksum(readSubscores(~isTop,i),readSubscores(isTop,i));
+    fprintf('   top>bot: p=%.3g\n',p)
 end
 fprintf('========================\n');
