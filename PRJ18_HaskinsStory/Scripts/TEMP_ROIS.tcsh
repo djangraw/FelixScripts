@@ -1,6 +1,6 @@
 #!/bin/tcsh -e
 
-# Created 08-Jul-2019 14:39:49 by MATLAB function SetUpSumaMontage_4view.m
+# Created 24-Oct-2019 10:24:55 by MATLAB function SetUpSumaMontage_4view.m
 
 set data_dir = "/data/NIMH_Haskins/a182_v2/atlasRois/"
 set cmd_file = "TEMP_ROIS.tcsh"
