@@ -6,6 +6,8 @@ function iscInRoi = GetIscInRoi(subj_sorted,roiFile,iRoi)
 % Updated 5/22/19 by DJ - accept matrix as roiFile input
 % Updated 8/16/19 by DJ - convert voxel ISCs (r values) to Fisher z's, 
 %                         take mean, then convert back to r
+% Updated 5/19/22 by DJ - In pairwise ISC input table, replace original 
+%                         data directory with more current one from info
 
 if ~exist('roiFile','var') || isempty(roiFile)
     roiFile = '3dLME_2Grps_readScoreMedSplit_n42_Automask_top-bot_clust_p0.01_a0.05_bisided_map.nii.gz';
@@ -18,6 +20,13 @@ end
 info = GetStoryConstants();
 cd(sprintf('%s/IscResults/Pairwise',info.dataDir));
 iscTable = readtable('StoryPairwiseIscTable.txt','Delimiter','\t','ReadVariableNames',true);
+
+% In file paths, replace original data directory with current data directory
+disp('In pairwise ISC input table, replacing original data directory with more current one...')
+for i = 1:height(iscTable)
+    newPath = strrep(iscTable{i,'InputFile'},'/data/NIMH_Haskins/a182_v2',info.dataDir);
+    iscTable{i,'InputFile'} = newPath;
+end
 
 %% Load Mask data
 info = GetStoryConstants();
