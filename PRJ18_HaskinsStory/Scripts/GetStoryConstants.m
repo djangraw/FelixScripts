@@ -4,12 +4,16 @@ function info = GetStoryConstants()
 % Updated 2/5/19 by DJ.
 % Updated 8/21/19 by DJ - removed subject h1161, who saw 2nd run twice.
 % Updated 8/22/19 by DJ - added behFile
+% Updated 5/4-19/22 by DJ - added UVM computer file locations
 
 % Find out if this is local or cluster machine
 hostname = char( getHostName( java.net.InetAddress.getLocalHost ) );
 if strcmp(hostname,'MH01971391MACLT') % Dave's local machine
     info.PRJDIR = '/Volumes/data/PRJ18_HaskinsStory';
     info.dataDir = '/Volumes/NIMH_Haskins/a182_v2'; % data directory
+elseif endswith(hostname,'int.uvm.edu') % Dave's UVM machine
+    info.PRJDIR = '/Users/djangraw/Documents/GitHub/FelixScripts/PRJ18_HaskinsStory';
+    info.dataDir = '/Volumes/DJ_Transfer/a182_v2'; % data directory
 else % Helix/Felix/Biowulf
     info.PRJDIR = '/data/jangrawdc/PRJ18_HaskinsStory';
     info.dataDir = '/data/NIMH_Haskins/a182_v2'; % data directory

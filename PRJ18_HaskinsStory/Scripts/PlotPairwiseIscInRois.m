@@ -37,7 +37,7 @@ for i=1:length(groupDiffMaps)
                 midline = size(olap,1)/2;
                 olap(1:midline,:,:) = false;
             elseif roiName(1)=='l'
-                midline = size(olap,1);
+                midline = size(olap,1)/2;
                 olap(midline:end,:,:) = false;
             end
             nVoxels = sum(olap(:));
