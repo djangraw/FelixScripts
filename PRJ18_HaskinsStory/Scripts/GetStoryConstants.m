@@ -11,8 +11,13 @@ hostname = char( getHostName( java.net.InetAddress.getLocalHost ) );
 if strcmp(hostname,'MH01971391MACLT') % Dave's local machine
     info.PRJDIR = '/Volumes/data/PRJ18_HaskinsStory';
     info.dataDir = '/Volumes/NIMH_Haskins/a182_v2'; % data directory
-elseif endswith(hostname,'int.uvm.edu') % Dave's UVM machine
-    info.PRJDIR = '/Users/djangraw/Documents/GitHub/FelixScripts/PRJ18_HaskinsStory';
+elseif endsWith(hostname,'int.uvm.edu') % a UVM Mac machine
+    % set PRJDIR to the location of this file
+    scriptPath = mfilename('fullpath');
+    pathParts = split(scriptPath,'/');
+    newPath = join(pathParts(1:end-2),'/');
+    newPath = newPath{1};
+    info.PRJDIR = newPath;
     info.dataDir = '/Volumes/DJ_Transfer/a182_v2'; % data directory
 else % Helix/Felix/Biowulf
     info.PRJDIR = '/data/jangrawdc/PRJ18_HaskinsStory';
