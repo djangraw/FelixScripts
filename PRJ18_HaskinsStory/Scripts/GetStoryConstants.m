@@ -75,6 +75,13 @@ info.okReadSubj_iqMatched = {'h1003' 'h1004' 'h1010' 'h1011' 'h1012' ...
     'h1152' 'h1168' 'h1169' 'h1174' 'h1175' 'h1179' 'h1185' 'h1186' ...
     'h1187' 'h1189' 'h1197'};
 
+% Get behavior file
 %info.behFile = [info.PRJDIR '/A182IncludedSubjectBehavior_2019-01-04.xlsx'];
 info.behFile = [info.dataDir '/A182IncludedSubjectBehavior_2022-05-23.xlsx'];
 
+% Add afni directory to PATH
+PATH = getenv('PATH');
+if ~contains(PATH,'abin')
+    username = char(java.lang.System.getProperty('user.name'));
+    setenv('PATH', [PATH ':/Users/' username '/abin']);
+end

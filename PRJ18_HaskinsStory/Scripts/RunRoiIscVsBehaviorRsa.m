@@ -9,11 +9,12 @@
 % https://www.sciencedirect.com/science/article/pii/S1053811920303153
 %
 % Created 5/18-19/22 by DJ.
+% Updated 5/23/22 by DJ - updated ROI name/numbers from recent paper draft.
 
 %% Get behavior scores (from PlotReadingSubscoreHistos.m)
 
-info = GetStoryConstants();
-subjects = info.okReadSubj;
+constants = GetStoryConstants();
+subjects = constants.okReadSubj;
 % get standard reading scores
 [readScores, weights,weightNames,IQs,ages] = GetStoryReadingScores(subjects);
 % sort subjects by their reading score
@@ -21,7 +22,7 @@ subjects = info.okReadSubj;
 subj_sorted = constants.okReadSubj(order);
 
 % Read behavior file
-behTable = readtable(info.behFile);
+behTable = readtable(constants.behFile);
 % TODO: SORT behTable
 
 
@@ -48,8 +49,11 @@ weightNames = {'TOWRE Sight-Word','TOWRE Phoenetic Decoding','TOWRE Total Word R
 groupDiffMaps = {sprintf('%s/IscResults/Group/3dLME_2Grps_readScoreMedSplit_n40-iqMatched_Automask_top-bot_clust_p0.002_a0.05_bisided_map.nii.gz',constants.dataDir)};
 % roiTerms = {'anteriorcingulate','dlpfc','inferiorfrontal','inferiortemporal','supramarginalgyrus','primaryauditory','primaryvisual','frontaleye'};
 % roiNames = {'ACC','DLPFC','IFG','ITG','SMG','A1','V1','FEF'};
-roiIndices = 1:14;
-roiNames = {'IFG-pTri/MidFG','lITG/lMidTG','lSPL/Precun','rSPL/rPostCG','rCer(V1/Crus1)','lIns','lSMedG/lSFG','rMidTG','lPrec/lCalcG','midbrain/VTA','lMidTG/lSTG','laSTG','lMidFG/lSFG','rIOG/rITG'};
+roiIndices = 1:11;
+%roiNames =
+%{'lITG/lFus','lSPL/lPrecun','lMidFG/lSFG','lMidOG','rSPL/rPostCG','lAG','rIOG/rITG','lParaCL/rParaCL','lPrecun/rCG','lSMG/lIPL','lSMedG/lSFG'}; % full names from MATLAB bar plots
+roiNames = {'lITG','lSPL','lSFG','lMidOG','rSPL','lAG','rIOG','paraCL','Precun','lSMG','lSMedG'};% names from powerpoint results summaries (and paper draft)
+% roiNames = {'IFG-pTri/MidFG','lITG/lMidTG','lSPL/Precun','rSPL/rPostCG','rCer(V1/Crus1)','lIns','lSMedG/lSFG','rMidTG','lPrec/lCalcG','midbrain/VTA','lMidTG/lSTG','laSTG','lMidFG/lSFG','rIOG/rITG'};
 % roiTerms = {'ACC','IFG-pOp','IFG-pOrb','IFG-pTri','ITG','SMG','STG','CG'};
 % roiNames = {'ACC','IFG-pOp','IFG-pOrb','IFG-pTri','ITG','SMG','STG (Aud)','CalcGyr (Vis)'};
 % sides={'r','l',''};
@@ -73,13 +77,13 @@ for i=1:length(groupDiffMaps)
             olap = GetMaskOverlap(neuroSynthMask);
 
             % handle hemisphere splits
-            if roiName(1)=='r'
-                midline = size(olap,1)/2;
-                olap(1:midline,:,:) = false;
-            elseif roiName(1)=='l'
-                midline = size(olap,1)/2;
-                olap(midline:end,:,:) = false;
-            end
+%             if roiName(1)=='r'
+%                 midline = size(olap,1)/2;
+%                 olap(1:midline,:,:) = false;
+%             elseif roiName(1)=='l'
+%                 midline = size(olap,1)/2;
+%                 olap(midline:end,:,:) = false;
+%             end
             nVoxels = sum(olap(:));
             fprintf('%d voxels in mask %s.\n',nVoxels,roiName);
             if isempty(groupDiffMap)
@@ -103,6 +107,7 @@ iscInRoi = GetIscInRoi(subj_sorted,roiBrik,1:nRoi);
 
 %% Plot ISC matrices next to each other
 nBot = sum(readScore_sorted<=median(readScore_sorted));
+
 
 figure(246); clf;
 nCols = ceil(sqrt(nRoi));
