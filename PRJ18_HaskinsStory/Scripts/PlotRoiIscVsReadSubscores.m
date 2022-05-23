@@ -1,6 +1,7 @@
 % PlotRoiIscVsReadSubscores.m
 %
 % Created 8/16/19 by DJ.
+% Updated 5/23/22 by DJ - updated behFile
 
 constants = GetStoryConstants();
 roiTerms = {'ACC','IFG-pOp','IFG-pOrb','IFG-pTri','ITG','SMG','STG','CG'};
@@ -18,7 +19,7 @@ iscInRoi = GetIscInRoi(subj_sorted,roiBrik,1:nRoi);
 
 %% Get reading scores
 
-behFile = [constants.PRJDIR '/A182IncludedSubjectBehavior_2019-01-04.xlsx'];
+behFile = constants.behFile;
 behTable = readtable(behFile);
 allReadScores = [behTable.TOWREVerified__SWE_SS,behTable.TOWREVerified__PDE_SS,behTable.TOWREVerified__TWRE_SS,...
     behTable.WoodcockJohnsonVerified__BscR_SS, behTable.WoodcockJohnsonVerified__LW_SS, behTable.WoodcockJohnsonVerified__WA_SS];

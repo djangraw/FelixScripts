@@ -1,12 +1,13 @@
 function PrintGroupingsByAgeAndIQ()
 
 % Created 7/5/19 by DJ.
+% Updated 5/23/22 by DJ - updated behFile
 
 %% Set up
 info = GetStoryConstants;
 
 % Read behavior file
-behFile = [info.PRJDIR '/A182IncludedSubjectBehavior_2019-01-04.xlsx'];
+behFile = info.behFile;
 behTable = readtable(behFile);
 
 %% crop to okReadSubj
