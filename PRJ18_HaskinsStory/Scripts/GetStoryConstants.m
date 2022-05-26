@@ -6,13 +6,15 @@ function info = GetStoryConstants()
 % Updated 8/22/19 by DJ - added behFile
 % Updated 5/4-19/22 by DJ - added UVM computer file locations
 % Updated 5/23/22 by DJ - updated behFile
+% Updated 5/26/22 by DJ - made it work off campus, and finds behFile in
+% PRJDIR if dataDir is not attached.
 
 % Find out if this is local or cluster machine
 hostname = char( getHostName( java.net.InetAddress.getLocalHost ) );
 if strcmp(hostname,'MH01971391MACLT') % Dave's local machine
     info.PRJDIR = '/Volumes/data/PRJ18_HaskinsStory';
     info.dataDir = '/Volumes/NIMH_Haskins/a182_v2'; % data directory
-elseif endsWith(hostname,'int.uvm.edu') % a UVM Mac machine
+elseif endsWith(hostname,'int.uvm.edu') || endsWith(hostname,'.local') % a UVM Mac machine
     % set PRJDIR to the location of this file
     scriptPath = mfilename('fullpath');
     pathParts = split(scriptPath,'/');
@@ -76,8 +78,12 @@ info.okReadSubj_iqMatched = {'h1003' 'h1004' 'h1010' 'h1011' 'h1012' ...
     'h1187' 'h1189' 'h1197'};
 
 % Get behavior file
-%info.behFile = [info.PRJDIR '/A182IncludedSubjectBehavior_2019-01-04.xlsx'];
-info.behFile = [info.dataDir '/A182IncludedSubjectBehavior_2022-05-23.xlsx'];
+% info.behFile = [info.PRJDIR '/A182IncludedSubjectBehavior_2019-01-04.xlsx'];
+if exist(info.dataDir,'dir')
+    info.behFile = [info.dataDir '/A182IncludedSubjectBehavior_2022-05-23.xlsx'];
+else
+    info.behFile = [info.PRJDIR '/A182IncludedSubjectBehavior_2022-05-23.xlsx'];
+end
 
 % Add afni directory to PATH
 PATH = getenv('PATH');
